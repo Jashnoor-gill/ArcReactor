@@ -723,3 +723,75 @@ def delete_session(request, session_id):
         messages.error(
             request, "There are students assigned to this session. Please move them to another session.")
     return redirect(reverse('manage_session'))
+
+
+def authority_grievance_list(request):
+    status_filter = request.GET.get('status')
+    grievances = Grievance.objects.all().order_by('-created_at')
+    if status_filter:
+        grievances = grievances.filter(status=status_filter)
+    context = {
+        'grievances': grievances,
+        'page_title': 'Authority Grievance Desk'
+    }
+    return render(request, "hod_template/grievance_list.html", context)
+
+
+def authority_grievance_update(request, grievance_id):
+    grievance = get_object_or_404(Grievance, id=grievance_id)
+    form = GrievanceAssignForm(request.POST or None, instance=grievance)
+    context = {
+        'form': form,
+        'grievance': grievance,
+        'page_title': 'Resolve Grievance'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            updated = form.save()
+            GrievanceUpdate.objects.create(
+                grievance=updated,
+                status=updated.status,
+                note=updated.resolution_notes,
+                updated_by=request.user
+            )
+            messages.success(request, "Grievance updated")
+            return redirect(reverse('authority_grievance_list'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "hod_template/grievance_update.html", context)
+
+
+def authority_opportunity_list(request):
+    opportunities = Opportunity.objects.all().order_by('-created_at')
+    context = {
+        'opportunities': opportunities,
+        'page_title': 'Opportunities Overview'
+    }
+    return render(request, "hod_template/opportunity_list.html", context)
+
+
+def authority_opportunity_applications(request, opportunity_id):
+    opportunity = get_object_or_404(Opportunity, id=opportunity_id)
+    applications = OpportunityApplication.objects.filter(opportunity=opportunity).order_by('-applied_at')
+    context = {
+        'opportunity': opportunity,
+        'applications': applications,
+        'page_title': 'Opportunity Applications'
+    }
+    return render(request, "hod_template/opportunity_applications.html", context)
+
+
+def authority_application_update(request, application_id):
+    application = get_object_or_404(OpportunityApplication, id=application_id)
+    form = OpportunityStatusForm(request.POST or None, instance=application)
+    context = {
+        'form': form,
+        'application': application,
+        'page_title': 'Update Application Status'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Application status updated")
+            return redirect(reverse('authority_opportunity_applications', args=[application.opportunity.id]))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "hod_template/opportunity_application_update.html", context)

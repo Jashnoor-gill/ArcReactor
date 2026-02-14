@@ -191,6 +191,89 @@ class EditResultForm(FormSettings):
         model = StudentResult
         fields = ['session_year', 'subject', 'student', 'test', 'exam']
 
+
+class GrievanceForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(GrievanceForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Grievance
+        fields = [
+            'title',
+            'category',
+            'subcategory',
+            'complaint_type',
+            'level',
+            'department',
+            'description',
+            'proof',
+            'is_anonymous',
+        ]
+
+
+class GrievanceUpdateForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(GrievanceUpdateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Grievance
+        fields = ['status', 'resolution_notes']
+
+
+class GrievanceAssignForm(FormSettings):
+    assigned_to = forms.ModelChoiceField(
+        queryset=CustomUser.objects.filter(user_type='2'),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(GrievanceAssignForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Grievance
+        fields = ['status', 'resolution_notes', 'assigned_to', 'escalation_level']
+
+
+class OpportunityForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(OpportunityForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Opportunity
+        fields = [
+            'title',
+            'organization',
+            'type',
+            'domain',
+            'stipend',
+            'duration',
+            'location',
+            'deadline',
+            'description',
+            'is_active',
+        ]
+        widgets = {
+            'deadline': DateInput(attrs={'type': 'date'}),
+        }
+
+
+class OpportunityApplicationForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(OpportunityApplicationForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = OpportunityApplication
+        fields = ['resume', 'cover_letter']
+
+
+class OpportunityStatusForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(OpportunityStatusForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = OpportunityApplication
+        fields = ['status']
+
 #todos
 # class TodoForm(forms.ModelForm):
 #     class Meta:

@@ -9,9 +9,9 @@
             <h6>{{ user.get_full_name|default:user.username }}</h6>
             <small>
                 {% if user.user_type == '1' %}
-                    Administrator
+                    Authority
                 {% elif user.user_type == '2' %}
-                    Staff Member
+                    Faculty
                 {% else %}
                     Student
                 {% endif %}
@@ -188,6 +188,26 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Governance</h6>
+
+        <div class="nav-item">
+            {% url 'authority_grievance_list' as authority_grievance_list %}
+            <a href="{{ authority_grievance_list }}" class="nav-link {% if authority_grievance_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-balance-scale"></i>
+                <span class="nav-text">Grievance Desk</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Opportunities</h6>
+
+        <div class="nav-item">
+            {% url 'authority_opportunity_list' as authority_opportunity_list %}
+            <a href="{{ authority_opportunity_list }}" class="nav-link {% if authority_opportunity_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <span class="nav-text">Opportunity Hub</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Leave Management</h6>
         
         <div class="nav-item">
@@ -262,6 +282,34 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Governance</h6>
+
+        <div class="nav-item">
+            {% url 'staff_grievance_list' as staff_grievance_list %}
+            <a href="{{ staff_grievance_list }}" class="nav-link {% if staff_grievance_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-balance-scale"></i>
+                <span class="nav-text">Grievance Review</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Opportunities</h6>
+
+        <div class="nav-item">
+            {% url 'staff_opportunity_list' as staff_opportunity_list %}
+            <a href="{{ staff_opportunity_list }}" class="nav-link {% if staff_opportunity_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <span class="nav-text">Manage Opportunities</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'staff_opportunity_create' as staff_opportunity_create %}
+            <a href="{{ staff_opportunity_create }}" class="nav-link {% if staff_opportunity_create == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-plus-circle"></i>
+                <span class="nav-text">Post Opportunity</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Library & Resources</h6>
         
         <div class="nav-item">
@@ -315,6 +363,42 @@
             <a href="{{ student_view_profile }}" class="nav-link {% if student_view_profile == request.path %}active{% endif %}">
                 <i class="fas fa-user-circle"></i>
                 <span class="nav-text">Profile</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Governance</h6>
+
+        <div class="nav-item">
+            {% url 'student_grievance_submit' as student_grievance_submit %}
+            <a href="{{ student_grievance_submit }}" class="nav-link {% if student_grievance_submit == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-pen"></i>
+                <span class="nav-text">Submit Grievance</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_grievance_list' as student_grievance_list %}
+            <a href="{{ student_grievance_list }}" class="nav-link {% if student_grievance_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-list"></i>
+                <span class="nav-text">My Grievances</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Opportunities</h6>
+
+        <div class="nav-item">
+            {% url 'student_opportunity_list' as student_opportunity_list %}
+            <a href="{{ student_opportunity_list }}" class="nav-link {% if student_opportunity_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <span class="nav-text">Browse Opportunities</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_my_applications' as student_my_applications %}
+            <a href="{{ student_my_applications }}" class="nav-link {% if student_my_applications == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-clipboard-check"></i>
+                <span class="nav-text">My Applications</span>
             </a>
         </div>
 

@@ -217,3 +217,98 @@ def view_books(request):
     }
     return render(request, "student_template/view_books.html", context)
 
+
+def student_grievance_submit(request):
+    form = GrievanceForm(request.POST or None, request.FILES or None)
+    context = {
+        'form': form,
+        'page_title': 'Submit Grievance'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            grievance = form.save(commit=False)
+            grievance.created_by = request.user
+            grievance.save()
+            GrievanceUpdate.objects.create(
+                grievance=grievance,
+                status=grievance.status,
+                note='Submitted',
+                updated_by=request.user
+            )
+            messages.success(request, "Grievance submitted successfully")
+            return redirect(reverse('student_grievance_submit'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "student_template/grievance_submit.html", context)
+
+
+def student_grievance_list(request):
+    grievances = Grievance.objects.filter(created_by=request.user).order_by('-created_at')
+    context = {
+        'grievances': grievances,
+        'page_title': 'My Grievances'
+    }
+    return render(request, "student_template/grievance_list.html", context)
+
+
+def student_opportunity_list(request):
+    opportunities = Opportunity.objects.filter(is_active=True).order_by('-created_at')
+    domain = request.GET.get('domain')
+    type_filter = request.GET.get('type')
+    organization = request.GET.get('organization')
+    if domain:
+        opportunities = opportunities.filter(domain__icontains=domain)
+    if type_filter:
+        opportunities = opportunities.filter(type=type_filter)
+    if organization:
+        opportunities = opportunities.filter(organization__icontains=organization)
+
+    context = {
+        'opportunities': opportunities,
+        'page_title': 'Opportunities',
+        'filters': {
+            'domain': domain or '',
+            'type': type_filter or '',
+            'organization': organization or ''
+        }
+    }
+    return render(request, "student_template/opportunity_list.html", context)
+
+
+def student_apply_opportunity(request, opportunity_id):
+    opportunity = get_object_or_404(Opportunity, id=opportunity_id, is_active=True)
+    student = get_object_or_404(Student, admin=request.user)
+    existing = OpportunityApplication.objects.filter(
+        opportunity=opportunity,
+        student=student
+    ).first()
+    if existing:
+        messages.info(request, "You have already applied for this opportunity")
+        return redirect(reverse('student_opportunity_list'))
+
+    form = OpportunityApplicationForm(request.POST or None, request.FILES or None)
+    context = {
+        'form': form,
+        'opportunity': opportunity,
+        'page_title': 'Apply for Opportunity'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.opportunity = opportunity
+            application.student = student
+            application.save()
+            messages.success(request, "Application submitted")
+            return redirect(reverse('student_my_applications'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "student_template/opportunity_apply.html", context)
+
+
+def student_my_applications(request):
+    student = get_object_or_404(Student, admin=request.user)
+    applications = OpportunityApplication.objects.filter(student=student).order_by('-applied_at')
+    context = {
+        'applications': applications,
+        'page_title': 'My Applications'
+    }
+    return render(request, "student_template/opportunity_applications.html", context)
+

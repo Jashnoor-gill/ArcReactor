@@ -1,5 +1,5 @@
 /**
- * College ERP Notification Manager
+ * AEGIS campusOS Notification Manager
  * Handles Firebase Cloud Messaging notifications with proper permission management
  */
 
@@ -131,7 +131,7 @@ class NotificationManager {
             body: payload.notification.body,
             icon: payload.notification.icon || '/static/dist/img/virus.png',
             badge: '/static/dist/img/virus.png',
-            tag: 'college-erp-notification',
+            tag: 'aegis-campusos-notification',
             requireInteraction: true,
             data: payload.data
         };

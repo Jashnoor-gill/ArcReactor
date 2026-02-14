@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime,timedelta
+from uuid import uuid4
 
 
 
@@ -40,7 +41,7 @@ class Session(models.Model):
 
 
 class CustomUser(AbstractUser):
-    USER_TYPE = ((1, "HOD"), (2, "Staff"), (3, "Student"))
+    USER_TYPE = ((1, "Authority"), (2, "Faculty"), (3, "Student"))
     GENDER = [("M", "Male"), ("F", "Female")]
     
     
@@ -198,6 +199,117 @@ class StudentResult(models.Model):
     exam = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Grievance(models.Model):
+    STATUS_CHOICES = (
+        ("submitted", "Submitted"),
+        ("under_review", "Under Review"),
+        ("in_progress", "In Progress"),
+        ("resolved", "Resolved"),
+    )
+    CATEGORY_CHOICES = (
+        ("academics", "Academics"),
+        ("infrastructure", "Infrastructure"),
+        ("harassment", "Harassment"),
+        ("finance", "Finance"),
+        ("other", "Other"),
+    )
+    TYPE_CHOICES = (
+        ("complaint", "Complaint"),
+        ("query", "Query"),
+        ("suggestion", "Suggestion"),
+    )
+    LEVEL_CHOICES = (
+        ("department", "Department"),
+        ("college", "College"),
+        ("university", "University"),
+    )
+
+    def generate_tracking_code():
+        return uuid4().hex[:12].upper()
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    category = models.CharField(max_length=40, choices=CATEGORY_CHOICES)
+    subcategory = models.CharField(max_length=120, blank=True)
+    complaint_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default="complaint")
+    level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default="department")
+    department = models.CharField(max_length=120, blank=True)
+    proof = models.FileField(upload_to="grievances/proofs/", null=True, blank=True)
+    is_anonymous = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="submitted")
+    tracking_code = models.CharField(max_length=12, unique=True, default=generate_tracking_code)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="grievances")
+    assigned_to = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_grievances",
+    )
+    escalation_level = models.PositiveSmallIntegerField(default=0)
+    resolution_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.get_status_display()})"
+
+
+class GrievanceUpdate(models.Model):
+    grievance = models.ForeignKey(Grievance, on_delete=models.CASCADE, related_name="updates")
+    status = models.CharField(max_length=20, choices=Grievance.STATUS_CHOICES)
+    note = models.TextField(blank=True)
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.grievance_id} - {self.get_status_display()}"
+
+
+class Opportunity(models.Model):
+    TYPE_CHOICES = (
+        ("internship", "Internship"),
+        ("research", "Research"),
+    )
+
+    title = models.CharField(max_length=200)
+    organization = models.CharField(max_length=200)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    domain = models.CharField(max_length=100)
+    stipend = models.CharField(max_length=100, blank=True)
+    duration = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=100, blank=True)
+    deadline = models.DateField(null=True, blank=True)
+    description = models.TextField()
+    is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opportunities")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.organization}"
+
+
+class OpportunityApplication(models.Model):
+    STATUS_CHOICES = (
+        ("applied", "Applied"),
+        ("shortlisted", "Shortlisted"),
+        ("rejected", "Rejected"),
+        ("accepted", "Accepted"),
+    )
+
+    opportunity = models.ForeignKey(Opportunity, on_delete=models.CASCADE, related_name="applications")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
+    resume = models.FileField(upload_to="opportunities/resumes/", null=True, blank=True)
+    cover_letter = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="applied")
+    applied_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.opportunity_id} - {self.student_id}"
 
 
 @receiver(post_save, sender=CustomUser)

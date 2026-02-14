@@ -355,3 +355,92 @@ def view_issued_book(request):
             i=i+1
             details.append(t)
     return render(request, "staff_template/view_issued_book.html", {'issuedBooks':issuedBooks, 'details':details})
+
+
+def staff_grievance_list(request):
+    status_filter = request.GET.get('status')
+    grievances = Grievance.objects.all().order_by('-created_at')
+    if status_filter:
+        grievances = grievances.filter(status=status_filter)
+    context = {
+        'grievances': grievances,
+        'page_title': 'Grievance Review'
+    }
+    return render(request, "staff_template/grievance_list.html", context)
+
+
+def staff_grievance_update(request, grievance_id):
+    grievance = get_object_or_404(Grievance, id=grievance_id)
+    form = GrievanceUpdateForm(request.POST or None, instance=grievance)
+    context = {
+        'form': form,
+        'grievance': grievance,
+        'page_title': 'Update Grievance'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            updated = form.save()
+            GrievanceUpdate.objects.create(
+                grievance=updated,
+                status=updated.status,
+                note=updated.resolution_notes,
+                updated_by=request.user
+            )
+            messages.success(request, "Grievance updated")
+            return redirect(reverse('staff_grievance_list'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "staff_template/grievance_update.html", context)
+
+
+def staff_opportunity_list(request):
+    opportunities = Opportunity.objects.all().order_by('-created_at')
+    context = {
+        'opportunities': opportunities,
+        'page_title': 'Manage Opportunities'
+    }
+    return render(request, "staff_template/opportunity_list.html", context)
+
+
+def staff_opportunity_create(request):
+    form = OpportunityForm(request.POST or None)
+    context = {
+        'form': form,
+        'page_title': 'Post Opportunity'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            opportunity = form.save(commit=False)
+            opportunity.created_by = request.user
+            opportunity.save()
+            messages.success(request, "Opportunity posted")
+            return redirect(reverse('staff_opportunity_list'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "staff_template/opportunity_create.html", context)
+
+
+def staff_opportunity_applications(request, opportunity_id):
+    opportunity = get_object_or_404(Opportunity, id=opportunity_id)
+    applications = OpportunityApplication.objects.filter(opportunity=opportunity).order_by('-applied_at')
+    context = {
+        'opportunity': opportunity,
+        'applications': applications,
+        'page_title': 'Opportunity Applications'
+    }
+    return render(request, "staff_template/opportunity_applications.html", context)
+
+
+def staff_application_update(request, application_id):
+    application = get_object_or_404(OpportunityApplication, id=application_id)
+    form = OpportunityStatusForm(request.POST or None, instance=application)
+    context = {
+        'form': form,
+        'application': application,
+        'page_title': 'Update Application Status'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Application status updated")
+            return redirect(reverse('staff_opportunity_applications', args=[application.opportunity.id]))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, "staff_template/opportunity_application_update.html", context)

@@ -100,6 +100,13 @@ urlpatterns = [
     path("staff/issue_book/", staff_views.issue_book, name="issue_book"),
     path("staff/view_issued_book/", staff_views.view_issued_book, name="view_issued_book"),
 
+     path("staff/grievances/", staff_views.staff_grievance_list, name='staff_grievance_list'),
+     path("staff/grievances/<int:grievance_id>/", staff_views.staff_grievance_update, name='staff_grievance_update'),
+     path("staff/opportunities/", staff_views.staff_opportunity_list, name='staff_opportunity_list'),
+     path("staff/opportunities/add/", staff_views.staff_opportunity_create, name='staff_opportunity_create'),
+     path("staff/opportunities/<int:opportunity_id>/applications/", staff_views.staff_opportunity_applications, name='staff_opportunity_applications'),
+     path("staff/applications/<int:application_id>/", staff_views.staff_application_update, name='staff_application_update'),
+
 
 
     path("staff/attendance/fetch/", staff_views.get_student_attendance,
@@ -140,5 +147,17 @@ urlpatterns = [
          name="student_view_notification"),
     path('student/view/result/', student_views.student_view_result,
          name='student_view_result'),
+
+     path("student/grievances/submit/", student_views.student_grievance_submit, name='student_grievance_submit'),
+     path("student/grievances/", student_views.student_grievance_list, name='student_grievance_list'),
+     path("student/opportunities/", student_views.student_opportunity_list, name='student_opportunity_list'),
+     path("student/opportunities/<int:opportunity_id>/apply/", student_views.student_apply_opportunity, name='student_apply_opportunity'),
+     path("student/applications/", student_views.student_my_applications, name='student_my_applications'),
+
+     path("authority/grievances/", hod_views.authority_grievance_list, name='authority_grievance_list'),
+     path("authority/grievances/<int:grievance_id>/", hod_views.authority_grievance_update, name='authority_grievance_update'),
+     path("authority/opportunities/", hod_views.authority_opportunity_list, name='authority_opportunity_list'),
+     path("authority/opportunities/<int:opportunity_id>/applications/", hod_views.authority_opportunity_applications, name='authority_opportunity_applications'),
+     path("authority/applications/<int:application_id>/", hod_views.authority_application_update, name='authority_application_update'),
 
 ]
