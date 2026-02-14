@@ -64,6 +64,10 @@ class StudentForm(CustomUserForm):
         model = Student
         fields = CustomUserForm.Meta.fields + \
             ['course', 'session']
+        labels = {
+            'course': 'Degree Program',
+            'session': 'Department/Branch'
+        }
 
 
 class AdminForm(CustomUserForm):
@@ -78,6 +82,9 @@ class AdminForm(CustomUserForm):
 class StaffForm(CustomUserForm):
     def __init__(self, *args, **kwargs):
         super(StaffForm, self).__init__(*args, **kwargs)
+        # Replace the default ModelChoiceField for course with an optional text input
+        # so users can enter a course string (optional).
+        self.fields['course'] = forms.CharField(required=False, label='Course', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta(CustomUserForm.Meta):
         model = Staff
