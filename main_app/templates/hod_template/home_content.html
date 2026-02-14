@@ -1,70 +1,93 @@
 {% extends 'main_app/base.html' %}
 {% load static %}
 
-{% block page_title %}Dashboard{% endblock page_title %}
+{% block page_title %}Admin Dashboard{% endblock page_title %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item active">Dashboard</li>
 {% endblock breadcrumb %}
 
 {% block content %}
+    <!-- Admin Portal Header -->
+    <div class="portal-header admin-portal mb-4 animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-user-shield"></i> Administrator Dashboard</h1>
+                <p>Complete system overview and management</p>
+            </div>
+            <div class="text-end">
+                <div class="badge bg-white text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-calendar"></i> {% now "M d, Y" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Stats Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon primary">
+    <div class="stat-grid animate-slide-up">
+        <div class="stat-box">
+            <div class="stat-icon">
                 <i class="fas fa-user-graduate"></i>
             </div>
-            <div class="stat-number" style="color: var(--primary-color);">{{ total_students }}</div>
-            <p class="stat-label">Total Students</p>
-            <a href="{% url 'manage_student' %}" class="btn btn-primary btn-sm mt-2">
-                <i class="fas fa-eye"></i> View All
-            </a>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon success">
-                <i class="fas fa-users"></i>
+            <div class="stat-content">
+                <h3>{{ total_students }}</h3>
+                <p>Total Students</p>
+                <a href="{% url 'manage_student' %}" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="fas fa-eye"></i> View All
+                </a>
             </div>
-            <div class="stat-number" style="color: var(--success-color);">{{ total_staff }}</div>
-            <p class="stat-label">Total Staff</p>
-            <a href="{% url 'manage_staff' %}" class="btn btn-primary btn-sm mt-2">
-                <i class="fas fa-eye"></i> View All
-            </a>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon warning">
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_staff }}</h3>
+                <p>Total Faculty</p>
+                <a href="{% url 'manage_staff' %}" class="btn btn-sm btn-outline-success mt-2">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <div class="stat-number" style="color: var(--warning-color);">{{ total_course }}</div>
-            <p class="stat-label">Total Courses</p>
-            <a href="{% url 'manage_course' %}" class="btn btn-primary btn-sm mt-2">
-                <i class="fas fa-eye"></i> View All
-            </a>
+            <div class="stat-content">
+                <h3>{{ total_course }}</h3>
+                <p>Total Courses</p>
+                <a href="{% url 'manage_course' %}" class="btn btn-sm btn-outline-warning mt-2">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon danger">
+        <div class="stat-box">
+            <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-number" style="color: var(--danger-color);">{{ total_subject }}</div>
-            <p class="stat-label">Total Subjects</p>
-            <a href="{% url 'manage_subject' %}" class="btn btn-primary btn-sm mt-2">
-                <i class="fas fa-eye"></i> View All
-            </a>
+            <div class="stat-content">
+                <h3>{{ total_subject }}</h3>
+                <p>Total Subjects</p>
+                <a href="{% url 'manage_subject' %}" class="btn btn-sm btn-outline-danger mt-2">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Charts Section -->
-    <div class="row">
+    <div class="row mt-4">
         <!-- Staff vs Students Chart -->
-        <div class="col-lg-6">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-pie me-2"></i>
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-pie me-2" style="color: #1e3c72;"></i>
                         Staff & Students Overview
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <canvas id="pieChart" style="height: 300px;"></canvas>
@@ -73,13 +96,13 @@
         </div>
 
         <!-- Attendance per Subject Chart -->
-        <div class="col-lg-6">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-bar me-2"></i>
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2" style="color: #1e3c72;"></i>
                         Attendance Per Subject
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <canvas id="barChart" style="height: 300px;"></canvas>
@@ -90,13 +113,13 @@
 
     <!-- Student Attendance Overview -->
     <div class="row">
-        <div class="col-12">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-calendar-check me-2"></i>
+        <div class="col-12 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-check me-2" style="color: #1e3c72;"></i>
                         Student Attendance & Leave Overview
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <canvas id="barChart2" style="height: 400px;"></canvas>
@@ -108,13 +131,13 @@
     <!-- Course and Subject Distribution -->
     <div class="row">
         <!-- Students per Course -->
-        <div class="col-lg-6">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-pie me-2"></i>
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-pie me-2" style="color: #1e3c72;"></i>
                         Students Per Course
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <canvas id="pieChart2" style="height: 300px;"></canvas>
@@ -123,13 +146,13 @@
         </div>
 
         <!-- Students per Subject -->
-        <div class="col-lg-6">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-doughnut me-2"></i>
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-doughnut me-2" style="color: #1e3c72;"></i>
                         Students Per Subject
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <canvas id="pieChart3" style="height: 300px;"></canvas>
@@ -141,36 +164,36 @@
     <!-- Quick Actions -->
     <div class="row">
         <div class="col-12">
-            <div class="erpnext-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-bolt me-2"></i>
+            <div class="dashboard-card">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">
+                        <i class="fas fa-bolt me-2" style="color: #1e3c72;"></i>
                         Quick Actions
-                    </h3>
+                    </h4>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <a href="{% url 'add_student' %}" class="btn btn-primary w-100">
-                                <i class="fas fa-user-plus mb-2"></i><br>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{% url 'add_student' %}" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
                                 Add Student
                             </a>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{% url 'add_staff' %}" class="btn btn-primary w-100">
-                                <i class="fas fa-user-tie mb-2"></i><br>
-                                Add Staff
+                        <div class="col-md-3">
+                            <a href="{% url 'add_staff' %}" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-user-tie fa-2x mb-2 d-block"></i>
+                                Add Faculty
                             </a>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{% url 'add_course' %}" class="btn btn-primary w-100">
-                                <i class="fas fa-graduation-cap mb-2"></i><br>
+                        <div class="col-md-3">
+                            <a href="{% url 'add_course' %}" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-graduation-cap fa-2x mb-2 d-block"></i>
                                 Add Course
                             </a>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{% url 'add_subject' %}" class="btn btn-primary w-100">
-                                <i class="fas fa-book-open mb-2"></i><br>
+                        <div class="col-md-3">
+                            <a href="{% url 'add_subject' %}" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-book-open fa-2x mb-2 d-block"></i>
                                 Add Subject
                             </a>
                         </div>
@@ -188,9 +211,11 @@
         Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif';
         Chart.defaults.color = '#262626';
         
-        // ERPNext-style color palette
+        // Admin Portal Color Scheme
         const colors = {
-            primary: '#5e64ff',
+            primary: '#1e3c72',
+            secondary: '#2a5298',
+            accent: '#4a69bd',
             success: '#28a745',
             warning: '#ffc107',
             danger: '#dc3545',
@@ -204,12 +229,13 @@
         new Chart(pieCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Students', 'Staff'],
+                labels: ['Students', 'Faculty'],
                 datasets: [{
                     data: [{{ total_students }}, {{ total_staff }}],
                     backgroundColor: [colors.primary, colors.success],
-                    borderWidth: 0,
-                    cutout: '60%'
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    cutout: '65%'
                 }]
             },
             options: {
@@ -220,7 +246,11 @@
                         position: 'bottom',
                         labels: {
                             padding: 20,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
                         }
                     }
                 }
@@ -234,10 +264,10 @@
             data: {
                 labels: {{ subject_list|safe }},
                 datasets: [{
-                    label: 'Attendance',
+                    label: 'Attendance Records',
                     data: {{ attendance_list }},
-                    backgroundColor: colors.info,
-                    borderRadius: 4,
+                    backgroundColor: colors.primary,
+                    borderRadius: 6,
                     borderSkipped: false
                 }]
             },
@@ -253,7 +283,8 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: '#f1f3f4'
+                            color: '#e5e7eb',
+                            drawBorder: false
                         }
                     },
                     x: {
@@ -275,13 +306,13 @@
                     label: 'Present',
                     data: {{ student_attendance_present_list }},
                     backgroundColor: colors.success,
-                    borderRadius: 4,
+                    borderRadius: 6,
                     borderSkipped: false
                 }, {
                     label: 'Absent/Leave',
                     data: {{ student_attendance_leave_list }},
                     backgroundColor: colors.danger,
-                    borderRadius: 4,
+                    borderRadius: 6,
                     borderSkipped: false
                 }]
             },
@@ -293,7 +324,11 @@
                         position: 'top',
                         labels: {
                             padding: 20,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
                         }
                     }
                 },
@@ -301,7 +336,8 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: '#f1f3f4'
+                            color: '#e5e7eb',
+                            drawBorder: false
                         }
                     },
                     x: {
@@ -322,11 +358,12 @@
                 datasets: [{
                     data: {{ student_count_list_in_course }},
                     backgroundColor: [
-                        colors.primary, colors.success, colors.warning, 
-                        colors.danger, colors.info, '#6f42c1', '#fd7e14', '#20c997'
+                        colors.primary, colors.secondary, colors.success, 
+                        colors.warning, colors.danger, colors.info, '#6f42c1', '#fd7e14'
                     ],
-                    borderWidth: 0,
-                    cutout: '60%'
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    cutout: '65%'
                 }]
             },
             options: {
@@ -337,7 +374,10 @@
                         position: 'bottom',
                         labels: {
                             padding: 15,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
                         }
                     }
                 }
@@ -353,11 +393,12 @@
                 datasets: [{
                     data: {{ student_count_list_in_subject }},
                     backgroundColor: [
-                        colors.danger, colors.success, colors.warning, 
-                        colors.info, colors.primary, '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
+                        colors.primary, colors.accent, colors.success, colors.warning,
+                        colors.danger, colors.info, '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
                     ],
-                    borderWidth: 0,
-                    cutout: '60%'
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    cutout: '65%'
                 }]
             },
             options: {
@@ -368,7 +409,10 @@
                         position: 'bottom',
                         labels: {
                             padding: 15,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            font: {
+                                size: 11
+                            }
                         }
                     }
                 }

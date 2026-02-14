@@ -160,4 +160,24 @@ urlpatterns = [
      path("authority/opportunities/<int:opportunity_id>/applications/", hod_views.authority_opportunity_applications, name='authority_opportunity_applications'),
      path("authority/applications/<int:application_id>/", hod_views.authority_application_update, name='authority_application_update'),
 
+     # Admissions & Registration
+     path("admissions/sessions/", hod_views.manage_admission_sessions, name='manage_admission_sessions'),
+     path("admissions/session/add/", hod_views.add_admission_session, name='add_admission_session'),
+     path("admissions/applications/", hod_views.manage_admission_applications, name='manage_admission_applications'),
+     path("admissions/application/<int:application_id>/", hod_views.view_admission_application, name='view_admission_application'),
+     path("admissions/application/<int:application_id>/update-status/", hod_views.update_admission_status, name='update_admission_status'),
+     path("admissions/application/<int:application_id>/enroll/", hod_views.approve_and_enroll, name='approve_and_enroll'),
+     
+     # Fee & Finance Management
+     path("fees/structures/", hod_views.manage_fee_structures, name='manage_fee_structures'),
+     path("fees/structure/add/", hod_views.add_fee_structure, name='add_fee_structure'),
+     path("fees/students/", hod_views.student_fee_management, name='student_fee_list'),
+     path("fees/student/<int:student_id>/", hod_views.student_fee_management, name='student_fee_management'),
+     path("fees/assign/", hod_views.assign_fees_to_students, name='assign_fees_to_students'),
+     path("fees/collect/<int:student_id>/", hod_views.collect_fee_payment, name='collect_fee_payment'),
+     path("fees/payments/history/", hod_views.fee_payment_history, name='fee_payment_history'),
+     path("fees/invoice/generate/<int:student_id>/", hod_views.generate_fee_invoice, name='generate_fee_invoice'),
+     path("fees/defaulters/", hod_views.fee_defaulters_report, name='fee_defaulters_report'),
+
 ]
+

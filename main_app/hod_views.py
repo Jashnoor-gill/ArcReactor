@@ -795,3 +795,450 @@ def authority_application_update(request, application_id):
             return redirect(reverse('authority_opportunity_applications', args=[application.opportunity.id]))
         messages.error(request, "Please correct the errors in the form")
     return render(request, "hod_template/opportunity_application_update.html", context)
+
+
+# ====================  ADMISSIONS & REGISTRATION VIEWS ====================
+
+def manage_admission_sessions(request):
+    """View all admission sessions"""
+    sessions = AdmissionSession.objects.all().order_by('-start_date')
+    context = {
+        'sessions': sessions,
+        'page_title': 'Manage Admission Sessions'
+    }
+    return render(request, 'hod_template/manage_admission_sessions.html', context)
+
+
+def add_admission_session(request):
+    """Create new admission session"""
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name')
+            start_date = request.POST.get('start_date')
+            end_date = request.POST.get('end_date')
+            application_start = request.POST.get('application_start')
+            application_end = request.POST.get('application_end')
+            
+            session = AdmissionSession.objects.create(
+                name=name,
+                start_date=start_date,
+                end_date=end_date,
+                application_start=application_start,
+                application_end=application_end
+            )
+            messages.success(request, "Admission session created successfully!")
+            return redirect(reverse('manage_admission_sessions'))
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+    
+    context = {'page_title': 'Add Admission Session'}
+    return render(request, 'hod_template/add_admission_session.html', context)
+
+
+def manage_admission_applications(request):
+    """View and manage all admission applications"""
+    status_filter = request.GET.get('status')
+    applications = AdmissionApplication.objects.all().order_by('-created_at')
+    
+    if status_filter:
+        applications = applications.filter(status=status_filter)
+    
+    context = {
+        'applications': applications,
+        'page_title': 'Manage Admissions',
+        'status_choices': AdmissionApplication.STATUS_CHOICES
+    }
+    return render(request, 'hod_template/manage_admissions.html', context)
+
+
+def view_admission_application(request, application_id):
+    """View single admission application details"""
+    application = get_object_or_404(AdmissionApplication, id=application_id)
+    context = {
+        'application': application,
+        'page_title': f'Application - {application.application_number}'
+    }
+    return render(request, 'hod_template/view_admission_application.html', context)
+
+
+@csrf_exempt
+def update_admission_status(request, application_id):
+    """Update application status via AJAX"""
+    if request.method == 'POST':
+        try:
+            application = get_object_or_404(AdmissionApplication, id=application_id)
+            status = request.POST.get('status')
+            remarks = request.POST.get('remarks', '')
+            
+            application.status = status
+            application.remarks = remarks
+            application.reviewed_by = request.user
+            application.save()
+            
+            return JsonResponse({'success': True, 'message': 'Status updated successfully'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+
+def approve_and_enroll(request, application_id):
+    """Approve application and create student account"""
+    application = get_object_or_404(AdmissionApplication, id=application_id)
+    
+    if request.method == 'POST':
+        try:
+            # Create user account
+            user = CustomUser.objects.create_user(
+                email=application.email,
+                password='student@123',  # Default password
+                user_type=3,
+                first_name=application.first_name,
+                last_name=application.last_name,
+                gender=application.gender,
+                address=application.address
+            )
+            
+            if application.photo:
+                user.profile_pic = application.photo
+            user.save()
+            
+            # Update student with course and session
+            student = user.student
+            student.course = application.admission_course.course
+            student.session = Session.objects.first()  # You may want to select the right session
+            student.save()
+            
+            # Link application to student
+            application.student = student
+            application.status = 'enrolled'
+            application.reviewed_by = request.user
+            application.save()
+            
+            # Update seats filled
+            admission_course = application.admission_course
+            admission_course.seats_filled += 1
+            admission_course.save()
+            
+            messages.success(request, f"Student enrolled successfully! Email: {application.email}, Password: student@123")
+            return redirect(reverse('manage_admission_applications'))
+            
+        except Exception as e:
+            messages.error(request, f"Enrollment failed: {str(e)}")
+            return redirect(reverse('view_admission_application', args=[application_id]))
+    
+    context = {
+        'application': application,
+        'page_title': 'Confirm Enrollment'
+    }
+    return render(request, 'hod_template/confirm_enrollment.html', context)
+
+
+# ==================== FEE & FINANCE VIEWS ====================
+
+def manage_fee_structures(request):
+    """View and manage fee structures"""
+    structures = FeeStructure.objects.all().select_related('course', 'session').order_by('-created_at')
+    courses = Course.objects.all()
+    sessions = Session.objects.all()
+    
+    context = {
+        'structures': structures,
+        'courses': courses,
+        'sessions': sessions,
+        'page_title': 'Manage Fee Structure',
+        'fee_types': FeeStructure.FEE_TYPE_CHOICES
+    }
+    return render(request, 'hod_template/manage_fee_structures.html', context)
+
+
+def add_fee_structure(request):
+    """Add new fee structure"""
+    if request.method == 'POST':
+        try:
+            course_id = request.POST.get('course')
+            session_id = request.POST.get('session')
+            fee_type = request.POST.get('fee_type')
+            amount = request.POST.get('amount')
+            is_mandatory = request.POST.get('is_mandatory') == 'on'
+            description = request.POST.get('description', '')
+            
+            course = Course.objects.get(id=course_id)
+            session = Session.objects.get(id=session_id)
+            
+            FeeStructure.objects.create(
+                course=course,
+                session=session,
+                fee_type=fee_type,
+                amount=amount,
+                is_mandatory=is_mandatory,
+                description=description
+            )
+            
+            messages.success(request, "Fee structure added successfully!")
+            return redirect(reverse('manage_fee_structures'))
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+    
+    courses = Course.objects.all()
+    sessions = Session.objects.all()
+    context = {
+        'courses': courses,
+        'sessions': sessions,
+        'fee_types': FeeStructure.FEE_TYPE_CHOICES,
+        'page_title': 'Add Fee Structure'
+    }
+    return render(request, 'hod_template/add_fee_structure.html', context)
+
+
+def student_fee_management(request, student_id=None):
+    """Manage fees for students"""
+    if student_id:
+        student = get_object_or_404(Student, id=student_id)
+        student_fees = StudentFee.objects.filter(student=student).select_related('fee_structure')
+        invoices = FeeInvoice.objects.filter(student=student).order_by('-created_at')
+        payments = FeePayment.objects.filter(student=student).order_by('-payment_date')[:10]
+        
+        total_fees = sum(fee.net_amount for fee in student_fees)
+        total_paid = sum(fee.paid_amount for fee in student_fees)
+        balance = total_fees - total_paid
+        
+        context = {
+            'student': student,
+            'student_fees': student_fees,
+            'invoices': invoices,
+            'payments': payments,
+            'total_fees': total_fees,
+            'total_paid': total_paid,
+            'balance': balance,
+            'page_title': f'Fee Management - {student.admin.get_full_name()}'
+        }
+        return render(request, 'hod_template/student_fee_detail.html', context)
+    else:
+        students = Student.objects.all().select_related('admin', 'course')
+        context = {
+            'students': students,
+            'page_title': 'Student Fee Management'
+        }
+        return render(request, 'hod_template/student_fee_list.html', context)
+
+
+def assign_fees_to_students(request):
+    """Assign fee structures to students (bulk operation)"""
+    if request.method == 'POST':
+        try:
+            course_id = request.POST.get('course')
+            session_id = request.POST.get('session')
+            academic_year = request.POST.get('academic_year')
+            
+            course = Course.objects.get(id=course_id)
+            session_obj = Session.objects.get(id=session_id)
+            
+            # Get all students in this course and session
+            students = Student.objects.filter(course=course, session=session_obj)
+            
+            # Get fee structures for this course and session
+            fee_structures = FeeStructure.objects.filter(course=course, session=session_obj)
+            
+            count = 0
+            for student in students:
+                for fee_structure in fee_structures:
+                    # Only create if doesn't exist
+                    obj, created = StudentFee.objects.get_or_create(
+                        student=student,
+                        fee_structure=fee_structure,
+                        academic_year=academic_year,
+                        defaults={'amount': fee_structure.amount}
+                    )
+                    if created:
+                        count += 1
+            
+            messages.success(request, f"Fees assigned to {students.count()} students ({count} fee items created)")
+            return redirect(reverse('manage_fee_structures'))
+            
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+    
+    courses = Course.objects.all()
+    sessions = Session.objects.all()
+    context = {
+        'courses': courses,
+        'sessions': sessions,
+        'page_title': 'Assign Fees to Students'
+    }
+    return render(request, 'hod_template/assign_fees.html', context)
+
+
+def collect_fee_payment(request, student_id):
+    """Record fee payment from student"""
+    student = get_object_or_404(Student, id=student_id)
+    
+    if request.method == 'POST':
+        try:
+            student_fee_id = request.POST.get('student_fee_id')
+            amount = request.POST.get('amount')
+            payment_method = request.POST.get('payment_method')
+            transaction_id = request.POST.get('transaction_id', '')
+            cheque_number = request.POST.get('cheque_number', '')
+            bank_name = request.POST.get('bank_name', '')
+            remarks = request.POST.get('remarks', '')
+            
+            student_fee = StudentFee.objects.get(id=student_fee_id)
+            
+            payment = FeePayment.objects.create(
+                student=student,
+                student_fee=student_fee,
+                amount=amount,
+                payment_method=payment_method,
+                transaction_id=transaction_id,
+                cheque_number=cheque_number,
+                bank_name=bank_name,
+                remarks=remarks,
+                collected_by=request.user,
+                status='success'
+            )
+            
+            messages.success(request, f"Payment recorded successfully! Receipt No: {payment.receipt_number}")
+            return redirect(reverse('student_fee_management', args=[student_id]))
+            
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+    
+    student_fees = StudentFee.objects.filter(student=student).select_related('fee_structure')
+    pending_fees = [fee for fee in student_fees if fee.balance > 0]
+    
+    context = {
+        'student': student,
+        'pending_fees': pending_fees,
+        'payment_methods': FeePayment.PAYMENT_METHOD_CHOICES,
+        'page_title': 'Collect Fee Payment'
+    }
+    return render(request, 'hod_template/collect_fee_payment.html', context)
+
+
+def fee_payment_history(request):
+    """View all fee payment transactions"""
+    payments = FeePayment.objects.all().select_related('student', 'collected_by').order_by('-payment_date')
+    
+    # Filter by date range if provided
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    
+    if start_date:
+        payments = payments.filter(payment_date__gte=start_date)
+    if end_date:
+        payments = payments.filter(payment_date__lte=end_date)
+    
+    total_collected = payments.filter(status='success').aggregate(
+        total=models.Sum('amount')
+    )['total'] or 0
+    
+    context = {
+        'payments': payments,
+        'total_collected': total_collected,
+        'page_title': 'Fee Payment History'
+    }
+    return render(request, 'hod_template/fee_payment_history.html', context)
+
+
+def generate_fee_invoice(request, student_id):
+    """Generate fee invoice for a student"""
+    student = get_object_or_404(Student, id=student_id)
+    
+    if request.method == 'POST':
+        try:
+            session_id = request.POST.get('session')
+            due_date = request.POST.get('due_date')
+            installment_id = request.POST.get('installment_id') or None
+            selected_fees = request.POST.getlist('fee_ids')
+            
+            session_obj = Session.objects.get(id=session_id)
+            installment = FeeInstallment.objects.get(id=installment_id) if installment_id else None
+            
+            # Calculate totals
+            student_fees = StudentFee.objects.filter(id__in=selected_fees)
+            total_amount = sum(fee.amount for fee in student_fees)
+            discount_amount = sum(fee.discount for fee in student_fees)
+            net_amount = total_amount - discount_amount
+            
+            # Create invoice
+            invoice = FeeInvoice.objects.create(
+                student=student,
+                session=session_obj,
+                installment=installment,
+                total_amount=total_amount,
+                discount_amount=discount_amount,
+                net_amount=net_amount,
+                due_date=due_date,
+                status='sent',
+                generated_by=request.user
+            )
+            
+            # Add invoice items
+            for fee in student_fees:
+                FeeInvoiceItem.objects.create(
+                    invoice=invoice,
+                    student_fee=fee,
+                    amount=fee.net_amount
+                )
+            
+            messages.success(request, f"Invoice {invoice.invoice_number} generated successfully!")
+            return redirect(reverse('student_fee_management', args=[student_id]))
+            
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+    
+    student_fees = StudentFee.objects.filter(student=student).select_related('fee_structure')
+    sessions = Session.objects.all()
+    installments = FeeInstallment.objects.filter(course=student.course)
+    
+    context = {
+        'student': student,
+        'student_fees': student_fees,
+        'sessions': sessions,
+        'installments': installments,
+        'page_title': 'Generate Invoice'
+    }
+    return render(request, 'hod_template/generate_fee_invoice.html', context)
+
+
+def fee_defaulters_report(request):
+    """Report of students with pending fees"""
+    course_id = request.GET.get('course')
+    session_id = request.GET.get('session')
+    
+    student_fees = StudentFee.objects.all().select_related('student', 'fee_structure')
+    
+    if course_id:
+        student_fees = student_fees.filter(student__course_id=course_id)
+    if session_id:
+        student_fees = student_fees.filter(student__session_id=session_id)
+    
+    # Group by student and calculate balances
+    defaulters = {}
+    for fee in student_fees:
+        student_id = fee.student.id
+        if student_id not in defaulters:
+            defaulters[student_id] = {
+                'student': fee.student,
+                'total_fees': 0,
+                'total_paid': 0,
+                'balance': 0
+            }
+        defaulters[student_id]['total_fees'] += fee.net_amount
+        defaulters[student_id]['total_paid'] += fee.paid_amount
+        defaulters[student_id]['balance'] += fee.balance
+    
+    # Filter only defaulters (balance > 0)
+    defaulters_list = [d for d in defaulters.values() if d['balance'] > 0]
+    
+    courses = Course.objects.all()
+    sessions = Session.objects.all()
+    
+    context = {
+        'defaulters': defaulters_list,
+        'courses': courses,
+        'sessions': sessions,
+        'page_title': 'Fee Defaulters Report'
+    }
+    return render(request, 'hod_template/fee_defaulters_report.html', context)
+

@@ -1,0 +1,85 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 200px;">
+                                <select class="form-control" id="statusFilter">
+                                    <option value="">All Status</option>
+                                    {% for value, label in status_choices %}
+                                    <option value="{{value}}">{{label}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="applicationsTable" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Application #</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Course</th>
+                                    <th>Applied On</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in applications %}
+                                <tr>
+                                    <td>{{app.application_number}}</td>
+                                    <td>{{app.first_name}} {{app.last_name}}</td>
+                                    <td>{{app.email}}</td>
+                                    <td>{{app.admission_course.course.name}}</td>
+                                    <td>{{app.created_at|date:"Y-m-d"}}</td>
+                                    <td>
+                                        <span class="badge badge-{% if app.status == 'approved' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'enrolled' %}primary{% else %}warning{% endif %}">
+                                            {{app.get_status_display}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'view_admission_application' app.id %}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        {% if app.status == 'approved' %}
+                                        <a href="{% url 'approve_and_enroll' app.id %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Enroll
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function() {
+        $('#statusFilter').change(function() {
+            var status = $(this).val();
+            if(status) {
+                window.location.href = '?status=' + status;
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        });
+    });
+</script>
+{% endblock custom_js %}

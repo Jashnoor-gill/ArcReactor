@@ -11,6 +11,9 @@
     <!-- ERPNext Style CSS -->
     <link rel="stylesheet" href="{% static 'dist/css/erpnext-style.css' %}">
     
+    <!-- Portal Themes CSS -->
+    <link rel="stylesheet" href="{% static 'dist/css/portal-themes.css' %}">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
     
@@ -23,7 +26,7 @@
     {% block custom_css %}{% endblock custom_css %}
 </head>
 
-<body>
+<body class="{% if user.user_type == '1' %}admin-portal{% elif user.user_type == '2' %}staff-portal{% else %}student-portal{% endif %}">
     <!-- Navigation Bar -->
     <nav class="erpnext-navbar">
         <div class="navbar-left">

@@ -8,9 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>AEGIS campusOS - Login</title>
 
-    <!-- ERPNext Style CSS -->
-    <link rel="stylesheet" href="{% static 'dist/css/erpnext-style.css' %}">
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
 
@@ -21,55 +18,432 @@
     <!-- Google Recaptcha -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {% endif %}
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .portal-selection {
+            margin-bottom: 40px;
+        }
+
+        .portal-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .portal-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .portal-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .portal-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .portal-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            transition: height 0.3s ease;
+        }
+
+        .portal-card.admin::before {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .portal-card.staff::before {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .portal-card.student::before {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+        }
+
+        .portal-card:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .portal-card.active {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .portal-card.active.admin {
+            border: 3px solid #1e3c72;
+        }
+
+        .portal-card.active.staff {
+            border: 3px solid #11998e;
+        }
+
+        .portal-card.active.student {
+            border: 3px solid #8e2de2;
+        }
+
+        .portal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-card.admin .portal-icon {
+            color: #1e3c72;
+        }
+
+        .portal-card.staff .portal-icon {
+            color: #11998e;
+        }
+
+        .portal-card.student .portal-icon {
+            color: #8e2de2;
+        }
+
+        .portal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-desc {
+            color: #666;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease;
+            display: none;
+        }
+
+        .login-form-container.show {
+            display: block;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header .portal-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .form-header .portal-badge.admin {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .form-header .portal-badge.staff {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .form-header .portal-badge.student {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+        }
+
+        .form-header h3 {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-label i {
+            margin-right: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-login.admin {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .btn-login.staff {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-login.student {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .portal-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .login-form-container {
+                padding: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-logo">
-                <h1 class="login-title">AEGIS campusOS</h1>
-                <p class="login-subtitle">Campus Operating System</p>
-            </div>
+    <div class="main-container">
+        <div class="header">
+            <h1>AEGIS campusOS</h1>
+            <p>Unified Campus Operating System</p>
+        </div>
 
-            <!-- Error Messages -->
-            {% if messages %}
-            {% for message in messages %}
-            {% if message.tags == 'error' %}
-            <div class="alert alert-danger text-center">
-                {{ message }}
-            </div>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
+        <!-- Error Messages -->
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger text-center">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
 
-            <!-- Login Form -->
-            {% if demo_login_enabled %}
-            <form action="{% url 'user_login' %}" method="post" class="login-form">
+        <!-- Portal Selection -->
+        <div class="portal-selection" id="portalSelection">
+            <div class="portal-cards">
+                <!-- Admin Portal -->
+                <div class="portal-card admin" onclick="selectPortal('admin')">
+                    <div class="portal-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="portal-title">Admin Portal</div>
+                    <div class="portal-desc">System administration and management</div>
+                </div>
+
+                <!-- Staff Portal -->
+                <div class="portal-card staff" onclick="selectPortal('staff')">
+                    <div class="portal-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="portal-title">Faculty Portal</div>
+                    <div class="portal-desc">Manage courses, attendance, and grades</div>
+                </div>
+
+                <!-- Student Portal -->
+                <div class="portal-card student" onclick="selectPortal('student')">
+                    <div class="portal-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="portal-title">Student Portal</div>
+                    <div class="portal-desc">Access courses, grades, and resources</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Forms -->
+        {% if demo_login_enabled %}
+        <!-- Demo Login Form -->
+        <div class="login-form-container" id="demoLoginForm">
+            <div class="form-header">
+                <h3>Demo Access</h3>
+            </div>
+            <form action="{% url 'user_login' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="demo" value="1">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn-login admin">
                         <i class="fas fa-sign-in-alt"></i> Enter Demo
                     </button>
                 </div>
             </form>
-            {% else %}
-            <form action="{% url 'user_login' %}" method="post" class="login-form">
+        </div>
+        {% else %}
+        <!-- Admin Login Form -->
+        <div class="login-form-container" id="adminLoginForm">
+            <div class="form-header">
+                <span class="portal-badge admin">
+                    <i class="fas fa-user-shield"></i> Administrator
+                </span>
+                <h3>Admin Portal Login</h3>
+            </div>
+            <form action="{% url 'user_login' %}" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="portal_type" value="admin">
 
                 <div class="form-group">
-                    <label for="email" class="form-label">
+                    <label for="admin_email" class="form-label">
                         <i class="fas fa-envelope"></i> Email Address
                     </label>
-                    <input type="email" id="email" name="email" class="form-control"
-                        placeholder="Enter your email address" required>
+                    <input type="email" id="admin_email" name="email" class="form-control"
+                        placeholder="Enter your admin email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password" class="form-label">
+                    <label for="admin_password" class="form-label">
                         <i class="fas fa-lock"></i> Password
                     </label>
-                    <input type="password" id="password" name="password" class="form-control"
+                    <input type="password" id="admin_password" name="password" class="form-control"
                         placeholder="Enter your password" required>
                 </div>
 
@@ -81,87 +455,232 @@
 
                 <div class="form-group">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
-                        <label class="form-check-label" for="remember">
-                            Remember me
+                        <input type="checkbox" class="form-check-input" id="admin_remember" name="remember" value="1">
+                        <label class="form-check-label" for="admin_remember">
+                            Remember me for 30 days
                         </label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    <button type="submit" class="btn-login admin">
+                        <i class="fas fa-sign-in-alt"></i> Sign In as Admin
                     </button>
                 </div>
 
                 <div class="text-center">
-                    <a href="{% url 'password_reset' %}" class="text-decoration-none">
-                        Forgot your password?
+                    <a href="{% url 'password_reset' %}" style="color: #1e3c72; text-decoration: none;">
+                        <i class="fas fa-key"></i> Forgot password?
                     </a>
                 </div>
-            </form>
-            {% endif %}
 
-            <!-- Footer -->
-            <div class="login-footer text-center mt-4">
-                <small class="text-muted">
-                    © {% now "Y" %} AEGIS campusOS. All rights reserved.
-                </small>
+                <div class="text-center">
+                    <button type="button" class="btn-back" onclick="backToSelection()">
+                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Staff Login Form -->
+        <div class="login-form-container" id="staffLoginForm">
+            <div class="form-header">
+                <span class="portal-badge staff">
+                    <i class="fas fa-chalkboard-teacher"></i> Faculty
+                </span>
+                <h3>Faculty Portal Login</h3>
             </div>
+            <form action="{% url 'user_login' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="portal_type" value="staff">
+
+                <div class="form-group">
+                    <label for="staff_email" class="form-label">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="staff_email" name="email" class="form-control"
+                        placeholder="Enter your faculty email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="staff_password" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="staff_password" name="password" class="form-control"
+                        placeholder="Enter your password" required>
+                </div>
+
+                {% if recaptcha_site_key %}
+                <div class="form-group text-center">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="staff_remember" name="remember" value="1">
+                        <label class="form-check-label" for="staff_remember">
+                            Remember me for 30 days
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-login staff">
+                        <i class="fas fa-sign-in-alt"></i> Sign In as Faculty
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="{% url 'password_reset' %}" style="color: #11998e; text-decoration: none;">
+                        <i class="fas fa-key"></i> Forgot password?
+                    </a>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="btn-back" onclick="backToSelection()">
+                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Student Login Form -->
+        <div class="login-form-container" id="studentLoginForm">
+            <div class="form-header">
+                <span class="portal-badge student">
+                    <i class="fas fa-user-graduate"></i> Student
+                </span>
+                <h3>Student Portal Login</h3>
+            </div>
+            <form action="{% url 'user_login' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="portal_type" value="student">
+
+                <div class="form-group">
+                    <label for="student_email" class="form-label">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="student_email" name="email" class="form-control"
+                        placeholder="Enter your student email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student_password" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="student_password" name="password" class="form-control"
+                        placeholder="Enter your password" required>
+                </div>
+
+                {% if recaptcha_site_key %}
+                <div class="form-group text-center">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="student_remember" name="remember" value="1">
+                        <label class="form-check-label" for="student_remember">
+                            Remember me for 30 days
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-login student">
+                        <i class="fas fa-sign-in-alt"></i> Sign In as Student
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="{% url 'password_reset' %}" style="color: #8e2de2; text-decoration: none;">
+                        <i class="fas fa-key"></i> Forgot password?
+                    </a>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="btn-back" onclick="backToSelection()">
+                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>© {% now "Y" %} AEGIS campusOS. All rights reserved.</p>
         </div>
     </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 
     <script>
-        // Add some interactive effects
-        document.addEventListener('DOMContentLoaded', function () {
-            // Add focus effects to form inputs
-            const inputs = document.querySelectorAll('.form-control');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function () {
-                    this.style.transform = 'scale(1.02)';
-                    this.style.transition = 'transform 0.2s ease';
-                });
+        function selectPortal(portalType) {
+            // Hide portal selection
+            document.getElementById('portalSelection').style.display = 'none';
 
-                input.addEventListener('blur', function () {
-                    this.style.transform = 'scale(1)';
-                });
-            });
-
-            // Add hover effect to login button
-            const loginBtn = document.querySelector('.btn-primary');
-            loginBtn.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateY(-2px)';
-                this.style.boxShadow = '0 4px 12px rgba(94, 100, 255, 0.4)';
-            });
-
-            loginBtn.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'none';
-            });
-
-            // Animate login card on load
-            const loginCard = document.querySelector('.login-card');
-            loginCard.style.animation = 'fadeIn 0.6s ease';
-
-            // Remember Me functionality
-            const rememberCheckbox = document.getElementById('remember');
-
-            // Load saved remember me state
-            if (localStorage.getItem('rememberMe') === 'true') {
-                rememberCheckbox.checked = true;
+            // Show corresponding login form
+            const formId = portalType + 'LoginForm';
+            const form = document.getElementById(formId);
+            if (form) {
+                form.classList.add('show');
             }
 
-            // Save remember me state when checkbox changes
-            rememberCheckbox.addEventListener('change', function () {
-                localStorage.setItem('rememberMe', this.checked);
+            // Store selection in localStorage
+            localStorage.setItem('selectedPortal', portalType);
+
+            // Add active class to selected card
+            document.querySelectorAll('.portal-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.portal-card').classList.add('active');
+        }
+
+        function backToSelection() {
+            // Show portal selection
+            document.getElementById('portalSelection').style.display = 'block';
+
+            // Hide all login forms
+            document.querySelectorAll('.login-form-container').forEach(form => {
+                form.classList.remove('show');
             });
 
-            // Show tooltip on remember me checkbox hover
-            rememberCheckbox.addEventListener('mouseenter', function () {
-                this.title = 'Keep me logged in for 30 days';
+            // Remove active class from all cards
+            document.querySelectorAll('.portal-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Clear localStorage
+            localStorage.removeItem('selectedPortal');
+        }
+
+        // On page load, check if there's a saved portal selection
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedPortal = localStorage.getItem('selectedPortal');
+            if (savedPortal && !{{ demo_login_enabled|default:'false'|lower }}) {
+                // Auto-select the previously selected portal
+                const portalCard = document.querySelector('.portal-card.' + savedPortal);
+                if (portalCard) {
+                    portalCard.click();
+                }
+            }
+
+            // Add hover effects
+            document.querySelectorAll('.portal-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
             });
         });
     </script>

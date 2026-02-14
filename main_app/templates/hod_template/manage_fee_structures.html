@@ -1,0 +1,64 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'add_fee_structure' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i> Add Fee Structure
+                            </a>
+                            <a href="{% url 'assign_fees_to_students' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-users"></i> Assign to Students
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Course</th>
+                                    <th>Session</th>
+                                    <th>Fee Type</th>
+                                    <th>Amount (₹)</th>
+                                    <th>Mandatory</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for structure in structures %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{structure.course.name}}</td>
+                                    <td>{{structure.session}}</td>
+                                    <td>{{structure.get_fee_type_display}}</td>
+                                    <td>₹{{structure.amount}}</td>
+                                    <td>
+                                        {% if structure.is_mandatory %}
+                                        <span class="badge badge-danger">Yes</span>
+                                        {% else %}
+                                        <span class="badge badge-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

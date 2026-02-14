@@ -1,0 +1,58 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'fee_defaulters_report' %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-exclamation-triangle"></i> View Defaulters
+                            </a>
+                            <a href="{% url 'fee_payment_history' %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-history"></i> Payment History
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student Name</th>
+                                    <th>Course</th>
+                                    <th>Session</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{student.admin.first_name}} {{student.admin.last_name}}</td>
+                                    <td>{{student.course.name}}</td>
+                                    <td>{{student.session}}</td>
+                                    <td>
+                                        <a href="{% url 'student_fee_management' student.id %}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-wallet"></i> Manage Fees
+                                        </a>
+                                        <a href="{% url 'collect_fee_payment' student.id %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-money-bill"></i> Collect Payment
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

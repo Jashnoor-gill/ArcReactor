@@ -162,6 +162,66 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Admissions</h6>
+        
+        <div class="nav-item has-submenu {% if 'admissions' in request.path %}open{% endif %}">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user-plus"></i>
+                <span class="nav-text">Admissions</span>
+                <i class="nav-arrow fas fa-chevron-right"></i>
+            </a>
+            <div class="nav-submenu">
+                <div class="nav-item">
+                    {% url 'manage_admission_sessions' as manage_admission_sessions %}
+                    <a href="{{ manage_admission_sessions }}" class="nav-link {% if manage_admission_sessions == request.path %}active{% endif %}">
+                        <span class="nav-text">Admission Sessions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    {% url 'manage_admission_applications' as manage_admission_applications %}
+                    <a href="{{ manage_admission_applications }}" class="nav-link {% if 'applications' in request.path %}active{% endif %}">
+                        <span class="nav-text">Applications</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="nav-section-title">Fee & Finance</h6>
+        
+        <div class="nav-item has-submenu {% if 'fees' in request.path %}open{% endif %}">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-rupee-sign"></i>
+                <span class="nav-text">Fee Management</span>
+                <i class="nav-arrow fas fa-chevron-right"></i>
+            </a>
+            <div class="nav-submenu">
+                <div class="nav-item">
+                    {% url 'manage_fee_structures' as manage_fee_structures %}
+                    <a href="{{ manage_fee_structures }}" class="nav-link {% if 'structures' in request.path %}active{% endif %}">
+                        <span class="nav-text">Fee Structures</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    {% url 'student_fee_list' as student_fee_list %}
+                    <a href="{{ student_fee_list }}" class="nav-link {% if 'student' in request.path and 'fees' in request.path %}active{% endif %}">
+                        <span class="nav-text">Student Fees</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    {% url 'fee_payment_history' as fee_payment_history %}
+                    <a href="{{ fee_payment_history }}" class="nav-link {% if 'payments' in request.path %}active{% endif %}">
+                        <span class="nav-text">Payment History</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    {% url 'fee_defaulters_report' as fee_defaulters_report %}
+                    <a href="{{ fee_defaulters_report }}" class="nav-link {% if 'defaulters' in request.path %}active{% endif %}">
+                        <span class="nav-text">Fee Defaulters</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <h6 class="nav-section-title">Reports & Analytics</h6>
         
         <div class="nav-item">
