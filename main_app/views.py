@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 
 from .EmailBackend import EmailBackend
@@ -29,12 +30,30 @@ def login_page(request):
 
 
 def _get_demo_user():
-    if settings.DEMO_LOGIN_EMAIL:
-        return CustomUser.objects.filter(email=settings.DEMO_LOGIN_EMAIL).first()
-    return (
-        CustomUser.objects.filter(is_superuser=True).first()
-        or CustomUser.objects.filter(user_type='1').first()
-        or CustomUser.objects.first()
+    email = settings.DEMO_LOGIN_EMAIL or "demo@aegis.local"
+    user = CustomUser.objects.filter(email=email).first()
+    if user:
+        return user
+    user = CustomUser.objects.filter(is_superuser=True).first()
+    if user:
+        return user
+    user = CustomUser.objects.filter(user_type='1').first()
+    if user:
+        return user
+    user = CustomUser.objects.first()
+    if user:
+        return user
+
+    password = get_random_string(32)
+    return CustomUser.objects.create_superuser(
+        email=email,
+        password=password,
+        user_type='1',
+        gender='M',
+        address='Demo account',
+        profile_pic='defaults/profile.png',
+        first_name='Demo',
+        last_name='Admin',
     )
 
 
@@ -44,9 +63,6 @@ def doLogin(request, **kwargs):
     else:
         if settings.DEMO_LOGIN_ENABLED and request.POST.get('demo') == '1':
             user = _get_demo_user()
-            if user is None:
-                messages.error(request, "No demo user is configured")
-                return redirect(reverse('login_page'))
             login(request, user)
             if user.user_type == '1':
                 return redirect(reverse("admin_home"))
