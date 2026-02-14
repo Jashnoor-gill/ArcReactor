@@ -27,10 +27,6 @@ def login_page(request):
     return render(request, 'main_app/login.html', context)
 
 
-def public_home(request):
-    return render(request, 'main_app/public_home.html')
-
-
 def doLogin(request, **kwargs):
     if request.method != 'POST':
         return HttpResponse("<h4>Denied</h4>")
@@ -51,10 +47,10 @@ def doLogin(request, **kwargs):
                 response = json.loads(captcha_server.text)
                 if response.get('success') is False:
                     messages.error(request, 'Invalid Captcha. Try Again')
-                    return redirect(reverse('login_page'))
+                    return redirect('/')
             except Exception:
                 messages.error(request, 'Captcha could not be verified. Try Again')
-                return redirect(reverse('login_page'))
+                return redirect('/')
         
         #Authenticate
         user = EmailBackend.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
@@ -79,7 +75,7 @@ def doLogin(request, **kwargs):
                 return redirect(reverse("student_home"))
         else:
             messages.error(request, "Invalid details")
-            return redirect(reverse('login_page'))
+            return redirect("/")
 
 
 
