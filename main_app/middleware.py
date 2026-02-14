@@ -27,6 +27,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 request.path.startswith(static_prefix)
                 or request.path.startswith(media_prefix)
                 or request.path == reverse('login_page')
+                or request.path == reverse('register')
                 or modulename == 'django.contrib.auth.views'
                 or request.path == reverse('user_login')
             ):

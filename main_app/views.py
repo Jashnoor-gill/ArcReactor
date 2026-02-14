@@ -124,6 +124,47 @@ def logout_user(request):
     return redirect("/")
 
 
+def register(request):
+    if request.user.is_authenticated:
+        return redirect(reverse("login_page"))
+
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "")
+        confirm_password = request.POST.get("confirm_password", "")
+        role = request.POST.get("role", "")
+
+        if not email or not password or not confirm_password or not role:
+            messages.error(request, "Please fill all fields.")
+            return redirect(reverse("register"))
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect(reverse("register"))
+
+        if role not in ["1", "2", "3"]:
+            messages.error(request, "Please select a valid role.")
+            return redirect(reverse("register"))
+
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "Email is already registered.")
+            return redirect(reverse("register"))
+
+        CustomUser.objects.create_user(
+            email=email,
+            password=password,
+            user_type=role,
+            gender="M",
+            address="Registered user",
+            profile_pic="defaults/profile.png",
+        )
+
+        messages.success(request, "Registration successful. Please log in.")
+        return redirect(reverse("login_page"))
+
+    return render(request, "registration/register.html")
+
+
 @csrf_exempt
 def get_attendance(request):
     subject_id = request.POST.get('subject')
