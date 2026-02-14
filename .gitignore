@@ -13,6 +13,9 @@ __pycache__/
 local_settings.py
 db.sqlite3
 
+# Local backup repo folder
+ArcReactor.git/
+
 # Environments
 .vscode
 .env
