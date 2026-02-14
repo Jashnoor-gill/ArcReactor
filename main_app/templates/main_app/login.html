@@ -373,7 +373,7 @@
         <div class="portal-selection" id="portalSelection">
             <div class="portal-cards">
                 <!-- Admin Portal -->
-                <div class="portal-card admin" onclick="selectPortal('admin')">
+                <div class="portal-card admin" onclick="selectPortal('admin', event)">
                     <div class="portal-icon">
                         <i class="fas fa-user-shield"></i>
                     </div>
@@ -382,7 +382,7 @@
                 </div>
 
                 <!-- Staff Portal -->
-                <div class="portal-card staff" onclick="selectPortal('staff')">
+                <div class="portal-card staff" onclick="selectPortal('staff', event)">
                     <div class="portal-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
@@ -391,7 +391,7 @@
                 </div>
 
                 <!-- Student Portal -->
-                <div class="portal-card student" onclick="selectPortal('student')">
+                <div class="portal-card student" onclick="selectPortal('student', event)">
                     <div class="portal-icon">
                         <i class="fas fa-user-graduate"></i>
                     </div>
@@ -620,12 +620,14 @@
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 
     <script>
-        function selectPortal(portalType) {
+        const demoLoginEnabled = {{ demo_login_enabled|default:'false'|lower }};
+
+        function selectPortal(portalType, evt) {
             // Hide portal selection
             document.getElementById('portalSelection').style.display = 'none';
 
             // Show corresponding login form
-            const formId = portalType + 'LoginForm';
+            const formId = demoLoginEnabled ? 'demoLoginForm' : (portalType + 'LoginForm');
             const form = document.getElementById(formId);
             if (form) {
                 form.classList.add('show');
@@ -638,7 +640,12 @@
             document.querySelectorAll('.portal-card').forEach(card => {
                 card.classList.remove('active');
             });
-            event.target.closest('.portal-card').classList.add('active');
+            if (evt && evt.target) {
+                const card = evt.target.closest('.portal-card');
+                if (card) {
+                    card.classList.add('active');
+                }
+            }
         }
 
         function backToSelection() {
@@ -662,7 +669,7 @@
         // On page load, check if there's a saved portal selection
         document.addEventListener('DOMContentLoaded', function () {
             const savedPortal = localStorage.getItem('selectedPortal');
-            if (savedPortal && !{{ demo_login_enabled|default:'false'|lower }}) {
+            if (savedPortal && !demoLoginEnabled) {
                 // Auto-select the previously selected portal
                 const portalCard = document.querySelector('.portal-card.' + savedPortal);
                 if (portalCard) {
