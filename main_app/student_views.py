@@ -15,7 +15,9 @@ from .models import *
 
 
 def student_home(request):
-    student = get_object_or_404(Student, admin=request.user)
+    student, _ = Student.objects.get_or_create(admin=request.user)
+    if not student.course or not student.session:
+        messages.warning(request, "Your profile is not fully assigned yet. Please contact the admin to add your course/session.")
     total_subject = Subject.objects.filter(course=student.course).count()
     total_attendance = AttendanceReport.objects.filter(student=student).count()
     total_present = AttendanceReport.objects.filter(student=student, status=True).count()

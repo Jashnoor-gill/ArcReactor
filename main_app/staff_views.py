@@ -13,7 +13,9 @@ from . import forms, models
 from datetime import date
 
 def staff_home(request):
-    staff = get_object_or_404(Staff, admin=request.user)
+    staff, _ = Staff.objects.get_or_create(admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your profile is not fully assigned yet. Please contact the admin to add your course.")
     total_students = Student.objects.filter(course=staff.course).count()
     total_leave = LeaveReportStaff.objects.filter(staff=staff).count()
     subjects = Subject.objects.filter(staff=staff)

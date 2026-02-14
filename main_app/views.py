@@ -9,7 +9,7 @@ from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 
 from .EmailBackend import EmailBackend
-from .models import Attendance, CustomUser, Session, Subject 
+from .models import Attendance, CustomUser, Session, Subject, Admin, Staff, Student
 
 # Create your views here.
 
@@ -150,7 +150,7 @@ def register(request):
             messages.error(request, "Email is already registered.")
             return redirect(reverse("register"))
 
-        CustomUser.objects.create_user(
+        user = CustomUser.objects.create_user(
             email=email,
             password=password,
             user_type=role,
@@ -158,6 +158,13 @@ def register(request):
             address="Registered user",
             profile_pic="defaults/profile.png",
         )
+
+        if role == "1":
+            Admin.objects.get_or_create(admin=user)
+        elif role == "2":
+            Staff.objects.get_or_create(admin=user)
+        elif role == "3":
+            Student.objects.get_or_create(admin=user)
 
         messages.success(request, "Registration successful. Please log in.")
         return redirect(reverse("login_page"))
