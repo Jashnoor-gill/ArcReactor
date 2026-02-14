@@ -14,9 +14,21 @@ class Command(BaseCommand):
         parser.add_argument("--student-password", default="xyz")
         parser.add_argument("--force", action="store_true", help="Force reset even if users exist")
 
+    def _ensure_profile(self, user):
+        if user.user_type == '1' and not hasattr(user, 'admin'):
+            from main_app.models import Admin
+            Admin.objects.create(admin=user)
+        elif user.user_type == '2' and not hasattr(user, 'staff'):
+            from main_app.models import Staff
+            Staff.objects.create(admin=user)
+        elif user.user_type == '3' and not hasattr(user, 'student'):
+            from main_app.models import Student
+            Student.objects.create(admin=user)
+
     def _create_or_update(self, user_type, email, password, first_name, last_name, force=False):
         user = CustomUser.objects.filter(user_type=user_type).first()
         if user and not force:
+            self._ensure_profile(user)
             return user, False
 
         if not user:
@@ -30,6 +42,7 @@ class Command(BaseCommand):
             user.is_active = True
             user.set_password(password)
             user.save()
+            self._ensure_profile(user)
             return user, True
 
         user = CustomUser.objects.create_user(
@@ -42,6 +55,7 @@ class Command(BaseCommand):
             first_name=first_name,
             last_name=last_name,
         )
+        self._ensure_profile(user)
         return user, True
 
     def handle(self, *args, **options):

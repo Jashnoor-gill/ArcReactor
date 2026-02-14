@@ -315,21 +315,21 @@ class OpportunityApplication(models.Model):
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        if instance.user_type == 1:
+        if instance.user_type == '1':
             Admin.objects.create(admin=instance)
-        if instance.user_type == 2:
+        if instance.user_type == '2':
             Staff.objects.create(admin=instance)
-        if instance.user_type == 3:
+        if instance.user_type == '3':
             Student.objects.create(admin=instance)
 
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
-    if instance.user_type == 1:
+    if instance.user_type == '1' and hasattr(instance, 'admin'):
         instance.admin.save()
-    if instance.user_type == 2:
+    if instance.user_type == '2' and hasattr(instance, 'staff'):
         instance.staff.save()
-    if instance.user_type == 3:
+    if instance.user_type == '3' and hasattr(instance, 'student'):
         instance.student.save()
 
 
