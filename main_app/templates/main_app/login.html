@@ -43,7 +43,18 @@
             {% endif %}
 
             <!-- Login Form -->
-            <form action="doLogin/" method="post" class="login-form">
+            {% if demo_login_enabled %}
+            <form action="{% url 'user_login' %}" method="post" class="login-form">
+                {% csrf_token %}
+                <input type="hidden" name="demo" value="1">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt"></i> Enter Demo
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <form action="{% url 'user_login' %}" method="post" class="login-form">
                 {% csrf_token %}
 
                 <div class="form-group">
@@ -89,6 +100,7 @@
                     </a>
                 </div>
             </form>
+            {% endif %}
 
             <!-- Footer -->
             <div class="login-footer text-center mt-4">

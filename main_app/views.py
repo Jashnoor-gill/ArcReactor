@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .EmailBackend import EmailBackend
-from .models import Attendance, Session, Subject 
+from .models import Attendance, CustomUser, Session, Subject 
 
 # Create your views here.
 
@@ -23,14 +23,37 @@ def login_page(request):
             return redirect(reverse("student_home"))
     context = {
         'recaptcha_site_key': settings.RECAPTCHA_SITE_KEY,
+        'demo_login_enabled': settings.DEMO_LOGIN_ENABLED,
     }
     return render(request, 'main_app/login.html', context)
+
+
+def _get_demo_user():
+    if settings.DEMO_LOGIN_EMAIL:
+        return CustomUser.objects.filter(email=settings.DEMO_LOGIN_EMAIL).first()
+    return (
+        CustomUser.objects.filter(is_superuser=True).first()
+        or CustomUser.objects.filter(user_type='1').first()
+        or CustomUser.objects.first()
+    )
 
 
 def doLogin(request, **kwargs):
     if request.method != 'POST':
         return HttpResponse("<h4>Denied</h4>")
     else:
+        if settings.DEMO_LOGIN_ENABLED and request.POST.get('demo') == '1':
+            user = _get_demo_user()
+            if user is None:
+                messages.error(request, "No demo user is configured")
+                return redirect(reverse('login_page'))
+            login(request, user)
+            if user.user_type == '1':
+                return redirect(reverse("admin_home"))
+            elif user.user_type == '2':
+                return redirect(reverse("staff_home"))
+            else:
+                return redirect(reverse("student_home"))
         # Google reCAPTCHA (optional in production)
         if settings.RECAPTCHA_SECRET_KEY:
             captcha_token = request.POST.get('g-recaptcha-response')

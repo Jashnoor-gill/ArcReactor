@@ -27,6 +27,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'f2zx8*lb*em*-*b+!&1lpp&$_9q9kmkar+l3x
 
 RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY', '')
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+DEMO_LOGIN_ENABLED = os.environ.get('DEMO_LOGIN_ENABLED', 'False') == 'True'
+DEMO_LOGIN_EMAIL = os.environ.get('DEMO_LOGIN_EMAIL', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
