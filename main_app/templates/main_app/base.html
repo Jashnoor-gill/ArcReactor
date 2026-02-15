@@ -185,6 +185,19 @@
         
         // Navigation menu toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.erpnext-sidebar');
+            if (sidebar) {
+                const storedScrollTop = localStorage.getItem('sidebarScrollTop');
+                if (storedScrollTop !== null) {
+                    sidebar.scrollTop = parseInt(storedScrollTop, 10);
+                }
+                sidebar.addEventListener('scroll', function() {
+                    localStorage.setItem('sidebarScrollTop', sidebar.scrollTop);
+                });
+                window.addEventListener('beforeunload', function() {
+                    localStorage.setItem('sidebarScrollTop', sidebar.scrollTop);
+                });
+            }
             const navItems = document.querySelectorAll('.nav-item.has-submenu');
             
             navItems.forEach(item => {

@@ -641,10 +641,10 @@ def view_student_leave(request):
 
 
 def admin_view_attendance(request):
-    subjects = Subject.objects.all()
+    courses = Course.objects.all()
     sessions = Session.objects.all()
     context = {
-        'subjects': subjects,
+        'courses': courses,
         'sessions': sessions,
         'page_title': 'View Attendance'
     }
@@ -654,14 +654,14 @@ def admin_view_attendance(request):
 
 @csrf_exempt
 def get_admin_attendance(request):
-    subject_id = request.POST.get('subject')
+    course_id = request.POST.get('course')
     session_id = request.POST.get('session')
     attendance_date_id = request.POST.get('attendance_date_id')
     try:
-        subject = get_object_or_404(Subject, id=subject_id)
+        course = get_object_or_404(Course, id=course_id)
         session = get_object_or_404(Session, id=session_id)
         attendance = get_object_or_404(
-            Attendance, id=attendance_date_id, session=session)
+            Attendance, id=attendance_date_id, session=session, course=course)
         attendance_reports = AttendanceReport.objects.filter(
             attendance=attendance)
         json_data = []

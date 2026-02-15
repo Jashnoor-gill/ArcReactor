@@ -44,11 +44,11 @@
 
 
                         <div class="form-group">
-                            <label>Subject</label>
-                            <select name="subject" class="form-control" id='subject'>
+                            <label>Course</label>
+                            <select name="course" class="form-control" id='course'>
                                 <option value="">----</option>
-                                {% for subject in subjects  %}
-                                <option value="{{subject.id}}">{{subject.name}}</option>
+                                {% for course in courses  %}
+                                <option value="{{course.id}}">{{course.name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -102,12 +102,12 @@
 <script>
     $(document).ready(function () {
         $("#fetch_attendance").click(function(){
-            var subject = $("#subject").val()
+            var course = $("#course").val()
             var session = $("#session").val()
             $("#student_data").html("")
 
-            if (session.length < 1 || subject.length < 1){
-                $("#error_attendance").html("Kindly Choose Both Subject and Session")
+            if (session.length < 1 || course.length < 1){
+                $("#error_attendance").html("Kindly Choose Both Course and Session")
                 $("#attendance_block").hide()
                 $("#error_attendance").show()
                 return false
@@ -116,7 +116,7 @@
                 url: "{% url 'get_attendance' %}",
                 type: 'POST',
                 data:{
-                    subject:subject,
+                    course:course,
                     session:session
                 }
             
@@ -158,7 +158,7 @@
         $("#fetch_student").click(function () {
             var attendance_date = $("#attendance_date").val()
             var session = $("#session").val()
-            var subject = $("#subject").val()
+            var course = $("#course").val()
             $("#student_data").html(null)
 if (attendance_date.length  == 0){
     alert("Please Choose A Date");
@@ -172,7 +172,7 @@ if (attendance_date.length  == 0){
                 data: {
                     attendance_date_id:attendance_date,
                     session:session,
-                    subject:subject
+                    course:course
                 }
             }).done(function (response) {
                 var json_data = JSON.parse(response)
