@@ -1116,6 +1116,10 @@ def student_fee_management(request, student_id=None):
         return render(request, 'hod_template/student_fee_detail.html', context)
     else:
         students = Student.objects.all().select_related('admin', 'course')
+        # Attach total fees to each student
+        for student in students:
+            total_fees = sum(fee.net_amount for fee in StudentFee.objects.filter(student=student))
+            student.total_fees = total_fees
         context = {
             'students': students,
             'page_title': 'Student Fee Management'

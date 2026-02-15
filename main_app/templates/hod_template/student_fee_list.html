@@ -22,7 +22,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Student Name</th>
-                                    <th>Course</th>
+                                    <th>Amount (₹)</th>
                                     <th>Session</th>
                                     <th>Actions</th>
                                 </tr>
@@ -32,7 +32,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{student.admin.first_name}} {{student.admin.last_name}}</td>
-                                    <td>{{ student.id }}</td>
+                                    <td>₹{{ student.total_fees }}</td>
                                     <td>{{student.session}}</td>
                                     <td>
                                         <a href="{% url 'student_fee_management' student.id %}" class="btn btn-primary btn-sm">
