@@ -230,12 +230,21 @@ def student_ride_share(request):
     student = get_object_or_404(Student, admin=request.user)
     if not student.course:
         messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('student_home'))
+        posts = RideSharePost.objects.none()
+        form = None
+        context = {
+            'posts': posts,
+            'form': form,
+            'can_post': False,
+            'page_title': 'Ride Sharing'
+        }
+        return render(request, 'student_template/student_ride_share.html', context)
     posts = RideSharePost.objects.filter(course=student.course).order_by('-created_at')
     form = RideSharePostForm(request.POST or None)
     context = {
         'posts': posts,
         'form': form,
+        'can_post': True,
         'page_title': f'Ride Sharing - {student.course}'
     }
     if request.method == 'POST':
@@ -254,12 +263,21 @@ def student_lost_found(request):
     student = get_object_or_404(Student, admin=request.user)
     if not student.course:
         messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('student_home'))
+        posts = LostFoundPost.objects.none()
+        form = None
+        context = {
+            'posts': posts,
+            'form': form,
+            'can_post': False,
+            'page_title': 'Lost & Found'
+        }
+        return render(request, 'student_template/student_lost_found.html', context)
     posts = LostFoundPost.objects.filter(course=student.course).order_by('-created_at')
     form = LostFoundPostForm(request.POST or None, request.FILES or None)
     context = {
         'posts': posts,
         'form': form,
+        'can_post': True,
         'page_title': f'Lost & Found - {student.course}'
     }
     if request.method == 'POST':
@@ -278,12 +296,21 @@ def student_forum(request):
     student = get_object_or_404(Student, admin=request.user)
     if not student.course:
         messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('student_home'))
+        posts = DiscussionPost.objects.none()
+        form = None
+        context = {
+            'posts': posts,
+            'form': form,
+            'can_post': False,
+            'page_title': 'Discussion Forum'
+        }
+        return render(request, 'student_template/student_forum.html', context)
     posts = DiscussionPost.objects.filter(course=student.course).order_by('-created_at')
     form = DiscussionPostForm(request.POST or None)
     context = {
         'posts': posts,
         'form': form,
+        'can_post': True,
         'page_title': f'Discussion Forum - {student.course}'
     }
     if request.method == 'POST':
@@ -300,6 +327,9 @@ def student_forum(request):
 
 def student_forum_post(request, post_id):
     student = get_object_or_404(Student, admin=request.user)
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('student_forum'))
     post = get_object_or_404(DiscussionPost, id=post_id, course=student.course)
     replies = DiscussionReply.objects.filter(post=post).order_by('created_at')
     form = DiscussionReplyForm(request.POST or None)

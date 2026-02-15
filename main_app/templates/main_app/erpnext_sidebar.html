@@ -3,8 +3,13 @@
 <!-- Sidebar Header -->
 <div class="sidebar-header">
     <div class="sidebar-user">
-        <img src="{{ request.user.profile_pic}}" alt="User Avatar" class="sidebar-user-avatar" id="sidebar-avatar" onerror="showDefaultAvatar()">
-        <i class="fas fa-user-circle sidebar-default-avatar" id="default-avatar" style="display: none;"></i>
+        {% if request.user.profile_pic and request.user.profile_pic.name != 'defaults/profile.png' %}
+            <img src="{{ request.user.profile_pic.url }}" alt="User Avatar" class="sidebar-user-avatar" id="sidebar-avatar" onerror="showDefaultAvatar()">
+            <i class="fas fa-user-circle sidebar-default-avatar" id="default-avatar" style="display: none;"></i>
+        {% else %}
+            <img src="" alt="User Avatar" class="sidebar-user-avatar" id="sidebar-avatar" style="display: none;">
+            <i class="fas fa-user-circle sidebar-default-avatar" id="default-avatar" style="display: inline-block;"></i>
+        {% endif %}
         <div class="sidebar-user-info">
             <h6>{{ user.get_full_name|default:user.username }}</h6>
             <small>
