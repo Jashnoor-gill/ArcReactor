@@ -22,7 +22,6 @@
                                     <th>Email</th>
                                     <th>Gender</th>
                                     <th>Course</th>
-                                    <th>Avatar</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -34,14 +33,6 @@
                                     <td>{{staff.email}}</td>
                                     <td>{{staff.gender}}</td>
                                     <td>{{staff.staff.course}}</td>
-                                    <td>
-                                        {% if staff.profile_pic == ""  %}
-                                        No Image
-                                        {% else %}
-                                        <img class="img img-fluid mb-2" height="56" width="56"
-                                            src="{{staff.profile_pic}}" alt="">
-                                        {% endif %}
-                                    </td>
                                     <td><button data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary show_notification" value="{{staff.id}}">Send Notification</button> 
                                     </td>
                                 </tr>

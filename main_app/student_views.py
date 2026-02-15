@@ -18,7 +18,6 @@ def student_home(request):
     student, _ = Student.objects.get_or_create(admin=request.user)
     if not student.course or not student.session:
         messages.warning(request, "Your profile is not fully assigned yet. Please contact the admin to add your course/session.")
-    total_subject = Subject.objects.filter(course=student.course).count()
     total_attendance = AttendanceReport.objects.filter(student=student).count()
     total_present = AttendanceReport.objects.filter(student=student, status=True).count()
     if total_attendance == 0:  # Don't divide. DivisionByZero
@@ -26,28 +25,12 @@ def student_home(request):
     else:
         percent_present = math.floor((total_present/total_attendance) * 100)
         percent_absent = math.ceil(100 - percent_present)
-    subject_name = []
-    data_present = []
-    data_absent = []
-    subjects = Subject.objects.filter(course=student.course)
-    for subject in subjects:
-        attendance = Attendance.objects.filter(subject=subject)
-        present_count = AttendanceReport.objects.filter(
-            attendance__in=attendance, status=True, student=student).count()
-        absent_count = AttendanceReport.objects.filter(
-            attendance__in=attendance, status=False, student=student).count()
-        subject_name.append(subject.name)
-        data_present.append(present_count)
-        data_absent.append(absent_count)
+    
     context = {
         'total_attendance': total_attendance,
+        'total_present': total_present,
         'percent_present': percent_present,
         'percent_absent': percent_absent,
-        'total_subject': total_subject,
-        'subjects': subjects,
-        'data_present': data_present,
-        'data_absent': data_absent,
-        'data_name': subject_name,
         'page_title': 'Student Homepage'
 
     }
@@ -60,20 +43,20 @@ def student_view_attendance(request):
     if request.method != 'POST':
         course = get_object_or_404(Course, id=student.course.id)
         context = {
-            'subjects': Subject.objects.filter(course=course),
+            'course': course,
             'page_title': 'View Attendance'
         }
         return render(request, 'student_template/student_view_attendance.html', context)
     else:
-        subject_id = request.POST.get('subject')
+        course_id = request.POST.get('course')
         start = request.POST.get('start_date')
         end = request.POST.get('end_date')
         try:
-            subject = get_object_or_404(Subject, id=subject_id)
+            course = get_object_or_404(Course, id=course_id)
             start_date = datetime.strptime(start, "%Y-%m-%d")
             end_date = datetime.strptime(end, "%Y-%m-%d")
             attendance = Attendance.objects.filter(
-                date__range=(start_date, end_date), subject=subject)
+                date__range=(start_date, end_date), course=course)
             attendance_reports = AttendanceReport.objects.filter(
                 attendance__in=attendance, student=student)
             json_data = []
@@ -203,25 +186,27 @@ def student_view_result(request):
     student = get_object_or_404(Student, admin=request.user)
     results = StudentResult.objects.filter(student=student)
     
-    # Calculate analytics
-    total_subjects = results.count()
-    if total_subjects > 0:
-        avg_marks = sum([r.exam + r.test for r in results]) / (total_subjects * 2) if total_subjects > 0 else 0
-        total_marks = sum([r.exam + r.test for r in results])
-        max_marks = total_subjects * 200  # Assuming each subject has max 200 (100 exam + 100 test)
+    # Calculate analytics with all test types
+    total_courses = results.count()
+    if total_courses > 0:
+        total_marks = sum([r.test_1 + r.test_2 + r.test_3 + r.mid_sem + r.exam for r in results])
+        avg_marks = total_marks / total_courses if total_courses > 0 else 0
+        max_marks = total_courses * 500  # Assuming each course has max 500 (100 each for 5 tests)
         percentage = (total_marks / max_marks * 100) if max_marks > 0 else 0
     else:
         avg_marks = 0
         percentage = 0
+        total_marks = 0
     
-    # By status (pass/fail) count
-    passed = sum(1 for r in results if (r.exam + r.test) >= 100)
-    failed = total_subjects - passed
+    # By status (pass/fail) count - using 250 as passing score for 500 max per course
+    passed = sum(1 for r in results if (r.test_1 + r.test_2 + r.test_3 + r.mid_sem + r.exam) >= 250)
+    failed = total_courses - passed
     
     context = {
         'results': results,
         'page_title': "View Results",
-        'total_subjects': total_subjects,
+        'total_subjects': total_courses,
+        'total_marks': round(total_marks, 2),
         'avg_marks': round(avg_marks, 2),
         'percentage': round(percentage, 2),
         'passed': passed,

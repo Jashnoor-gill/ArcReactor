@@ -18,34 +18,34 @@ def staff_home(request):
         messages.warning(request, "Your profile is not fully assigned yet. Please contact the admin to add your course.")
     total_students = Student.objects.filter(course=staff.course).count()
     total_leave = LeaveReportStaff.objects.filter(staff=staff).count()
-    subjects = Subject.objects.filter(staff=staff)
-    total_subject = subjects.count()
-    attendance_list = Attendance.objects.filter(subject__in=subjects)
+    
+    attendance_list = Attendance.objects.filter(course=staff.course)
     total_attendance = attendance_list.count()
-    attendance_list = []
-    subject_list = []
-    for subject in subjects:
-        attendance_count = Attendance.objects.filter(subject=subject).count()
-        subject_list.append(subject.name)
-        attendance_list.append(attendance_count)
+    attendance_per_date = []
+    date_list = []
+    for attendance in attendance_list:
+        if attendance.date not in date_list:
+            attendance_count = Attendance.objects.filter(course=staff.course, date=attendance.date).count()
+            date_list.append(attendance.date)
+            attendance_per_date.append(attendance_count)
+    
     context = {
         'page_title': 'Staff Panel - ' + str(staff.admin.first_name) + ' ' + str(staff.admin.last_name[0]) + '' + ' (' + str(staff.course) + ')',
         'total_students': total_students,
         'total_attendance': total_attendance,
         'total_leave': total_leave,
-        'total_subject': total_subject,
-        'subject_list': subject_list,
-        'attendance_list': attendance_list
+        'attendance_per_date': attendance_per_date,
+        'date_list': date_list
     }
     return render(request, "staff_template/erpnext_staff_home.html", context)
 
 
 def staff_take_attendance(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    subjects = Subject.objects.filter(staff_id=staff)
+    course = staff.course
     sessions = Session.objects.all()
     context = {
-        'subjects': subjects,
+        'course': course,
         'sessions': sessions,
         'page_title': 'Take Attendance'
     }
@@ -55,13 +55,12 @@ def staff_take_attendance(request):
 
 @csrf_exempt
 def get_students(request):
-    subject_id = request.POST.get('subject')
+    course_id = request.POST.get('course')
     session_id = request.POST.get('session')
     try:
-        subject = get_object_or_404(Subject, id=subject_id)
+        course = get_object_or_404(Course, id=course_id)
         session = get_object_or_404(Session, id=session_id)
-        students = Student.objects.filter(
-            course_id=subject.course.id, session=session)
+        students = Student.objects.filter(course_id=course.id, session=session)
         student_data = []
         for student in students:
             data = {
@@ -78,13 +77,13 @@ def get_students(request):
 def save_attendance(request):
     student_data = request.POST.get('student_ids')
     date = request.POST.get('date')
-    subject_id = request.POST.get('subject')
+    course_id = request.POST.get('course')
     session_id = request.POST.get('session')
     students = json.loads(student_data)
     try:
         session = get_object_or_404(Session, id=session_id)
-        subject = get_object_or_404(Subject, id=subject_id)
-        attendance = Attendance(session=session, subject=subject, date=date)
+        course = get_object_or_404(Course, id=course_id)
+        attendance = Attendance(session=session, course=course, date=date)
         attendance.save()
 
         for student_dict in students:
@@ -99,10 +98,10 @@ def save_attendance(request):
 
 def staff_update_attendance(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    subjects = Subject.objects.filter(staff_id=staff)
+    course = staff.course
     sessions = Session.objects.all()
     context = {
-        'subjects': subjects,
+        'course': course,
         'sessions': sessions,
         'page_title': 'Update Attendance'
     }
@@ -258,30 +257,36 @@ def staff_view_notification(request):
 
 def staff_add_result(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    subjects = Subject.objects.filter(staff=staff)
+    course = staff.course
     sessions = Session.objects.all()
     context = {
         'page_title': 'Result Upload',
-        'subjects': subjects,
+        'course': course,
         'sessions': sessions
     }
     if request.method == 'POST':
         try:
             student_id = request.POST.get('student_list')
-            subject_id = request.POST.get('subject')
-            test = request.POST.get('test')
+            course_id = request.POST.get('course')
+            test_1 = request.POST.get('test_1')
+            test_2 = request.POST.get('test_2')
+            test_3 = request.POST.get('test_3')
+            mid_sem = request.POST.get('mid_sem')
             exam = request.POST.get('exam')
             student = get_object_or_404(Student, id=student_id)
-            subject = get_object_or_404(Subject, id=subject_id)
+            course = get_object_or_404(Course, id=course_id)
             try:
                 data = StudentResult.objects.get(
-                    student=student, subject=subject)
+                    student=student, course=course)
+                data.test_1 = test_1 or 0
+                data.test_2 = test_2 or 0
+                data.test_3 = test_3 or 0
+                data.mid_sem = mid_sem or 0
                 data.exam = exam
-                data.test = test
                 data.save()
                 messages.success(request, "Scores Updated")
             except:
-                result = StudentResult(student=student, subject=subject, test=test, exam=exam)
+                result = StudentResult(student=student, course=course, test_1=test_1 or 0, test_2=test_2 or 0, test_3=test_3 or 0, mid_sem=mid_sem or 0, exam=exam)
                 result.save()
                 messages.success(request, "Scores Saved")
         except Exception as e:
@@ -292,14 +297,17 @@ def staff_add_result(request):
 @csrf_exempt
 def fetch_student_result(request):
     try:
-        subject_id = request.POST.get('subject')
+        course_id = request.POST.get('course')
         student_id = request.POST.get('student')
         student = get_object_or_404(Student, id=student_id)
-        subject = get_object_or_404(Subject, id=subject_id)
-        result = StudentResult.objects.get(student=student, subject=subject)
+        course = get_object_or_404(Course, id=course_id)
+        result = StudentResult.objects.get(student=student, course=course)
         result_data = {
             'exam': result.exam,
-            'test': result.test
+            'test_1': result.test_1,
+            'test_2': result.test_2,
+            'test_3': result.test_3,
+            'mid_sem': result.mid_sem
         }
         return HttpResponse(json.dumps(result_data))
     except Exception as e:

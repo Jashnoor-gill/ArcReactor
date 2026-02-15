@@ -251,7 +251,7 @@ def add_subject(request):
 
 
 def manage_staff(request):
-    allStaff = CustomUser.objects.filter(user_type=2)
+    allStaff = CustomUser.objects.filter(user_type=2).select_related('staff').filter(staff__isnull=False)
     search_query = request.GET.get('search', '')
     course_filter = request.GET.get('course', '')
     
@@ -278,7 +278,7 @@ def manage_staff(request):
 
 
 def manage_student(request):
-    students = CustomUser.objects.filter(user_type=3)
+    students = CustomUser.objects.filter(user_type=3).select_related('student').filter(student__isnull=False)
     search_query = request.GET.get('search', '')
     course_filter = request.GET.get('course', '')
     

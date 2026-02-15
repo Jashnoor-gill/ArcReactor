@@ -174,12 +174,12 @@ def register(request):
 
 @csrf_exempt
 def get_attendance(request):
-    subject_id = request.POST.get('subject')
+    course_id = request.POST.get('course')
     session_id = request.POST.get('session')
     try:
-        subject = get_object_or_404(Subject, id=subject_id)
+        course = get_object_or_404(Course, id=course_id)
         session = get_object_or_404(Session, id=session_id)
-        attendance = Attendance.objects.filter(subject=subject, session=session)
+        attendance = Attendance.objects.filter(course=course, session=session)
         attendance_list = []
         for attd in attendance:
             data = {

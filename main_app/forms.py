@@ -189,7 +189,7 @@ class EditResultForm(FormSettings):
 
     class Meta:
         model = StudentResult
-        fields = ['session_year', 'subject', 'student', 'test', 'exam']
+        fields = ['session_year', 'course', 'student', 'test_1', 'test_2', 'test_3', 'mid_sem', 'exam']
 
 
 class GrievanceForm(FormSettings):
