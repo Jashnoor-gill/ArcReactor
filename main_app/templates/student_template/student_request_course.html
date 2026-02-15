@@ -1,0 +1,70 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Course Request Form -->
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                    </div>
+
+                    {% if available_courses.count > 0 %}
+                    {% include "main_app/form_template.html" with messages=messages form=form button_text="Submit Request"%}
+                    {% else %}
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            You have already requested all available courses or no courses are available at this time.
+                        </div>
+                        <a href="{% url 'student_course_requests' %}" class="btn btn-primary">
+                            <i class="fas fa-list"></i> View My Requests
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- /.card -->
+
+                {% if available_courses.count > 0 %}
+                <div class="card card-dark mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Available Courses</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap" style="max-height: 400px;">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in available_courses %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{course.course_code|default:"-"}}</td>
+                                        <td>{{course.name}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No courses available</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

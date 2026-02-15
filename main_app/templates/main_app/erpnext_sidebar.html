@@ -347,6 +347,16 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Course Enrollment</h6>
+
+        <div class="nav-item">
+            {% url 'staff_course_requests' as staff_course_requests %}
+            <a href="{{ staff_course_requests }}" class="nav-link {% if staff_course_requests == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-user-check"></i>
+                <span class="nav-text">Enrollment Requests</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Opportunities</h6>
 
         <div class="nav-item">
@@ -458,6 +468,22 @@
         </div>
 
         <h6 class="nav-section-title">Academic</h6>
+        
+        <div class="nav-item">
+            {% url 'student_request_course' as student_request_course %}
+            <a href="{{ student_request_course }}" class="nav-link {% if student_request_course == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-graduation-cap"></i>
+                <span class="nav-text">Request Course</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_course_requests' as student_course_requests %}
+            <a href="{{ student_course_requests }}" class="nav-link {% if student_course_requests == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-list-alt"></i>
+                <span class="nav-text">My Course Requests</span>
+            </a>
+        </div>
         
         <div class="nav-item">
             {% url 'student_view_attendance' as student_view_attendance %}

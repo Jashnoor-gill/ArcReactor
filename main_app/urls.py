@@ -104,6 +104,10 @@ urlpatterns = [
      path("staff/opportunities/add/", staff_views.staff_opportunity_create, name='staff_opportunity_create'),
      path("staff/opportunities/<int:opportunity_id>/applications/", staff_views.staff_opportunity_applications, name='staff_opportunity_applications'),
      path("staff/applications/<int:application_id>/", staff_views.staff_application_update, name='staff_application_update'),
+     
+     # Course Enrollment Requests (Faculty)
+     path("staff/course/requests/", staff_views.staff_course_requests, name='staff_course_requests'),
+     path("staff/course/requests/<int:request_id>/", staff_views.staff_approve_course_request, name='staff_approve_course_request'),
 
 
 
@@ -151,6 +155,10 @@ urlpatterns = [
      path("student/opportunities/", student_views.student_opportunity_list, name='student_opportunity_list'),
      path("student/opportunities/<int:opportunity_id>/apply/", student_views.student_apply_opportunity, name='student_apply_opportunity'),
      path("student/applications/", student_views.student_my_applications, name='student_my_applications'),
+     
+     # Course Enrollment Requests (Student)
+     path("student/course/request/", student_views.student_request_course, name='student_request_course'),
+     path("student/course/requests/", student_views.student_course_requests, name='student_course_requests'),
 
      path("authority/grievances/", hod_views.authority_grievance_list, name='authority_grievance_list'),
      path("authority/grievances/<int:grievance_id>/", hod_views.authority_grievance_update, name='authority_grievance_update'),

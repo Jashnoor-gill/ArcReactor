@@ -455,3 +455,79 @@ def staff_application_update(request, application_id):
             return redirect(reverse('staff_opportunity_applications', args=[application.opportunity.id]))
         messages.error(request, "Please correct the errors in the form")
     return render(request, "staff_template/opportunity_application_update.html", context)
+
+
+def staff_course_requests(request):
+    """View all course enrollment requests for faculty's course"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('staff_home'))
+    
+    # Get all pending and approved/rejected requests for faculty's course
+    requests = CourseEnrollmentRequest.objects.filter(
+        course=staff.course
+    ).select_related('student__admin', 'course').order_by('status', '-created_at')
+    
+    pending_count = requests.filter(status='pending').count()
+    
+    context = {
+        'requests': requests,
+        'pending_count': pending_count,
+        'page_title': f'Course Enrollment Requests - {staff.course.name}'
+    }
+    return render(request, 'staff_template/staff_course_requests.html', context)
+
+
+def staff_approve_course_request(request, request_id):
+    """Approve or reject a course enrollment request"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    enrollment_request = get_object_or_404(CourseEnrollmentRequest, id=request_id)
+    
+    # Verify this request is for faculty's course
+    if enrollment_request.course != staff.course:
+        messages.error(request, "You can only manage requests for your course")
+        return redirect(reverse('staff_course_requests'))
+    
+    form = CourseEnrollmentApprovalForm(request.POST or None, instance=enrollment_request)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            enrollment_request = form.save()
+            
+            # If approved, assign the course to student
+            if enrollment_request.status == 'approved':
+                student = enrollment_request.student
+                student.course = enrollment_request.course
+                student.save()
+                messages.success(
+                    request, 
+                    f"Request approved. {student.admin.get_full_name()} has been enrolled in {enrollment_request.course.name}"
+                )
+                
+                # Send notification to student
+                NotificationStudent.objects.create(
+                    student=student,
+                    message=f"Your course enrollment request for {enrollment_request.course.name} has been approved!"
+                )
+            else:
+                messages.success(request, "Request has been updated")
+                
+                # Send notification if rejected
+                if enrollment_request.status == 'rejected':
+                    NotificationStudent.objects.create(
+                        student=enrollment_request.student,
+                        message=f"Your course enrollment request for {enrollment_request.course.name} has been rejected."
+                    )
+            
+            return redirect(reverse('staff_course_requests'))
+        else:
+            messages.error(request, "Please correct the errors")
+    
+    context = {
+        'form': form,
+        'enrollment_request': enrollment_request,
+        'page_title': 'Review Course Request'
+    }
+    return render(request, 'staff_template/staff_approve_course_request.html', context)

@@ -1,0 +1,130 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Student and Course Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="callout callout-info">
+                                    <h5><i class="fas fa-user"></i> Student Details</h5>
+                                    <p class="mb-1"><strong>Name:</strong> {{enrollment_request.student.admin.get_full_name}}</p>
+                                    <p class="mb-1"><strong>Email:</strong> {{enrollment_request.student.admin.email}}</p>
+                                    <p class="mb-1"><strong>Current Course:</strong> 
+                                        {% if enrollment_request.student.course %}
+                                        {{enrollment_request.student.course.name}}
+                                        {% else %}
+                                        <span class="badge badge-secondary">Not Assigned</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-0"><strong>Session:</strong> 
+                                        {% if enrollment_request.student.session %}
+                                        {{enrollment_request.student.session}}
+                                        {% else %}
+                                        <span class="badge badge-secondary">Not Assigned</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="callout callout-warning">
+                                    <h5><i class="fas fa-book"></i> Course Details</h5>
+                                    <p class="mb-1"><strong>Course:</strong> {{enrollment_request.course.name}}</p>
+                                    <p class="mb-1"><strong>Course Code:</strong> {{enrollment_request.course.course_code|default:"-"}}</p>
+                                    <p class="mb-1"><strong>Requested On:</strong> {{enrollment_request.created_at|date:"F d, Y h:i A"}}</p>
+                                    <p class="mb-0"><strong>Current Status:</strong> 
+                                        {% if enrollment_request.status == 'pending' %}
+                                        <span class="badge badge-warning">Pending</span>
+                                        {% elif enrollment_request.status == 'approved' %}
+                                        <span class="badge badge-success">Approved</span>
+                                        {% elif enrollment_request.status == 'rejected' %}
+                                        <span class="badge badge-danger">Rejected</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student's Message -->
+                        {% if enrollment_request.message %}
+                        <div class="callout callout-secondary mb-4">
+                            <h5><i class="fas fa-comment"></i> Student's Message</h5>
+                            <p class="mb-0">{{enrollment_request.message}}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Approval Form -->
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Decision <span class="text-danger">*</span></label>
+                                        {{form.status}}
+                                        {% if form.status.errors %}
+                                        <div class="text-danger">
+                                            {{form.status.errors}}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Faculty Remarks</label>
+                                        {{form.faculty_remarks}}
+                                        {% if form.faculty_remarks.errors %}
+                                        <div class="text-danger">
+                                            {{form.faculty_remarks.errors}}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted">
+                                            Optional: Add any comments or reasons for your decision
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Save Decision
+                                </button>
+                                <a href="{% url 'staff_course_requests' %}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Requests
+                                </a>
+                            </div>
+                        </form>
+
+                        <!-- Show existing remarks if any -->
+                        {% if enrollment_request.faculty_remarks and enrollment_request.status != 'pending' %}
+                        <div class="callout callout-success mt-4">
+                            <h5><i class="fas fa-user-tie"></i> Your Previous Remarks</h5>
+                            <p class="mb-0">{{enrollment_request.faculty_remarks}}</p>
+                            <small class="text-muted">Last updated: {{enrollment_request.updated_at|date:"F d, Y h:i A"}}</small>
+                        </div>
+                        {% endif %}
+
+                        {% if enrollment_request.status == 'approved' %}
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> This request has been approved. 
+                            The student has been enrolled in {{enrollment_request.course.name}}.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

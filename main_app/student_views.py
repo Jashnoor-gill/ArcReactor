@@ -329,3 +329,60 @@ def student_my_applications(request):
     }
     return render(request, "student_template/opportunity_applications.html", context)
 
+
+def student_request_course(request):
+    """Student can request to enroll in a course"""
+    student = get_object_or_404(Student, admin=request.user)
+    
+    # Get courses student hasn't requested yet or can re-request
+    existing_requests = CourseEnrollmentRequest.objects.filter(
+        student=student
+    ).values_list('course_id', flat=True)
+    
+    available_courses = Course.objects.exclude(id__in=existing_requests)
+    
+    form = CourseEnrollmentRequestForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            enrollment_request = form.save(commit=False)
+            enrollment_request.student = student
+            
+            # Check if student already requested this course
+            existing = CourseEnrollmentRequest.objects.filter(
+                student=student,
+                course=enrollment_request.course
+            ).first()
+            
+            if existing:
+                messages.warning(request, "You have already requested this course")
+                return redirect(reverse('student_request_course'))
+            
+            enrollment_request.save()
+            messages.success(request, f"Course enrollment request for {enrollment_request.course.name} has been submitted")
+            return redirect(reverse('student_course_requests'))
+        else:
+            messages.error(request, "Please correct the errors")
+    
+    # Override queryset to show only available courses
+    form.fields['course'].queryset = available_courses
+    
+    context = {
+        'form': form,
+        'page_title': 'Request Course Enrollment',
+        'available_courses': available_courses
+    }
+    return render(request, 'student_template/student_request_course.html', context)
+
+
+def student_course_requests(request):
+    """View all course enrollment requests by student"""
+    student = get_object_or_404(Student, admin=request.user)
+    requests = CourseEnrollmentRequest.objects.filter(student=student).order_by('-created_at')
+    
+    context = {
+        'requests': requests,
+        'page_title': 'My Course Requests'
+    }
+    return render(request, 'student_template/student_course_requests.html', context)
+
+

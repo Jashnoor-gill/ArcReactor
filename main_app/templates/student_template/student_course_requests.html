@@ -1,0 +1,85 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'student_request_course' %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Request New Course
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if requests %}
+                        <div class="aegis-table-wrap" style="max-height: 600px;">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course</th>
+                                        <th>Course Code</th>
+                                        <th>Your Message</th>
+                                        <th>Status</th>
+                                        <th>Faculty Remarks</th>
+                                        <th>Requested On</th>
+                                        <th>Updated On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in requests %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{req.course.name}}</td>
+                                        <td>{{req.course.course_code|default:"-"}}</td>
+                                        <td style="max-width: 200px; word-wrap: break-word;">
+                                            {{req.message|default:"-"|truncatewords:15}}
+                                        </td>
+                                        <td>
+                                            {% if req.status == 'pending' %}
+                                            <span class="badge badge-warning">
+                                                <i class="fas fa-clock"></i> Pending
+                                            </span>
+                                            {% elif req.status == 'approved' %}
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check"></i> Approved
+                                            </span>
+                                            {% elif req.status == 'rejected' %}
+                                            <span class="badge badge-danger">
+                                                <i class="fas fa-times"></i> Rejected
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="max-width: 200px; word-wrap: break-word;">
+                                            {{req.faculty_remarks|default:"-"|truncatewords:15}}
+                                        </td>
+                                        <td>{{req.created_at|date:"M d, Y"}}</td>
+                                        <td>{{req.updated_at|date:"M d, Y"}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="callout callout-info">
+                            <h5><i class="fas fa-info-circle"></i> No Requests Yet</h5>
+                            <p>You haven't requested any course enrollments yet.</p>
+                            <a href="{% url 'student_request_course' %}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Request Your First Course
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

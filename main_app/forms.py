@@ -326,3 +326,31 @@ class BulkStudentImportForm(forms.Form):
                 raise forms.ValidationError('Only Excel files (.xlsx, .xls) are allowed')
         return file
 
+
+class CourseEnrollmentRequestForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(CourseEnrollmentRequestForm, self).__init__(*args, **kwargs)
+        self.fields['message'].required = False
+    
+    class Meta:
+        model = CourseEnrollmentRequest
+        fields = ['course', 'message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Why do you want to enroll in this course? (optional)'}),
+        }
+
+
+class CourseEnrollmentApprovalForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CourseEnrollmentApprovalForm, self).__init__(*args, **kwargs)
+        self.fields['faculty_remarks'].widget.attrs['class'] = 'form-control'
+        self.fields['faculty_remarks'].widget.attrs['rows'] = 3
+        self.fields['status'].widget.attrs['class'] = 'form-control'
+    
+    class Meta:
+        model = CourseEnrollmentRequest
+        fields = ['status', 'faculty_remarks']
+        widgets = {
+            'faculty_remarks': forms.Textarea(attrs={'placeholder': 'Add remarks (optional)'}),
+        }
+
