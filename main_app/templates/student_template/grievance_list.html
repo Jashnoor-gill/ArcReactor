@@ -32,7 +32,7 @@
                                 </thead>
                                 <tbody>
                                     {% for grievance in grievances %}
-                                    <tr class="grievance-row-{{ grievance.status }}">
+                                    <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ grievance.tracking_code }}</td>
                                         <td>{{ grievance.title }}</td>
@@ -41,7 +41,11 @@
                                         <td>{{ grievance.get_complaint_type_display }}</td>
                                         <td>{{ grievance.get_level_display }}</td>
                                         <td>{% if grievance.department %}{{ grievance.department }}{% else %}-{% endif %}</td>
-                                        <td>{{ grievance.get_status_display }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ grievance.status }}">
+                                                {{ grievance.get_status_display }}
+                                            </span>
+                                        </td>
                                         <td>{% if grievance.assigned_to %}{{ grievance.assigned_to.get_full_name }}{% else %}Unassigned{% endif %}</td>
                                         <td>{% if grievance.resolution_notes %}{{ grievance.resolution_notes }}{% else %}-{% endif %}</td>
                                         <td>{{ grievance.created_at }}</td>

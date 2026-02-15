@@ -33,7 +33,7 @@
                                 </thead>
                                 <tbody>
                                     {% for grievance in grievances %}
-                                    <tr class="grievance-row-{{ grievance.status }}">
+                                    <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ grievance.tracking_code }}</td>
                                         <td>{{ grievance.title }}</td>
@@ -49,7 +49,11 @@
                                                 {{ grievance.created_by.get_full_name }}
                                             {% endif %}
                                         </td>
-                                        <td>{{ grievance.get_status_display }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ grievance.status }}">
+                                                {{ grievance.get_status_display }}
+                                            </span>
+                                        </td>
                                         <td>{% if grievance.assigned_to %}{{ grievance.assigned_to.get_full_name }}{% else %}Unassigned{% endif %}</td>
                                         <td>{{ grievance.escalation_level }}</td>
                                         <td>

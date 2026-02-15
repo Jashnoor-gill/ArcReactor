@@ -29,7 +29,7 @@
     {% block custom_css %}{% endblock custom_css %}
 </head>
 
-<body class="sidebar-glass {% if user.user_type == '1' %}admin-portal{% elif user.user_type == '2' %}staff-portal{% else %}student-portal{% endif %}">
+<body class="sidebar-modern {% if user.user_type == '1' %}admin-portal{% elif user.user_type == '2' %}staff-portal{% else %}student-portal{% endif %}">
     <!-- Navigation Bar -->
     <nav class="erpnext-navbar">
         <div class="navbar-left">
