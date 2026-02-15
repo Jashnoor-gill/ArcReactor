@@ -181,9 +181,6 @@ urlpatterns = [
 
      path("authority/grievances/", hod_views.authority_grievance_list, name='authority_grievance_list'),
      path("authority/grievances/<int:grievance_id>/", hod_views.authority_grievance_update, name='authority_grievance_update'),
-     path("authority/opportunities/", hod_views.authority_opportunity_list, name='authority_opportunity_list'),
-     path("authority/opportunities/<int:opportunity_id>/applications/", hod_views.authority_opportunity_applications, name='authority_opportunity_applications'),
-     path("authority/applications/<int:application_id>/", hod_views.authority_application_update, name='authority_application_update'),
 
      # Company Internships (Admin)
      path("internships/add/", hod_views.add_company_internship, name='add_company_internship'),
