@@ -31,6 +31,12 @@ Deployed at: https://aegis-campusos.onrender.com
 - **strange@aegis.local** / `Strangexyz`
 - **wanda@aegis.local** / `Wandaxyz`
 
+**Note:** Some features (exam dates, attendance tracking, course-specific resources, results, etc.) are only functional for user accounts where:
+- **Faculty accounts** have a course assigned
+- **Student accounts** have registered/enrolled in a course
+
+Demo accounts above may have limited functionality in these features unless properly configured with course assignments or enrollments.
+
 ## Highlights
 
 - Role-based portals: Admin, Faculty, Student, Authority
