@@ -27,6 +27,7 @@ urlpatterns = [
     path("doLogin/", views.doLogin, name='user_login'),
     path("logout_user/", views.logout_user, name='user_logout'),
     path("admin/home/", hod_views.admin_home, name='admin_home'),
+     path("authority/home/", hod_views.authority_home, name='authority_home'),
     path("staff/add", hod_views.add_staff, name='add_staff'),
      path("branch/add", hod_views.add_branch, name='add_branch'),
     path("course/add", hod_views.add_course, name='add_course'),

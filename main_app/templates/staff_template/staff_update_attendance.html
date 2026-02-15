@@ -95,6 +95,26 @@
     const csrftoken = getCookie('csrftoken');
     
     $(document).ready(function () {
+        function moveSelected(fromSelector, toSelector) {
+            var selected = $(fromSelector + " option:selected").toArray()
+            $(selected).prop("selected", false)
+            $(toSelector).append(selected)
+        }
+
+        $(document).on('click', '#move_to_present', function () {
+            moveSelected('#absent_list', '#present_list')
+            moveSelected('#medical_list', '#present_list')
+        })
+
+        $(document).on('click', '#move_to_absent', function () {
+            moveSelected('#present_list', '#absent_list')
+            moveSelected('#medical_list', '#absent_list')
+        })
+
+        $(document).on('click', '#move_to_medical', function () {
+            moveSelected('#present_list', '#medical_list')
+            moveSelected('#absent_list', '#medical_list')
+        })
         $("#fetch_attendance").click(function(){
             var subject = $("#subject").val()
             var session = $("#session").val()
@@ -194,6 +214,12 @@ if (attendance_date.length  == 0){
                     }
 
                     var div_data = "<hr/><div class='alert alert-info'>Select students under Present or Medical Leave. Unselected students are marked Absent by default.</div>"
+                    div_data += "<div class='d-flex flex-wrap gap-2 mb-3'>"
+                    div_data += "<button type='button' id='move_to_present' class='btn btn-outline-success btn-sm'>Move to Present</button>"
+                    div_data += "<button type='button' id='move_to_absent' class='btn btn-outline-danger btn-sm'>Move to Absent</button>"
+                    div_data += "<button type='button' id='move_to_medical' class='btn btn-outline-primary btn-sm'>Move to Medical</button>"
+                    div_data += "<small class='text-muted ms-2'>Select students in a list, then move.</small>"
+                    div_data += "</div>"
                     div_data += "<div class='row'>"
                     div_data += "<div class='col-lg-4'><label>Present (Multi-Select)</label><select multiple class='form-control' id='present_list' style='min-height: 200px;'>" + present_options + "</select></div>"
                     div_data += "<div class='col-lg-4'><label>Absent (Multi-Select)</label><select multiple class='form-control' id='absent_list' style='min-height: 200px;'>" + absent_options + "</select></div>"

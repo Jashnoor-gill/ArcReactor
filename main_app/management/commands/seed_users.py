@@ -3,11 +3,13 @@ from main_app.models import CustomUser
 
 
 class Command(BaseCommand):
-    help = "Create or reset default Admin/Faculty/Student users."
+    help = "Create or reset default Admin/Authority/Faculty/Student users."
 
     def add_arguments(self, parser):
         parser.add_argument("--admin-email", default="adminx@aegis.local")
         parser.add_argument("--admin-password", default="xyz")
+        parser.add_argument("--authority-email", default="authorityx@aegis.local")
+        parser.add_argument("--authority-password", default="xyz")
         parser.add_argument("--faculty-email", default="facultyx@aegis.local")
         parser.add_argument("--faculty-password", default="xyz")
         parser.add_argument("--student-email", default="studentx@aegis.local")
@@ -18,6 +20,9 @@ class Command(BaseCommand):
         if user.user_type == '1' and not hasattr(user, 'admin'):
             from main_app.models import Admin
             Admin.objects.create(admin=user)
+        elif user.user_type == '4' and not hasattr(user, 'authority'):
+            from main_app.models import Authority
+            Authority.objects.create(admin=user)
         elif user.user_type == '2' and not hasattr(user, 'staff'):
             from main_app.models import Staff
             Staff.objects.create(admin=user)
@@ -61,6 +66,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         admin_email = options["admin_email"]
         admin_password = options["admin_password"]
+        authority_email = options["authority_email"]
+        authority_password = options["authority_password"]
         faculty_email = options["faculty_email"]
         faculty_password = options["faculty_password"]
         student_email = options["student_email"]
@@ -69,6 +76,7 @@ class Command(BaseCommand):
 
         accounts = [
             ("1", admin_email, admin_password, "Admin", "User"),
+            ("4", authority_email, authority_password, "Authority", "User"),
             ("2", faculty_email, faculty_password, "Faculty", "User"),
             ("3", student_email, student_password, "Student", "User"),
         ]

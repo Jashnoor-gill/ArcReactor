@@ -9,7 +9,7 @@ from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 
 from .EmailBackend import EmailBackend
-from .models import Attendance, CustomUser, Session, Subject, Admin, Staff, Student
+from .models import Attendance, CustomUser, Session, Subject, Admin, Authority, Staff, Student
 
 # Create your views here.
 
@@ -18,6 +18,8 @@ def login_page(request):
     if request.user.is_authenticated:
         if request.user.user_type == '1':
             return redirect(reverse("admin_home"))
+        elif request.user.user_type == '4':
+            return redirect(reverse("authority_home"))
         elif request.user.user_type == '2':
             return redirect(reverse("staff_home"))
         else:
@@ -66,6 +68,8 @@ def doLogin(request, **kwargs):
             login(request, user)
             if user.user_type == '1':
                 return redirect(reverse("admin_home"))
+            elif user.user_type == '4':
+                return redirect(reverse("authority_home"))
             elif user.user_type == '2':
                 return redirect(reverse("staff_home"))
             else:
@@ -108,6 +112,8 @@ def doLogin(request, **kwargs):
             
             if user.user_type == '1':
                 return redirect(reverse("admin_home"))
+            elif user.user_type == '4':
+                return redirect(reverse("authority_home"))
             elif user.user_type == '2':
                 return redirect(reverse("staff_home"))
             else:
@@ -142,7 +148,7 @@ def register(request):
             messages.error(request, "Passwords do not match.")
             return redirect(reverse("register"))
 
-        if role not in ["1", "2", "3"]:
+        if role not in ["1", "2", "3", "4"]:
             messages.error(request, "Please select a valid role.")
             return redirect(reverse("register"))
 
@@ -161,6 +167,8 @@ def register(request):
 
         if role == "1":
             Admin.objects.get_or_create(admin=user)
+        elif role == "4":
+            Authority.objects.get_or_create(admin=user)
         elif role == "2":
             Staff.objects.get_or_create(admin=user)
         elif role == "3":

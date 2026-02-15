@@ -9,6 +9,8 @@
             <h6>{{ user.get_full_name|default:user.username }}</h6>
             <small>
                 {% if user.user_type == '1' %}
+                    Admin
+                {% elif user.user_type == '4' %}
                     Authority
                 {% elif user.user_type == '2' %}
                     Faculty
@@ -243,26 +245,6 @@
             </a>
         </div>
 
-        <h6 class="nav-section-title">Governance</h6>
-
-        <div class="nav-item">
-            {% url 'authority_grievance_list' as authority_grievance_list %}
-            <a href="{{ authority_grievance_list }}" class="nav-link {% if authority_grievance_list == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-balance-scale"></i>
-                <span class="nav-text">Grievance Desk</span>
-            </a>
-        </div>
-
-        <h6 class="nav-section-title">Opportunities</h6>
-
-        <div class="nav-item">
-            {% url 'authority_opportunity_list' as authority_opportunity_list %}
-            <a href="{{ authority_opportunity_list }}" class="nav-link {% if authority_opportunity_list == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-briefcase"></i>
-                <span class="nav-text">Opportunity Hub</span>
-            </a>
-        </div>
-
         <h6 class="nav-section-title">Company Internships</h6>
 
         <div class="nav-item">
@@ -296,6 +278,38 @@
             <a href="{{ view_student_leave }}" class="nav-link {% if view_student_leave == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-calendar-times"></i>
                 <span class="nav-text">Student Leave</span>
+            </a>
+        </div>
+
+    {% elif user.user_type == '4' %}
+        <!-- Authority Navigation -->
+        <h6 class="nav-section-title">Main</h6>
+
+        <div class="nav-item">
+            {% url 'authority_home' as authority_home %}
+            <a href="{{ authority_home }}" class="nav-link {% if authority_home == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Governance</h6>
+
+        <div class="nav-item">
+            {% url 'authority_grievance_list' as authority_grievance_list %}
+            <a href="{{ authority_grievance_list }}" class="nav-link {% if authority_grievance_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-balance-scale"></i>
+                <span class="nav-text">Grievance Desk</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Opportunities</h6>
+
+        <div class="nav-item">
+            {% url 'authority_opportunity_list' as authority_opportunity_list %}
+            <a href="{{ authority_opportunity_list }}" class="nav-link {% if authority_opportunity_list == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <span class="nav-text">Opportunity Hub</span>
             </a>
         </div>
 

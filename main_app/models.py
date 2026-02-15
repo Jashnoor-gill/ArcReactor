@@ -41,7 +41,7 @@ class Session(models.Model):
 
 
 class CustomUser(AbstractUser):
-    USER_TYPE = ((1, "Authority"), (2, "Faculty"), (3, "Student"))
+    USER_TYPE = ((1, "Admin"), (2, "Faculty"), (3, "Student"), (4, "Authority"))
     GENDER = [("M", "Male"), ("F", "Female")]
     
     
@@ -67,6 +67,10 @@ class CustomUser(AbstractUser):
 
 
 class Admin(models.Model):
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+
+class Authority(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
 
@@ -379,6 +383,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             Staff.objects.create(admin=instance)
         if instance.user_type == '3':
             Student.objects.create(admin=instance)
+        if instance.user_type == '4':
+            Authority.objects.create(admin=instance)
 
 
 @receiver(post_save, sender=CustomUser)
@@ -389,6 +395,8 @@ def save_user_profile(sender, instance, **kwargs):
         instance.staff.save()
     if instance.user_type == '3' and hasattr(instance, 'student'):
         instance.student.save()
+    if instance.user_type == '4' and hasattr(instance, 'authority'):
+        instance.authority.save()
 
 
 # ==================== ADMISSIONS & REGISTRATION MODULE ====================

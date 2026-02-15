@@ -90,6 +90,9 @@ def admin_home(request):
     return render(request, 'hod_template/home_content.html', context)
 
 
+def authority_home(request):
+    return redirect(reverse('authority_grievance_list'))
+
 def add_staff(request):
     form = StaffForm(request.POST or None, request.FILES or None)
     context = {'form': form, 'page_title': 'Add Faculty'}
@@ -858,6 +861,8 @@ def delete_session(request, session_id):
 
 
 def authority_grievance_list(request):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
     status_filter = request.GET.get('status')
     grievances = Grievance.objects.all().order_by('-created_at')
     if status_filter:
@@ -870,6 +875,8 @@ def authority_grievance_list(request):
 
 
 def authority_grievance_update(request, grievance_id):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
     grievance = get_object_or_404(Grievance, id=grievance_id)
     form = GrievanceAssignForm(request.POST or None, instance=grievance)
     context = {
@@ -893,6 +900,8 @@ def authority_grievance_update(request, grievance_id):
 
 
 def authority_opportunity_list(request):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
     opportunities = Opportunity.objects.all().order_by('-created_at')
     context = {
         'opportunities': opportunities,
@@ -902,6 +911,8 @@ def authority_opportunity_list(request):
 
 
 def authority_opportunity_applications(request, opportunity_id):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
     opportunity = get_object_or_404(Opportunity, id=opportunity_id)
     applications = OpportunityApplication.objects.filter(opportunity=opportunity).order_by('-applied_at')
     context = {
@@ -913,6 +924,8 @@ def authority_opportunity_applications(request, opportunity_id):
 
 
 def authority_application_update(request, application_id):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
     application = get_object_or_404(OpportunityApplication, id=application_id)
     form = OpportunityStatusForm(request.POST or None, instance=application)
     context = {
