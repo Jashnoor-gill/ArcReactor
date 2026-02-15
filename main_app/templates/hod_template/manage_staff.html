@@ -49,7 +49,7 @@
                                     {% for Faculty in allStaff %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{Faculty.last_name}}, {{Faculty.first_name}}</td>
+                                        <td>{{Faculty.first_name}} {{Faculty.last_name}}</td>
                                         <td>{{Faculty.email}}</td>
                                         <td>{{Faculty.gender}}</td>
                                         <td>{{Faculty.staff.course}}</td>
