@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,11 +35,12 @@
             font-family: 'Inter', sans-serif;
         }
 
-        body {
+        html, body {
             background-color: #02040a;
             color: var(--text-main);
             min-height: 100vh;
-            width: 100vw;
+            width: 100%;
+            height: 100%;
             overflow-x: hidden;
         }
 
@@ -52,278 +52,306 @@
             filter: brightness(0.4);
         }
 
-                    .vignette {
-                        position: fixed;
-                        inset: 0;
-                        background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, var(--vignette-op)) 100%);
-                        pointer-events: none;
-                        z-index: 1;
-                    }
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, var(--vignette-op)) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
 
-                    #app-container {
-                        position: relative;
-                        z-index: 10;
-                        width: 100%;
-                        min-height: 100vh;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding: 24px;
-                    }
+        #app-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
 
-                    .main-window {
-                        position: relative;
-                        overflow: hidden;
-                        display: flex;
-                        flex-direction: column;
-                        background: rgba(0, 0, 0, 0.3);
-                        backdrop-filter: blur(40px);
-                        border: 1px solid var(--glass-border);
-            .vignette {
-                position: fixed;
-                inset: 0;
-                background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, var(--vignette-op)) 100%);
-                pointer-events: none;
-                z-index: 1;
-            }
+        .main-window {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.8);
+            width: 1000px;
+            max-width: 100%;
+            min-height: 620px;
+        }
 
-            #app-container {
-                position: relative;
-                z-index: 10;
-                width: 100%;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 24px;
-            }
+        .login-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
 
+        .login-content {
+            flex: 1;
+            padding: 4.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .login-visual {
+            flex: 1.2;
+            position: relative;
+            pointer-events: none;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .login-title {
+            font-size: 4.2rem;
+            font-weight: 200;
+            letter-spacing: -4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 14px;
+            color: #ffffff;
+            width: 100%;
+            outline: none;
+            transition: 0.3s;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 15px var(--primary-glow);
+            color: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-action:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+            transform: translateY(-1px);
+        }
+
+        .demo-credentials {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .demo-credentials strong {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .demo-credentials .demo-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-credentials .demo-row:last-child {
+            border-bottom: none;
+        }
+
+        .login-footer {
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .login-footer p {
+            margin: 0.5rem 0;
+        }
+
+        .login-footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
             .main-window {
-                position: relative;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                background: rgba(0, 0, 0, 0.3);
-                backdrop-filter: blur(40px);
-                border: 1px solid var(--glass-border);
-                border-radius: 40px;
-                box-shadow: 0 40px 120px rgba(0, 0, 0, 0.8);
-                width: 1000px;
-                max-width: 100%;
-                min-height: 620px;
+                min-height: auto;
+                width: 100%;
             }
 
             .login-layout {
-                display: flex;
-                width: 100%;
-                height: 100%;
+                flex-direction: column;
             }
 
             .login-content {
-                flex: 1;
-                padding: 4.5rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                background: rgba(0, 0, 0, 0.4);
-                border-right: 1px solid var(--glass-border);
+                padding: 2.5rem 2rem;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
             }
 
             .login-visual {
-                flex: 1.2;
-                position: relative;
-                pointer-events: none;
-                display: flex;
-                align-items: stretch;
+                min-height: 320px;
+                pointer-events: auto;
             }
 
             .login-title {
-                font-size: 4.2rem;
-                font-weight: 200;
-                letter-spacing: -4px;
+                font-size: 3rem;
+                letter-spacing: -2px;
             }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-bg"></div>
+    <div class="vignette"></div>
 
-            .login-subtitle {
-                color: var(--text-muted);
-                font-size: 0.75rem;
-                letter-spacing: 5px;
-                font-weight: 900;
-                text-transform: uppercase;
-                margin-bottom: 3rem;
-            }
+    <div id="app-container">
+        <div class="main-window">
+            <div class="login-layout">
+                <div class="login-content">
+                    <h1 class="login-title">AEGIS</h1>
+                    <p class="login-subtitle">Campus OS</p>
 
-            .form-label {
-                font-size: 0.8rem;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                color: var(--text-muted);
-                margin-bottom: 8px;
-            }
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
 
-            .form-control {
-                background: rgba(255, 255, 255, 0.06);
-                border: 1px solid var(--glass-border);
-                padding: 1rem;
-                border-radius: 14px;
-                color: #ffffff;
-                width: 100%;
-                outline: none;
-                transition: 0.3s;
-                font-size: 1rem;
-            }
+                    <form method="post" action="{% url 'doLogin' %}">
+                        {% csrf_token %}
 
-            .form-control:focus {
-                border-color: var(--primary);
-                background: rgba(255, 255, 255, 0.12);
-                box-shadow: 0 0 15px var(--primary-glow);
-                color: #ffffff;
-            }
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com" required>
 
-            .btn-action {
-                background: var(--primary);
-                color: white;
-                border: none;
-                padding: 1rem 1.8rem;
-                border-radius: 14px;
-                font-weight: 800;
-                cursor: pointer;
-                transition: 0.3s;
-                text-transform: uppercase;
-                font-size: 0.75rem;
-                letter-spacing: 1px;
-                width: 100%;
-            }
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
 
-            .btn-action:hover {
-                box-shadow: 0 0 25px var(--primary-glow);
-                transform: translateY(-1px);
-            }
-
-            .demo-credentials {
-                margin-top: 24px;
-                padding: 16px;
-                background: rgba(255, 255, 255, 0.06);
-                border-radius: 12px;
-                border: 1px solid var(--glass-border);
-                color: #e2e8f0;
-                font-size: 0.85rem;
-                text-align: left;
-            }
-
-            .demo-credentials .demo-row {
-                display: flex;
-                justify-content: space-between;
-                gap: 12px;
-                padding: 4px 0;
-                border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            }
-
-            .demo-credentials .demo-row:last-child {
-                border-bottom: none;
-            }
-
-            .login-footer {
-                margin-top: 2rem;
-                color: var(--text-muted);
-                font-size: 0.85rem;
-            }
-
-            .login-footer a {
-                color: #ffffff;
-                text-decoration: underline;
-            }
-
-            .alert {
-                border-radius: 12px;
-            }
-
-            @media (max-width: 992px) {
-                .main-window {
-                    min-height: auto;
-                }
-
-                .login-layout {
-                    flex-direction: column;
-                }
-
-                .login-content {
-                    padding: 2.5rem 2rem;
-                    border-right: none;
-                    border-bottom: 1px solid var(--glass-border);
-                }
-
-                .login-visual {
-                    min-height: 320px;
-                    pointer-events: auto;
-                }
-
-                .login-title {
-                    font-size: 3rem;
-                    letter-spacing: -2px;
-                }
-            }
-        </style>
-    </head>
-                                    </div>
-
-                                    {% if recaptcha_site_key %}
-                                    <div class="mb-3 text-center">
-                                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
-                                    </div>
-                                    {% endif %}
-
-                                    <div class="form-check mb-3">
-                                        <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
-                                        <label class="form-check-label" for="remember">Remember me for 30 days</label>
-                                    </div>
-
-                                    <button type="submit" class="btn-action">
-                                        <i class="fas fa-sign-in-alt"></i> Sign In
-                                    </button>
-
-                                    <div class="text-center mt-3">
-                                        <a href="{% url 'password_reset' %}" style="color: var(--text-muted); text-decoration: none;">
-                                            <i class="fas fa-key"></i> Forgot password?
-                                        </a>
-                                    </div>
-
-                                    <div class="demo-credentials">
-                                        <strong>Demo logins</strong>
-                                        <div class="demo-row">
-                                            <span>Username: adminx@aegis.local</span>
-                                            <span>Password: xyz</span>
-                                        </div>
-                                        <div class="demo-row">
-                                            <span>Username: authorityx@aegis.local</span>
-                                            <span>Password: xyz</span>
-                                        </div>
-                                        <div class="demo-row">
-                                            <span>Username: studentx@aegis.local</span>
-                                            <span>Password: xyz</span>
-                                        </div>
-                                        <div class="demo-row">
-                                            <span>Username: facultyx@aegis.local</span>
-                                            <span>Password: xyz</span>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <div class="login-footer">
-                                    <p>© {% now "Y" %} AEGIS campusOS. All rights reserved.</p>
-                                    <p style="margin-top: 8px;">
-                                        New here? <a href="{% url 'register' %}">Create an account</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="login-visual">
-                                <spline-viewer url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"></spline-viewer>
-                            </div>
+                        {% if recaptcha_site_key %}
+                        <div class="mb-3 text-center">
+                            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
                         </div>
+                        {% endif %}
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
+                            <label class="form-check-label" for="remember">Remember me for 30 days</label>
+                        </div>
+
+                        <button type="submit" class="btn-action">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <a href="{% url 'password_reset' %}" style="color: var(--text-muted); text-decoration: none;">
+                                <i class="fas fa-key"></i> Forgot password?
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="demo-credentials">
+                        <strong>Demo Logins</strong>
+                        <div class="demo-row">
+                            <span>Admin:</span>
+                            <span>adminx@aegis.local</span>
+                        </div>
+                        <div class="demo-row">
+                            <span>HOD:</span>
+                            <span>authorityx@aegis.local</span>
+                        </div>
+                        <div class="demo-row">
+                            <span>Student:</span>
+                            <span>studentx@aegis.local</span>
+                        </div>
+                        <div class="demo-row">
+                            <span>Faculty:</span>
+                            <span>facultyx@aegis.local</span>
+                        </div>
+                        <div class="demo-row">
+                            <span>Password (all):</span>
+                            <span>xyz</span>
+                        </div>
+                    </div>
+
+                    <div class="login-footer">
+                        <p>© {% now "Y" %} AEGIS campusOS. All rights reserved.</p>
+                        <p style="margin-top: 8px;">
+                            New here? <a href="{% url 'register' %}">Create an account</a>
+                        </p>
                     </div>
                 </div>
 
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-            </body>
+                <div class="login-visual">
+                    <spline-viewer url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"></spline-viewer>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</body>
+</html>
