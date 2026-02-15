@@ -64,24 +64,12 @@
             </div>
         </div>
 
-        <div class="stat-box">
-            <div class="stat-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-content">
-                <h3>{{ total_subject }}</h3>
-                <p>Total Subjects</p>
-                <a href="{% url 'manage_subject' %}" class="btn btn-sm btn-outline-danger mt-2">
-                    <i class="fas fa-eye"></i> View All
-                </a>
-            </div>
-        </div>
     </div>
 
     <!-- Charts Section -->
     <div class="row mt-4">
         <!-- Staff vs Students Chart -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="dashboard-card">
                 <div class="card-header bg-transparent border-0">
                     <h4 class="mb-0">
@@ -91,21 +79,6 @@
                 </div>
                 <div class="card-body">
                     <canvas id="pieChart" style="height: 300px;"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Attendance per Subject Chart -->
-        <div class="col-lg-6 mb-4">
-            <div class="dashboard-card">
-                <div class="card-header bg-transparent border-0">
-                    <h4 class="mb-0">
-                        <i class="fas fa-chart-bar me-2" style="color: #1e3c72;"></i>
-                        Attendance Per Subject
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <canvas id="barChart" style="height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -128,10 +101,10 @@
         </div>
     </div>
 
-    <!-- Course and Subject Distribution -->
+    <!-- Course Distribution -->
     <div class="row">
         <!-- Students per Course -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="dashboard-card">
                 <div class="card-header bg-transparent border-0">
                     <h4 class="mb-0">
@@ -141,21 +114,6 @@
                 </div>
                 <div class="card-body">
                     <canvas id="pieChart2" style="height: 300px;"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Students per Subject -->
-        <div class="col-lg-6 mb-4">
-            <div class="dashboard-card">
-                <div class="card-header bg-transparent border-0">
-                    <h4 class="mb-0">
-                        <i class="fas fa-chart-doughnut me-2" style="color: #1e3c72;"></i>
-                        Students Per Subject
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <canvas id="pieChart3" style="height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -189,12 +147,6 @@
                             <a href="{% url 'add_course' %}" class="btn btn-primary w-100 py-3">
                                 <i class="fas fa-graduation-cap fa-2x mb-2 d-block"></i>
                                 Add Course
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="{% url 'add_subject' %}" class="btn btn-primary w-100 py-3">
-                                <i class="fas fa-book-open fa-2x mb-2 d-block"></i>
-                                Add Subject
                             </a>
                         </div>
                     </div>
@@ -251,45 +203,6 @@
                                 size: 13,
                                 weight: '500'
                             }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Attendance per Subject Bar Chart
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: {{ subject_list|safe }},
-                datasets: [{
-                    label: 'Attendance Records',
-                    data: {{ attendance_list }},
-                    backgroundColor: colors.primary,
-                    borderRadius: 6,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#e5e7eb',
-                            drawBorder: false
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
                         }
                     }
                 }
@@ -384,40 +297,6 @@
             }
         });
 
-        // Students per Subject Pie Chart
-        const pieCtx3 = document.getElementById('pieChart3').getContext('2d');
-        new Chart(pieCtx3, {
-            type: 'doughnut',
-            data: {
-                labels: {{ subject_list|safe }},
-                datasets: [{
-                    data: {{ student_count_list_in_subject }},
-                    backgroundColor: [
-                        colors.primary, colors.accent, colors.success, colors.warning,
-                        colors.danger, colors.info, '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
-                    ],
-                    borderWidth: 3,
-                    borderColor: '#fff',
-                    cutout: '65%'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            usePointStyle: true,
-                            font: {
-                                size: 11
-                            }
-                        }
-                    }
-                }
-            }
-        });
     });
 </script>
 {% endblock custom_js %}

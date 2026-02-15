@@ -40,7 +40,7 @@
                                     <td>{{app.application_number}}</td>
                                     <td>{{app.first_name}} {{app.last_name}}</td>
                                     <td>{{app.email}}</td>
-                                    <td>{{app.admission_course.course.name}}</td>
+                                    <td>{{app.admission_course.course}}</td>
                                     <td>{{app.created_at|date:"Y-m-d"}}</td>
                                     <td>
                                         <span class="badge badge-{% if app.status == 'approved' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'enrolled' %}primary{% else %}warning{% endif %}">

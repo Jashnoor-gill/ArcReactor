@@ -35,7 +35,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{student.admin.first_name}} {{student.admin.last_name}}</td>
-                                    <td>{{student.course.name}}</td>
+                                    <td>{{student.course}}</td>
                                     <td>{{student.session}}</td>
                                     <td>
                                         <a href="{% url 'student_fee_management' student.id %}" class="btn btn-primary btn-sm">

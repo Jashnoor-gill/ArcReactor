@@ -69,10 +69,13 @@ class Admin(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=120)
+    course_code = models.CharField("Course Code", max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        if self.course_code:
+            return f"{self.name} ({self.course_code})"
         return self.name
 
 class Book(models.Model):

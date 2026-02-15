@@ -36,7 +36,7 @@
                                 {% for structure in structures %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{structure.course.name}}</td>
+                                    <td>{{structure.course}}</td>
                                     <td>{{structure.session}}</td>
                                     <td>{{structure.get_fee_type_display}}</td>
                                     <td>₹{{structure.amount}}</td>

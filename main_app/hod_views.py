@@ -163,9 +163,11 @@ def add_course(request):
     if request.method == 'POST':
         if form.is_valid():
             name = form.cleaned_data.get('name')
+            course_code = form.cleaned_data.get('course_code')
             try:
                 course = Course()
                 course.name = name
+                course.course_code = course_code
                 course.save()
                 messages.success(request, "Successfully Added")
                 return redirect(reverse('add_course'))
@@ -349,9 +351,11 @@ def edit_course(request, course_id):
     if request.method == 'POST':
         if form.is_valid():
             name = form.cleaned_data.get('name')
+            course_code = form.cleaned_data.get('course_code')
             try:
                 course = Course.objects.get(id=course_id)
                 course.name = name
+                course.course_code = course_code
                 course.save()
                 messages.success(request, "Successfully Updated")
             except:
