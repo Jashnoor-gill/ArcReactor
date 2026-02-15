@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse
+from django.db.models import Q
 from django.shortcuts import (HttpResponseRedirect, get_object_or_404,
                               redirect, render)
 from django.urls import reverse
@@ -228,32 +229,33 @@ def student_view_result(request):
 
 def student_ride_share(request):
     student = get_object_or_404(Student, admin=request.user)
-    if not student.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        posts = RideSharePost.objects.none()
-        form = None
-        context = {
-            'posts': posts,
-            'form': form,
-            'can_post': False,
-            'page_title': 'Ride Sharing'
-        }
-        return render(request, 'student_template/student_ride_share.html', context)
-    posts = RideSharePost.objects.filter(course=student.course).order_by('-created_at')
+    if student.course:
+        posts = RideSharePost.objects.filter(
+            Q(course=student.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(student.course)
+    else:
+        messages.info(request, "Posting to the campus-wide feed. Assign a course to get a course-specific feed.")
+        posts = RideSharePost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     form = RideSharePostForm(request.POST or None)
     context = {
         'posts': posts,
         'form': form,
         'can_post': True,
-        'page_title': f'Ride Sharing - {student.course}'
+        'scope_label': scope_label,
+        'page_title': f'Ride Sharing - {scope_label}'
     }
     if request.method == 'POST':
         if form.is_valid():
             post = form.save(commit=False)
-            post.course = student.course
+            post.course = student.course if student.course else None
             post.student = student
             post.save()
-            messages.success(request, "Ride share posted")
+            if student.course:
+                messages.success(request, "Ride share posted")
+            else:
+                messages.success(request, "Ride share posted to the campus-wide feed")
             return redirect(reverse('student_ride_share'))
         messages.error(request, "Please correct the errors in the form")
     return render(request, 'student_template/student_ride_share.html', context)
@@ -261,32 +263,33 @@ def student_ride_share(request):
 
 def student_lost_found(request):
     student = get_object_or_404(Student, admin=request.user)
-    if not student.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        posts = LostFoundPost.objects.none()
-        form = None
-        context = {
-            'posts': posts,
-            'form': form,
-            'can_post': False,
-            'page_title': 'Lost & Found'
-        }
-        return render(request, 'student_template/student_lost_found.html', context)
-    posts = LostFoundPost.objects.filter(course=student.course).order_by('-created_at')
+    if student.course:
+        posts = LostFoundPost.objects.filter(
+            Q(course=student.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(student.course)
+    else:
+        messages.info(request, "Posting to the campus-wide board. Assign a course to get a course-specific board.")
+        posts = LostFoundPost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     form = LostFoundPostForm(request.POST or None, request.FILES or None)
     context = {
         'posts': posts,
         'form': form,
         'can_post': True,
-        'page_title': f'Lost & Found - {student.course}'
+        'scope_label': scope_label,
+        'page_title': f'Lost & Found - {scope_label}'
     }
     if request.method == 'POST':
         if form.is_valid():
             post = form.save(commit=False)
-            post.course = student.course
+            post.course = student.course if student.course else None
             post.student = student
             post.save()
-            messages.success(request, "Lost & Found post created")
+            if student.course:
+                messages.success(request, "Lost & Found post created")
+            else:
+                messages.success(request, "Lost & Found post created on the campus-wide board")
             return redirect(reverse('student_lost_found'))
         messages.error(request, "Please correct the errors in the form")
     return render(request, 'student_template/student_lost_found.html', context)
@@ -294,32 +297,33 @@ def student_lost_found(request):
 
 def student_forum(request):
     student = get_object_or_404(Student, admin=request.user)
-    if not student.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        posts = DiscussionPost.objects.none()
-        form = None
-        context = {
-            'posts': posts,
-            'form': form,
-            'can_post': False,
-            'page_title': 'Discussion Forum'
-        }
-        return render(request, 'student_template/student_forum.html', context)
-    posts = DiscussionPost.objects.filter(course=student.course).order_by('-created_at')
+    if student.course:
+        posts = DiscussionPost.objects.filter(
+            Q(course=student.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(student.course)
+    else:
+        messages.info(request, "Posting to the campus-wide forum. Assign a course to get a course-specific forum.")
+        posts = DiscussionPost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     form = DiscussionPostForm(request.POST or None)
     context = {
         'posts': posts,
         'form': form,
         'can_post': True,
-        'page_title': f'Discussion Forum - {student.course}'
+        'scope_label': scope_label,
+        'page_title': f'Discussion Forum - {scope_label}'
     }
     if request.method == 'POST':
         if form.is_valid():
             post = form.save(commit=False)
-            post.course = student.course
+            post.course = student.course if student.course else None
             post.student = student
             post.save()
-            messages.success(request, "Discussion posted")
+            if student.course:
+                messages.success(request, "Discussion posted")
+            else:
+                messages.success(request, "Discussion posted to the campus-wide forum")
             return redirect(reverse('student_forum'))
         messages.error(request, "Please correct the errors in the form")
     return render(request, 'student_template/student_forum.html', context)
@@ -327,10 +331,14 @@ def student_forum(request):
 
 def student_forum_post(request, post_id):
     student = get_object_or_404(Student, admin=request.user)
-    if not student.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('student_forum'))
-    post = get_object_or_404(DiscussionPost, id=post_id, course=student.course)
+    if student.course:
+        post = get_object_or_404(
+            DiscussionPost,
+            id=post_id,
+            course__in=[student.course, None]
+        )
+    else:
+        post = get_object_or_404(DiscussionPost, id=post_id, course__isnull=True)
     replies = DiscussionReply.objects.filter(post=post).order_by('created_at')
     form = DiscussionReplyForm(request.POST or None)
     context = {

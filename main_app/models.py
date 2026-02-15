@@ -174,7 +174,7 @@ class CourseNote(models.Model):
 
 
 class RideSharePost(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     origin = models.CharField(max_length=200)
     destination = models.CharField(max_length=200)
@@ -195,7 +195,7 @@ class LostFoundPost(models.Model):
         ("found", "Found"),
     )
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     post_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     title = models.CharField(max_length=200)
@@ -211,7 +211,7 @@ class LostFoundPost(models.Model):
 
 
 class DiscussionPost(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     body = models.TextField()

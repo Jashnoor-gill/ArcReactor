@@ -3,6 +3,7 @@ import json
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse
+from django.db.models import Q
 from django.shortcuts import (HttpResponseRedirect, get_object_or_404,redirect, render)
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -459,46 +460,65 @@ def staff_course_notes(request):
 
 def staff_ride_share_moderation(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    if not staff.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('staff_home'))
-    posts = RideSharePost.objects.filter(course=staff.course).order_by('-created_at')
+    if staff.course:
+        posts = RideSharePost.objects.filter(
+            Q(course=staff.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(staff.course)
+    else:
+        posts = RideSharePost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     context = {
         'posts': posts,
-        'page_title': f'Ride Sharing - {staff.course}'
+        'page_title': f'Ride Sharing - {scope_label}'
     }
     return render(request, 'staff_template/staff_ride_share_moderation.html', context)
 
 
 def staff_lost_found_moderation(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    if not staff.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('staff_home'))
-    posts = LostFoundPost.objects.filter(course=staff.course).order_by('-created_at')
+    if staff.course:
+        posts = LostFoundPost.objects.filter(
+            Q(course=staff.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(staff.course)
+    else:
+        posts = LostFoundPost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     context = {
         'posts': posts,
-        'page_title': f'Lost & Found - {staff.course}'
+        'page_title': f'Lost & Found - {scope_label}'
     }
     return render(request, 'staff_template/staff_lost_found_moderation.html', context)
 
 
 def staff_forum_moderation(request):
     staff = get_object_or_404(Staff, admin=request.user)
-    if not staff.course:
-        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
-        return redirect(reverse('staff_home'))
-    posts = DiscussionPost.objects.filter(course=staff.course).order_by('-created_at')
+    if staff.course:
+        posts = DiscussionPost.objects.filter(
+            Q(course=staff.course) | Q(course__isnull=True)
+        ).order_by('-created_at')
+        scope_label = str(staff.course)
+    else:
+        posts = DiscussionPost.objects.filter(course__isnull=True).order_by('-created_at')
+        scope_label = "Campus-wide"
     context = {
         'posts': posts,
-        'page_title': f'Discussion Forum - {staff.course}'
+        'page_title': f'Discussion Forum - {scope_label}'
     }
     return render(request, 'staff_template/staff_forum_moderation.html', context)
 
 
 def staff_forum_post_moderation(request, post_id):
     staff = get_object_or_404(Staff, admin=request.user)
-    post = get_object_or_404(DiscussionPost, id=post_id, course=staff.course)
+    if staff.course:
+        post = get_object_or_404(
+            DiscussionPost,
+            id=post_id,
+            course__in=[staff.course, None]
+        )
+    else:
+        post = get_object_or_404(DiscussionPost, id=post_id, course__isnull=True)
     replies = DiscussionReply.objects.filter(post=post).order_by('created_at')
     context = {
         'post': post,
@@ -510,7 +530,10 @@ def staff_forum_post_moderation(request, post_id):
 
 def staff_delete_ride_share(request, post_id):
     staff = get_object_or_404(Staff, admin=request.user)
-    post = get_object_or_404(RideSharePost, id=post_id, course=staff.course)
+    if staff.course:
+        post = get_object_or_404(RideSharePost, id=post_id, course__in=[staff.course, None])
+    else:
+        post = get_object_or_404(RideSharePost, id=post_id, course__isnull=True)
     post.delete()
     messages.success(request, "Ride share post removed")
     return redirect(reverse('staff_ride_share_moderation'))
@@ -518,7 +541,10 @@ def staff_delete_ride_share(request, post_id):
 
 def staff_delete_lost_found(request, post_id):
     staff = get_object_or_404(Staff, admin=request.user)
-    post = get_object_or_404(LostFoundPost, id=post_id, course=staff.course)
+    if staff.course:
+        post = get_object_or_404(LostFoundPost, id=post_id, course__in=[staff.course, None])
+    else:
+        post = get_object_or_404(LostFoundPost, id=post_id, course__isnull=True)
     post.delete()
     messages.success(request, "Lost & Found post removed")
     return redirect(reverse('staff_lost_found_moderation'))
@@ -526,7 +552,10 @@ def staff_delete_lost_found(request, post_id):
 
 def staff_delete_forum_post(request, post_id):
     staff = get_object_or_404(Staff, admin=request.user)
-    post = get_object_or_404(DiscussionPost, id=post_id, course=staff.course)
+    if staff.course:
+        post = get_object_or_404(DiscussionPost, id=post_id, course__in=[staff.course, None])
+    else:
+        post = get_object_or_404(DiscussionPost, id=post_id, course__isnull=True)
     post.delete()
     messages.success(request, "Forum post removed")
     return redirect(reverse('staff_forum_moderation'))
@@ -534,7 +563,10 @@ def staff_delete_forum_post(request, post_id):
 
 def staff_delete_forum_reply(request, reply_id):
     staff = get_object_or_404(Staff, admin=request.user)
-    reply = get_object_or_404(DiscussionReply, id=reply_id, post__course=staff.course)
+    if staff.course:
+        reply = get_object_or_404(DiscussionReply, id=reply_id, post__course__in=[staff.course, None])
+    else:
+        reply = get_object_or_404(DiscussionReply, id=reply_id, post__course__isnull=True)
     post_id = reply.post.id
     reply.delete()
     messages.success(request, "Reply removed")
