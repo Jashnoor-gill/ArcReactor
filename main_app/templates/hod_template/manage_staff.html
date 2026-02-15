@@ -52,10 +52,10 @@
                                         <td>{{Faculty.last_name}}, {{Faculty.first_name}}</td>
                                         <td>{{Faculty.email}}</td>
                                         <td>{{Faculty.gender}}</td>
-                                        <td>{{Faculty.Faculty.course}}</td>
+                                        <td>{{Faculty.staff.course}}</td>
                                         <td>
-                                            <a href="{% url 'edit_staff' Faculty.Faculty.id %}" class="btn btn-info">Edit</a> - 
-                                            <a href="{% url 'delete_staff' Faculty.Faculty.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Delete</a>
+                                            <a href="{% url 'edit_staff' Faculty.staff.id %}" class="btn btn-info">Edit</a> - 
+                                            <a href="{% url 'delete_staff' Faculty.staff.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Delete</a>
                                         
                                         </td>
                                     </tr>
