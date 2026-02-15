@@ -4,6 +4,33 @@ Unified campus platform that combines governance, academics, opportunities, and 
 
 Deployed at: https://aegis-campusos.onrender.com
 
+## Demo Credentials
+
+### Admin
+- **adminx@aegis.local** / `xyz`
+
+### Authority
+- **authorityx@aegis.local** / `xyz`
+- **hostel@aegis.local** / `hostelxyz`
+- **infra@aegis.local** / `infraxyz`
+- **mess@aegis.local** / `messxyz`
+- **academic@aegis.local** / `acadxyz`
+
+### Faculty
+- **facultyx@aegis.local** / `xyz`
+- **indu@aegis.local** / `Induxyz`
+- **rohit@aegis.local** / `Rohitxyz`
+- **sanju@aegis.local** / `Sanjuxyz`
+- **kapil@aegis.local** / `Kapilxyz`
+
+### Students
+- **studentx@aegis.local** / `xyz`
+- **tony@aegis.local** / `Tonyxyz`
+- **thor@aegis.local** / `thorxyz`
+- **natasha@aegis.local** / `Natashaxyz`
+- **strange@aegis.local** / `Strangexyz`
+- **wanda@aegis.local** / `Wandaxyz`
+
 ## Highlights
 
 - Role-based portals: Admin, Faculty, Student, Authority
