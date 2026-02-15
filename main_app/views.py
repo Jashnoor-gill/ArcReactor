@@ -91,24 +91,9 @@ def doLogin(request, **kwargs):
                 messages.error(request, 'Captcha could not be verified. Try Again')
                 return redirect('/')
         
-        portal_type = request.POST.get('portal_type')
-        if portal_type not in ['admin', 'staff', 'student']:
-            messages.error(request, 'Please select a portal to sign in.')
-            return redirect('/')
-
         # Authenticate
         user = EmailBackend.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
         if user != None:
-            if portal_type == 'admin' and user.user_type != '1':
-                messages.error(request, 'Admin portal allows admin accounts only.')
-                return redirect('/')
-            if portal_type == 'staff' and user.user_type != '2':
-                messages.error(request, 'Faculty portal allows staff accounts only.')
-                return redirect('/')
-            if portal_type == 'student' and user.user_type != '3':
-                messages.error(request, 'Student portal allows student accounts only.')
-                return redirect('/')
-
             login(request, user)
             
             # Handle "Remember Me" functionality
