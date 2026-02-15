@@ -22,13 +22,14 @@ def admin_home(request):
     subjects = Subject.objects.all()
     total_subject = subjects.count()
     total_course = Course.objects.all().count()
-    attendance_list = Attendance.objects.filter(subject__in=subjects)
+    courses_for_attendance = Course.objects.all()
+    attendance_list = Attendance.objects.filter(course__in=courses_for_attendance)
     total_attendance = attendance_list.count()
     attendance_list = []
     subject_list = []
-    for subject in subjects:
-        attendance_count = Attendance.objects.filter(subject=subject).count()
-        subject_list.append(subject.name[:7])
+    for course in courses_for_attendance:
+        attendance_count = Attendance.objects.filter(course=course).count()
+        subject_list.append(course.name[:7])
         attendance_list.append(attendance_count)
 
     # Total Subjects and students in Each Course
