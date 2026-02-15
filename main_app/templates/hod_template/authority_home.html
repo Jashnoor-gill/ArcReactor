@@ -1,0 +1,54 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Grievance Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="aegis-callout">
+                                    <h6>Total Grievances</h6>
+                                    <h3>{{ total_grievances }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="aegis-callout">
+                                    <h6>Submitted</h6>
+                                    <h3>{{ submitted_count }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="aegis-callout">
+                                    <h6>Under Review</h6>
+                                    <h3>{{ under_review_count }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="aegis-callout">
+                                    <h6>In Progress</h6>
+                                    <h3>{{ in_progress_count }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="aegis-callout">
+                                    <h6>Resolved</h6>
+                                    <h3>{{ resolved_count }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'authority_grievance_list' %}" class="btn btn-primary">Open Grievance Desk</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

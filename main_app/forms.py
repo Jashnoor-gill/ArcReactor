@@ -84,6 +84,15 @@ class AdminForm(CustomUserForm):
         fields = CustomUserForm.Meta.fields
 
 
+class AuthorityForm(CustomUserForm):
+    def __init__(self, *args, **kwargs):
+        super(AuthorityForm, self).__init__(*args, **kwargs)
+
+    class Meta(CustomUserForm.Meta):
+        model = Authority
+        fields = CustomUserForm.Meta.fields
+
+
 class StaffForm(CustomUserForm):
     def __init__(self, *args, **kwargs):
         super(StaffForm, self).__init__(*args, **kwargs)

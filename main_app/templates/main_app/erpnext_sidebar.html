@@ -293,6 +293,14 @@
             </a>
         </div>
 
+        <div class="nav-item">
+            {% url 'authority_view_profile' as authority_view_profile %}
+            <a href="{{ authority_view_profile }}" class="nav-link {% if authority_view_profile == request.path %}active{% endif %}">
+                <i class="fas fa-user-circle"></i>
+                <span class="nav-text">Profile</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Governance</h6>
 
         <div class="nav-item">

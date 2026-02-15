@@ -91,7 +91,24 @@ def admin_home(request):
 
 
 def authority_home(request):
-    return redirect(reverse('authority_grievance_list'))
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
+
+    total_grievances = Grievance.objects.count()
+    submitted_count = Grievance.objects.filter(status='submitted').count()
+    under_review_count = Grievance.objects.filter(status='under_review').count()
+    in_progress_count = Grievance.objects.filter(status='in_progress').count()
+    resolved_count = Grievance.objects.filter(status='resolved').count()
+
+    context = {
+        'page_title': 'Authority Dashboard',
+        'total_grievances': total_grievances,
+        'submitted_count': submitted_count,
+        'under_review_count': under_review_count,
+        'in_progress_count': in_progress_count,
+        'resolved_count': resolved_count,
+    }
+    return render(request, 'hod_template/authority_home.html', context)
 
 def add_staff(request):
     form = StaffForm(request.POST or None, request.FILES or None)
@@ -743,6 +760,40 @@ def admin_view_profile(request):
             messages.error(
                 request, "Error Occured While Updating Profile " + str(e))
     return render(request, "hod_template/admin_view_profile.html", context)
+
+
+def authority_view_profile(request):
+    if request.user.user_type != '4':
+        return redirect(reverse('admin_home'))
+    authority, _created = Authority.objects.get_or_create(admin=request.user)
+    form = AuthorityForm(request.POST or None, request.FILES or None,
+                         instance=authority)
+    context = {'form': form,
+               'page_title': 'Authority Profile'
+               }
+    if request.method == 'POST':
+        try:
+            if form.is_valid():
+                first_name = form.cleaned_data.get('first_name')
+                last_name = form.cleaned_data.get('last_name')
+                password = form.cleaned_data.get('password') or None
+                passport = request.FILES.get('profile_pic') or None
+                custom_user = authority.admin
+                if password != None:
+                    custom_user.set_password(password)
+                if passport != None:
+                    fs = FileSystemStorage()
+                    filename = fs.save(passport.name, passport)
+                    passport_url = fs.url(filename)
+                    custom_user.profile_pic = passport_url
+                custom_user.first_name = first_name
+                custom_user.last_name = last_name
+                custom_user.save()
+                messages.success(request, "Profile updated")
+                return redirect(reverse('authority_view_profile'))
+        except Exception:
+            messages.error(request, "Could not update profile")
+    return render(request, "hod_template/authority_view_profile.html", context)
 
 
 def admin_notify_staff(request):
