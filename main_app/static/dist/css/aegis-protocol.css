@@ -361,6 +361,185 @@
     margin-bottom: 6px;
 }
 
+/* Grievance Status Row Colors */
+.aegis-skin .grievance-row-submitted {
+    background-color: #fef3c7 !important;
+    border-left: 4px solid #f59e0b;
+}
+
+.aegis-skin .grievance-row-under_review {
+    background-color: #dbeafe !important;
+    border-left: 4px solid #3b82f6;
+}
+
+.aegis-skin .grievance-row-in_progress {
+    background-color: #dbeafe !important;
+    border-left: 4px solid #3b82f6;
+}
+
+.aegis-skin .grievance-row-resolved {
+    background-color: #dcfce7 !important;
+    border-left: 4px solid #10b981;
+}
+
+.aegis-skin .grievance-row-submitted:hover {
+    background-color: #fde68a !important;
+}
+
+.aegis-skin .grievance-row-under_review:hover,
+.aegis-skin .grievance-row-in_progress:hover {
+    background-color: #bfdbfe !important;
+}
+
+.aegis-skin .grievance-row-resolved:hover {
+    background-color: #bbf7d0 !important;
+}
+
+/* Enhanced Sidebar Styles - Option 1: Modern Gradient */
+.sidebar-modern .sidebar {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-modern .nav-link {
+    border-radius: 12px;
+    margin: 4px 8px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-modern .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--aegis-primary);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-modern .nav-link:hover {
+    background: rgba(79, 70, 229, 0.15);
+    transform: translateX(4px);
+}
+
+.sidebar-modern .nav-link:hover::before {
+    transform: scaleY(1);
+}
+
+.sidebar-modern .nav-link.active {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(14, 165, 233, 0.2));
+    border-left: 4px solid var(--aegis-primary);
+}
+
+/* Enhanced Sidebar Styles - Option 2: Glassmorphism */
+.sidebar-glass .sidebar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-glass .nav-link {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 6px 10px;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.sidebar-glass .nav-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(79, 70, 229, 0.4);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.sidebar-glass .nav-link.active {
+    background: rgba(79, 70, 229, 0.25);
+    border-color: rgba(79, 70, 229, 0.6);
+}
+
+/* Enhanced Sidebar Styles - Option 3: Minimal Elegant */
+.sidebar-minimal .sidebar {
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
+
+.sidebar-minimal .nav-link {
+    border-radius: 8px;
+    margin: 3px 12px;
+    padding: 10px 14px;
+    color: #6b7280;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar-minimal .nav-link:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.sidebar-minimal .nav-link.active {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 #4f46e5;
+}
+
+.sidebar-minimal .nav-section-title {
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 16px 16px 8px;
+}
+
+/* Enhanced Sidebar Styles - Option 4: Vibrant Cards */
+.sidebar-vibrant .sidebar {
+    background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+    padding: 12px 8px;
+}
+
+.sidebar-vibrant .nav-link {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin: 6px 8px;
+    padding: 14px 16px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.sidebar-vibrant .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-vibrant .nav-link.active {
+    background: #ffffff;
+    color: #4f46e5;
+    border-color: transparent;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-vibrant .nav-icon {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 6px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.sidebar-vibrant .nav-link.active .nav-icon {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
 @media (max-width: 768px) {
     .aegis-skin {
         padding: 16px;

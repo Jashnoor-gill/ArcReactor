@@ -31,7 +31,7 @@
                             </thead>
                             <tbody>
                                 {% for grievance in grievances %}
-                                <tr>
+                                <tr class="grievance-row-{{ grievance.status }}">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ grievance.tracking_code }}</td>
                                     <td>{{ grievance.title }}</td>
