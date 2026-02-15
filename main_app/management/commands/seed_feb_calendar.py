@@ -17,11 +17,26 @@ class Command(BaseCommand):
 
         events = [
             {
+                'title': 'Campus Safety Drill',
+                'event_type': 'event',
+                'start_date': date(2026, 2, 1),
+                'description': 'Mandatory safety drill for all departments with evacuation briefing.',
+                'venue': 'Central Quad',
+            },
+            {
                 'title': 'Winter Break Ends',
                 'event_type': 'semester_start',
                 'start_date': date(2026, 2, 2),
                 'description': 'Classes resume after winter break. Students return to campus.',
                 'venue': 'Campus Wide',
+            },
+            {
+                'title': 'Library Orientation Week',
+                'event_type': 'event',
+                'start_date': date(2026, 2, 4),
+                'end_date': date(2026, 2, 7),
+                'description': 'Workshops on digital resources, research databases, and citation tools.',
+                'venue': 'Main Library',
             },
             {
                 'title': 'Mid-Term Examination Period Begins',
@@ -39,10 +54,24 @@ class Command(BaseCommand):
                 'venue': 'Main Auditorium',
             },
             {
+                'title': 'Department Council Elections',
+                'event_type': 'event',
+                'start_date': date(2026, 2, 12),
+                'description': 'Student council elections across all departments.',
+                'venue': 'Department Blocks',
+            },
+            {
                 'title': 'Research Paper Submission Deadline',
                 'event_type': 'deadline',
                 'start_date': date(2026, 2, 15),
                 'description': 'Final deadline for semester research paper submissions.',
+            },
+            {
+                'title': 'Innovation Lab Open House',
+                'event_type': 'event',
+                'start_date': date(2026, 2, 16),
+                'description': 'Hands-on demos and project showcases at the Innovation Lab.',
+                'venue': 'Innovation Lab',
             },
             {
                 'title': 'Career Fair 2026',
@@ -60,6 +89,13 @@ class Command(BaseCommand):
                 'venue': 'Conference Hall',
             },
             {
+                'title': 'Hostel Maintenance Window',
+                'event_type': 'other',
+                'start_date': date(2026, 2, 22),
+                'description': 'Scheduled maintenance for hostel electrical and water systems.',
+                'venue': 'Hostel Blocks',
+            },
+            {
                 'title': 'Sports Week Begins',
                 'event_type': 'event',
                 'start_date': date(2026, 2, 23),
@@ -72,6 +108,13 @@ class Command(BaseCommand):
                 'event_type': 'registration',
                 'start_date': date(2026, 2, 25),
                 'description': 'Online registration portal opens for Summer 2026 semester.',
+            },
+            {
+                'title': 'Faculty Advising Day',
+                'event_type': 'event',
+                'start_date': date(2026, 2, 26),
+                'description': 'One-on-one academic advising sessions for course planning.',
+                'venue': 'Faculty Offices',
             },
             {
                 'title': 'Project Proposal Deadline',
