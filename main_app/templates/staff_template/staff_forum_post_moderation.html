@@ -1,0 +1,36 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ post.title }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ post.body }}</p>
+                        <hr>
+                        <h5>Replies</h5>
+                        {% for reply in replies %}
+                        <div class="border rounded p-2 mb-2">
+                            <div class="text-muted small">{{ reply.student.admin.get_full_name }} • {{ reply.created_at|date:"M d, Y h:i A" }}</div>
+                            <div>{{ reply.body }}</div>
+                            <div class="mt-2">
+                                <a href="{% url 'staff_delete_forum_reply' reply.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Remove this reply?')">Delete</a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="alert alert-info">No replies yet.</div>
+                        {% endfor %}
+                        <a href="{% url 'staff_forum_moderation' %}" class="btn btn-secondary">Back to Forum</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

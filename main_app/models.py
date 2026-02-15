@@ -173,6 +173,64 @@ class CourseNote(models.Model):
         return f"{self.title} ({self.course})"
 
 
+class RideSharePost(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    origin = models.CharField(max_length=200)
+    destination = models.CharField(max_length=200)
+    ride_time = models.DateTimeField()
+    seats_available = models.PositiveSmallIntegerField(default=1)
+    contact_info = models.CharField(max_length=200)
+    notes = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.origin} -> {self.destination}"
+
+
+class LostFoundPost(models.Model):
+    TYPE_CHOICES = (
+        ("lost", "Lost"),
+        ("found", "Found"),
+    )
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    post_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    location = models.CharField(max_length=200, blank=True)
+    contact_info = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='lost_found/', null=True, blank=True)
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.get_post_type_display()} - {self.title}"
+
+
+class DiscussionPost(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+
+class DiscussionReply(models.Model):
+    post = models.ForeignKey(DiscussionPost, on_delete=models.CASCADE, related_name='replies')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reply on {self.post_id}"
+
+
 class Attendance(models.Model):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=True, blank=True)

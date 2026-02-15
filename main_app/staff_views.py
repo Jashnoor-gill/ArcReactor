@@ -457,6 +457,90 @@ def staff_course_notes(request):
     return render(request, 'staff_template/staff_course_notes.html', context)
 
 
+def staff_ride_share_moderation(request):
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('staff_home'))
+    posts = RideSharePost.objects.filter(course=staff.course).order_by('-created_at')
+    context = {
+        'posts': posts,
+        'page_title': f'Ride Sharing - {staff.course}'
+    }
+    return render(request, 'staff_template/staff_ride_share_moderation.html', context)
+
+
+def staff_lost_found_moderation(request):
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('staff_home'))
+    posts = LostFoundPost.objects.filter(course=staff.course).order_by('-created_at')
+    context = {
+        'posts': posts,
+        'page_title': f'Lost & Found - {staff.course}'
+    }
+    return render(request, 'staff_template/staff_lost_found_moderation.html', context)
+
+
+def staff_forum_moderation(request):
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('staff_home'))
+    posts = DiscussionPost.objects.filter(course=staff.course).order_by('-created_at')
+    context = {
+        'posts': posts,
+        'page_title': f'Discussion Forum - {staff.course}'
+    }
+    return render(request, 'staff_template/staff_forum_moderation.html', context)
+
+
+def staff_forum_post_moderation(request, post_id):
+    staff = get_object_or_404(Staff, admin=request.user)
+    post = get_object_or_404(DiscussionPost, id=post_id, course=staff.course)
+    replies = DiscussionReply.objects.filter(post=post).order_by('created_at')
+    context = {
+        'post': post,
+        'replies': replies,
+        'page_title': 'Forum Thread'
+    }
+    return render(request, 'staff_template/staff_forum_post_moderation.html', context)
+
+
+def staff_delete_ride_share(request, post_id):
+    staff = get_object_or_404(Staff, admin=request.user)
+    post = get_object_or_404(RideSharePost, id=post_id, course=staff.course)
+    post.delete()
+    messages.success(request, "Ride share post removed")
+    return redirect(reverse('staff_ride_share_moderation'))
+
+
+def staff_delete_lost_found(request, post_id):
+    staff = get_object_or_404(Staff, admin=request.user)
+    post = get_object_or_404(LostFoundPost, id=post_id, course=staff.course)
+    post.delete()
+    messages.success(request, "Lost & Found post removed")
+    return redirect(reverse('staff_lost_found_moderation'))
+
+
+def staff_delete_forum_post(request, post_id):
+    staff = get_object_or_404(Staff, admin=request.user)
+    post = get_object_or_404(DiscussionPost, id=post_id, course=staff.course)
+    post.delete()
+    messages.success(request, "Forum post removed")
+    return redirect(reverse('staff_forum_moderation'))
+
+
+def staff_delete_forum_reply(request, reply_id):
+    staff = get_object_or_404(Staff, admin=request.user)
+    reply = get_object_or_404(DiscussionReply, id=reply_id, post__course=staff.course)
+    post_id = reply.post.id
+    reply.delete()
+    messages.success(request, "Reply removed")
+    return redirect(reverse('staff_forum_post_moderation', args=[post_id]))
+
+
 def staff_opportunity_applications(request, opportunity_id):
     opportunity = get_object_or_404(Opportunity, id=opportunity_id)
     applications = OpportunityApplication.objects.filter(opportunity=opportunity).order_by('-applied_at')

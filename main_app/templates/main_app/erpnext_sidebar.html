@@ -458,6 +458,32 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Course Community</h6>
+
+        <div class="nav-item">
+            {% url 'staff_ride_share_moderation' as staff_ride_share_moderation %}
+            <a href="{{ staff_ride_share_moderation }}" class="nav-link {% if staff_ride_share_moderation == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-car"></i>
+                <span class="nav-text">Ride Sharing (Moderate)</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'staff_lost_found_moderation' as staff_lost_found_moderation %}
+            <a href="{{ staff_lost_found_moderation }}" class="nav-link {% if staff_lost_found_moderation == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-search"></i>
+                <span class="nav-text">Lost & Found (Moderate)</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'staff_forum_moderation' as staff_forum_moderation %}
+            <a href="{{ staff_forum_moderation }}" class="nav-link {% if staff_forum_moderation == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-comments"></i>
+                <span class="nav-text">Forum (Moderate)</span>
+            </a>
+        </div>
+
     {% else %}
         <!-- Student Navigation -->
         <h6 class="nav-section-title">Main</h6>
@@ -563,6 +589,32 @@
             <a href="{{ student_view_result }}" class="nav-link {% if student_view_result == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-chart-bar"></i>
                 <span class="nav-text">View Results</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Course Community</h6>
+
+        <div class="nav-item">
+            {% url 'student_ride_share' as student_ride_share %}
+            <a href="{{ student_ride_share }}" class="nav-link {% if student_ride_share == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-car"></i>
+                <span class="nav-text">Ride Sharing</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_lost_found' as student_lost_found %}
+            <a href="{{ student_lost_found }}" class="nav-link {% if student_lost_found == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-search"></i>
+                <span class="nav-text">Lost & Found</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_forum' as student_forum %}
+            <a href="{{ student_forum }}" class="nav-link {% if student_forum == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-comments"></i>
+                <span class="nav-text">Discussion Forum</span>
             </a>
         </div>
 

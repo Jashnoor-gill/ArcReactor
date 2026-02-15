@@ -226,6 +226,101 @@ def student_view_result(request):
     return render(request, "student_template/student_view_result.html", context)
 
 
+def student_ride_share(request):
+    student = get_object_or_404(Student, admin=request.user)
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('student_home'))
+    posts = RideSharePost.objects.filter(course=student.course).order_by('-created_at')
+    form = RideSharePostForm(request.POST or None)
+    context = {
+        'posts': posts,
+        'form': form,
+        'page_title': f'Ride Sharing - {student.course}'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.course = student.course
+            post.student = student
+            post.save()
+            messages.success(request, "Ride share posted")
+            return redirect(reverse('student_ride_share'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'student_template/student_ride_share.html', context)
+
+
+def student_lost_found(request):
+    student = get_object_or_404(Student, admin=request.user)
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('student_home'))
+    posts = LostFoundPost.objects.filter(course=student.course).order_by('-created_at')
+    form = LostFoundPostForm(request.POST or None, request.FILES or None)
+    context = {
+        'posts': posts,
+        'form': form,
+        'page_title': f'Lost & Found - {student.course}'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.course = student.course
+            post.student = student
+            post.save()
+            messages.success(request, "Lost & Found post created")
+            return redirect(reverse('student_lost_found'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'student_template/student_lost_found.html', context)
+
+
+def student_forum(request):
+    student = get_object_or_404(Student, admin=request.user)
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('student_home'))
+    posts = DiscussionPost.objects.filter(course=student.course).order_by('-created_at')
+    form = DiscussionPostForm(request.POST or None)
+    context = {
+        'posts': posts,
+        'form': form,
+        'page_title': f'Discussion Forum - {student.course}'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.course = student.course
+            post.student = student
+            post.save()
+            messages.success(request, "Discussion posted")
+            return redirect(reverse('student_forum'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'student_template/student_forum.html', context)
+
+
+def student_forum_post(request, post_id):
+    student = get_object_or_404(Student, admin=request.user)
+    post = get_object_or_404(DiscussionPost, id=post_id, course=student.course)
+    replies = DiscussionReply.objects.filter(post=post).order_by('created_at')
+    form = DiscussionReplyForm(request.POST or None)
+    context = {
+        'post': post,
+        'replies': replies,
+        'form': form,
+        'page_title': 'Forum Thread'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.post = post
+            reply.student = student
+            reply.save()
+            messages.success(request, "Reply added")
+            return redirect(reverse('student_forum_post', args=[post.id]))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'student_template/student_forum_post.html', context)
+
+
 #library
 
 def view_books(request):

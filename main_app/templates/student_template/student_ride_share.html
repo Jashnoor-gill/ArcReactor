@@ -1,0 +1,64 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Post a Ride</h3>
+                    </div>
+                    <div class="card-body">
+                        {% include "main_app/form_template.html" with messages=messages form=form button_text="Post Ride" %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Ride Sharing Posts</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Route</th>
+                                        <th>Time</th>
+                                        <th>Seats</th>
+                                        <th>Contact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in posts %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <strong>{{ post.origin }}</strong> → {{ post.destination }}
+                                            {% if post.notes %}
+                                            <div class="text-muted small">{{ post.notes|truncatewords:12 }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ post.ride_time|date:"M d, Y h:i A" }}</td>
+                                        <td>{{ post.seats_available }}</td>
+                                        <td>{{ post.contact_info }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No ride sharing posts yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -130,6 +130,45 @@ class CourseNoteForm(FormSettings):
         fields = ['title', 'description', 'reference_url', 'attachment']
 
 
+class RideSharePostForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(RideSharePostForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = RideSharePost
+        fields = ['origin', 'destination', 'ride_time', 'seats_available', 'contact_info', 'notes']
+        widgets = {
+            'ride_time': DateInput(attrs={'type': 'datetime-local'}),
+        }
+
+
+class LostFoundPostForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(LostFoundPostForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = LostFoundPost
+        fields = ['post_type', 'title', 'description', 'location', 'contact_info', 'image']
+
+
+class DiscussionPostForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(DiscussionPostForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = DiscussionPost
+        fields = ['title', 'body']
+
+
+class DiscussionReplyForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(DiscussionReplyForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = DiscussionReply
+        fields = ['body']
+
+
 class SubjectForm(FormSettings):
 
     def __init__(self, *args, **kwargs):
