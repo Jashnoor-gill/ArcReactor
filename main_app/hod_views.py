@@ -98,12 +98,6 @@ def add_staff(request):
             gender = form.cleaned_data.get('gender')
             password = form.cleaned_data.get('password')
             course = form.cleaned_data.get('course')
-            # If course was provided as a string (optional), convert to Course instance
-            if course and isinstance(course, str):
-                course_name = course.strip()
-                if course_name:
-                    course_obj, created = Course.objects.get_or_create(name=course_name)
-                    course = course_obj
             passport = request.FILES.get('profile_pic')
             fs = FileSystemStorage()
             filename = fs.save(passport.name, passport)
@@ -192,12 +186,6 @@ def add_subject(request):
         if form.is_valid():
             name = form.cleaned_data.get('name')
             course = form.cleaned_data.get('course')
-            # Accept either Course instance or a string entered by user
-            if course and isinstance(course, str):
-                course_name = course.strip()
-                if course_name:
-                    course_obj, created = Course.objects.get_or_create(name=course_name)
-                    course = course_obj
             staff = form.cleaned_data.get('staff')
             try:
                 subject = Subject()
