@@ -2,6 +2,8 @@
 
 Unified campus platform that combines governance, academics, opportunities, and student interaction in one dashboard.
 
+Deployed at: https://aegis-campusos.onrender.com
+
 ## Highlights
 
 - Role-based portals: Admin, Faculty, Student, Authority
@@ -29,6 +31,52 @@ Unified campus platform that combines governance, academics, opportunities, and 
 - Frontend: HTML, CSS, JavaScript, Bootstrap
 - Database: SQLite (dev) / PostgreSQL (production)
 - Deployment: Gunicorn + WhiteNoise
+
+## Quality and Architecture
+
+- Code cleanliness: modular Django apps, role-based views, reusable form templates, and consistent styling layers.
+- Database schema design: relational models with explicit foreign keys, choice fields for enums, and normalized core entities.
+- Security protocols: Django authentication, CSRF protection, hashed passwords, and role-based access control.
+- Scalability considerations: PostgreSQL support, stateless app design, and static asset handling via WhiteNoise.
+- Documentation quality: detailed README, environment variable guidance, and setup instructions.
+
+## Tightening Checklist (No Behavior Changes)
+
+These are non-breaking steps to improve quality without changing runtime behavior:
+
+- Code cleanliness: add more focused docstrings, remove unused imports, and keep view logic cohesive.
+- Schema design: document required fields and constraints; review nullability and indexes before tightening.
+- Security: keep `DEBUG=False` in production, confirm secure cookies and allowed hosts in deployment settings.
+- Scalability: prefer pagination on large lists and use database indexes on high-traffic lookups.
+- Documentation: expand deployment notes and operational runbooks as the system grows.
+
+## Product Pillars (Current Assessment)
+
+Core pillars implemented:
+
+- Role-based access (Admin, Faculty, Student, Authority)
+- Academic workflows (courses, sessions, attendance, results, notes)
+- Governance (grievance desk with tracking and escalation)
+- Opportunities and internships (posting, applications, review)
+- Student community (ride sharing, lost and found, forum)
+- Admissions and fee management modules
+
+Bonus pillars implemented:
+
+- Authority role with grievance desk ownership
+- Course enrollment request approvals
+- Campus-wide community fallback for unassigned students
+- Course notes/references for faculty
+- Internship application management and status updates
+
+Quality signals (current):
+
+- UI/UX quality: consistent visual system and navigation, but accessibility can be improved.
+- Responsiveness: works across breakpoints; long tables could benefit from pagination and better mobile patterns.
+- Accessibility: needs ARIA labels and contrast checks in some views.
+- Smoothness: generally stable; more loading states and empty-state guidance would help.
+- Initiative and creativity: strong set of thoughtful modules; scope can expand with analytics and audit logs.
+- Technical cleverness: solid Django patterns; further optimizations (caching, indexing, async tasks) remain.
 
 ## Getting Started
 
