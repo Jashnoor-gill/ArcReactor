@@ -55,6 +55,10 @@ admin.site.register(Exam)
 admin.site.register(ExamAttendees)
 admin.site.register(GradeConfiguration)
 admin.site.register(ExamRoom)
+admin.site.register(ExamDate)
+
+# Academic Calendar
+admin.site.register(AcademicEvent)
 
 # Transport Management
 admin.site.register(TransportRoute)
