@@ -29,8 +29,9 @@ def staff_home(request):
             date_list.append(attendance.date)
             attendance_per_date.append(attendance_count)
     
+    last_initial = staff.admin.last_name[:1] if staff.admin.last_name else ""
     context = {
-        'page_title': 'Faculty Panel - ' + str(staff.admin.first_name) + ' ' + str(staff.admin.last_name[0]) + '' + ' (' + str(staff.course) + ')',
+        'page_title': 'Faculty Panel - ' + str(staff.admin.first_name) + ' ' + last_initial + '' + ' (' + str(staff.course) + ')',
         'total_students': total_students,
         'total_attendance': total_attendance,
         'total_leave': total_leave,
