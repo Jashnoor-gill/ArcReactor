@@ -166,7 +166,12 @@ class Attendance(models.Model):
 class AttendanceReport(models.Model):
     student = models.ForeignKey(Student, on_delete=models.DO_NOTHING)
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
+    STATUS_CHOICES = (
+        ("present", "Present"),
+        ("absent", "Absent"),
+        ("medical", "Medical Leave"),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="absent")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

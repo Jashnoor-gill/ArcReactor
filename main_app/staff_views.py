@@ -66,7 +66,7 @@ def get_students(request):
         for student in students:
             data = {
                     "id": student.id,
-                    "name": student.admin.last_name + " " + student.admin.first_name
+                    "name": student.admin.first_name + " " + student.admin.last_name
                     }
             student_data.append(data)
         return JsonResponse(json.dumps(student_data), content_type='application/json', safe=False)
@@ -89,7 +89,8 @@ def save_attendance(request):
 
         for student_dict in students:
             student = get_object_or_404(Student, id=student_dict.get('id'))
-            attendance_report = AttendanceReport(student=student, attendance=attendance, status=student_dict.get('status'))
+            status = student_dict.get('status') or "absent"
+            attendance_report = AttendanceReport(student=student, attendance=attendance, status=status)
             attendance_report.save()
     except Exception as e:
         return None
@@ -119,7 +120,7 @@ def get_student_attendance(request):
         student_data = []
         for attendance in attendance_data:
             data = {"id": attendance.student.admin.id,
-                    "name": attendance.student.admin.last_name + " " + attendance.student.admin.first_name,
+                    "name": attendance.student.admin.first_name + " " + attendance.student.admin.last_name,
                     "status": attendance.status}
             student_data.append(data)
         return JsonResponse(json.dumps(student_data), content_type='application/json', safe=False)
@@ -139,7 +140,7 @@ def update_attendance(request):
             student = get_object_or_404(
                 Student, admin_id=student_dict.get('id'))
             attendance_report = get_object_or_404(AttendanceReport, student=student, attendance=attendance)
-            attendance_report.status = student_dict.get('status')
+            attendance_report.status = student_dict.get('status') or "absent"
             attendance_report.save()
     except Exception as e:
         return None

@@ -104,8 +104,10 @@
                     var div_data = ""
                     
                     for (key in json_data) {
-                        if (json_data[key]['status']){
+                        if (json_data[key]['status'] === 'present'){
                             div_data += "<div class='col-lg-3 col-md-4 col-sm-6'><div class='attendance-pill attendance-pill--present'><b>"+ json_data[key]['date'] + "</b><br/>Present</div></div>" 
+                        } else if (json_data[key]['status'] === 'medical') {
+                            div_data += "<div class='col-lg-3 col-md-4 col-sm-6'><div class='attendance-pill attendance-pill--medical'><b>"+ json_data[key]['date'] + "</b><br/>Medical Leave</div></div>"
                         } else {
                             div_data += "<div class='col-lg-3 col-md-4 col-sm-6'><div class='attendance-pill attendance-pill--absent'><b>"+ json_data[key]['date'] + "</b><br/>Absent</div></div>"
                         }

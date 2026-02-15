@@ -338,6 +338,11 @@
     color: #991b1b;
 }
 
+.aegis-skin .attendance-pill--medical {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
 .aegis-skin .aegis-callout {
     border-radius: var(--aegis-radius);
     padding: 18px 20px;

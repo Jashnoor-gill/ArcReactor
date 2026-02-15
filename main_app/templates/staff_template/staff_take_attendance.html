@@ -91,14 +91,29 @@ if (course.length  == 0 || session.length == 0){
                 if (json_data.length < 1) {
                     alert("No data to display")
                 } else {
-                    var div_data = "<hr/><div class='form-group'></div><div class='form-group'> <label>Attendance Date</label><input type='date' class='form-control' name='attendance_date' id='attendance_date' ><div class='row'>"
+                    var all_ids = []
+                    var present_options = ""
+                    var absent_options = ""
+                    var medical_options = ""
 
                     for (key in json_data) {
-                        div_data += "<div class='col-lg-3'><div class='form-check custom-control custom-checkbox'><input type='checkbox' class='custom-control-input' checked='checked' name='student_data[]' value=" + json_data[key]['id'] + " id='checkbox" + json_data[key]['id'] + "' /> <label for='checkbox" + json_data[key]['id'] + "' class='custom-control-label'>" + json_data[key]['name'] + "</label></div> </div>"
+                        var option = "<option value='" + json_data[key]['id'] + "'>" + json_data[key]['name'] + "</option>"
+                        present_options += option
+                        absent_options += option
+                        medical_options += option
+                        all_ids.push(json_data[key]['id'])
                     }
-                    div_data += "</div></div>"
-                    div_data += "<div class='form-group'><button id='save_attendance' class='btn btn-success' type='button'>Save Attendance</button></div>"
+
+                    var div_data = "<hr/><div class='form-group'><label>Attendance Date</label><input type='date' class='form-control' name='attendance_date' id='attendance_date'></div>"
+                    div_data += "<div class='alert alert-info'>Select students under Present or Medical Leave. Unselected students are marked Absent by default.</div>"
+                    div_data += "<div class='row'>"
+                    div_data += "<div class='col-lg-4'><label>Present (Multi-Select)</label><select multiple class='form-control' id='present_list' style='min-height: 200px;'>" + present_options + "</select></div>"
+                    div_data += "<div class='col-lg-4'><label>Absent (Multi-Select)</label><select multiple class='form-control' id='absent_list' style='min-height: 200px;'>" + absent_options + "</select></div>"
+                    div_data += "<div class='col-lg-4'><label>Medical Leave (Multi-Select)</label><select multiple class='form-control' id='medical_list' style='min-height: 200px;'>" + medical_options + "</select></div>"
+                    div_data += "</div>"
+                    div_data += "<div class='form-group mt-3'><button id='save_attendance' class='btn btn-success' type='button'>Save Attendance</button></div>"
                     $("#student_data").html(div_data)
+                    $("#student_data").data("all_ids", all_ids)
                 }
             }).fail(function (response) {
                 alert("Error in fetching students")
@@ -108,14 +123,28 @@ if (course.length  == 0 || session.length == 0){
             $(document).on('click', '#save_attendance', function () {
                 $(this).attr("disabled","disabled")
                 $(this).text("Saving Attendance Data...")
-                var student_data = $("input[name='student_data[]']").map(function () {
-                    if ($(this).is(":checked")){
-                    return {'id':$(this).val(), 'status': 1};
-    
-                    }
-                    return {'id':$(this).val(), 'status': 0};
-    
-                }).get()
+                var all_ids = $("#student_data").data("all_ids") || []
+                var present_ids = $("#present_list").val() || []
+                var absent_ids = $("#absent_list").val() || []
+                var medical_ids = $("#medical_list").val() || []
+
+                var status_map = {}
+                all_ids.forEach(function(id) {
+                    status_map[id] = "absent"
+                })
+                absent_ids.forEach(function(id) {
+                    status_map[id] = "absent"
+                })
+                present_ids.forEach(function(id) {
+                    status_map[id] = "present"
+                })
+                medical_ids.forEach(function(id) {
+                    status_map[id] = "medical"
+                })
+
+                var student_data = all_ids.map(function(id) {
+                    return {'id': id, 'status': status_map[id]}
+                })
                 var attendance_date = $('#attendance_date').val()
                 if (attendance_date.length < 10){
                     alert("Select date")

@@ -23,6 +23,16 @@
     box-shadow: 1px 1px 1px grey;
     margin: 5px;
 }
+.attendance_div_blue{
+    padding: 10px;
+    background: #3b82f6;
+    border: 3px solid white;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin: 5px;
+}
 </style>
 {% endblock custom_css %}
 {% block content %}
@@ -184,10 +194,11 @@ if (attendance_date.length  == 0){
                     var div_data = "<hr/><div class='form-group'></div><div class='form-group'> <label>Student Attendance</label><div class='row'>"
 
                     for (key in json_data) {
-                            if (json_data[key]['status'] == 'True'){
+                            if (json_data[key]['status'] === 'present'){
                                 div_data += "<div class='col-lg-3 attendance_div_green'><b>"+ json_data[key]['name'] + "</b><br/>Present</div>" 
-                            }else{
-        
+                            } else if (json_data[key]['status'] === 'medical') {
+                                div_data += "<div class='col-lg-3 attendance_div_blue'><b>"+ json_data[key]['name'] + "</b><br/>Medical Leave</div>"
+                            } else {
                                 div_data += "<div class='col-lg-3 attendance_div_red'><b>"+ json_data[key]['name'] + "</b><br/>Absent</div>"
                             }
                         }

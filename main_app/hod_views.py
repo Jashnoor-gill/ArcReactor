@@ -63,11 +63,12 @@ def admin_home(request):
     students = Student.objects.all()
     for student in students:
         
-        attendance = AttendanceReport.objects.filter(student_id=student.id, status=True).count()
-        absent = AttendanceReport.objects.filter(student_id=student.id, status=False).count()
+        attendance = AttendanceReport.objects.filter(student_id=student.id, status="present").count()
+        absent = AttendanceReport.objects.filter(student_id=student.id, status="absent").count()
+        medical = AttendanceReport.objects.filter(student_id=student.id, status="medical").count()
         leave = LeaveReportStudent.objects.filter(student_id=student.id, status=1).count()
         student_attendance_present_list.append(attendance)
-        student_attendance_leave_list.append(leave+absent)
+        student_attendance_leave_list.append(leave + absent + medical)
         student_name_list.append(student.admin.first_name)
 
     context = {
@@ -300,7 +301,7 @@ def manage_staff(request):
 def manage_student(request):
     students = CustomUser.objects.filter(user_type=3).select_related('student').filter(student__isnull=False)
     search_query = request.GET.get('search', '')
-    course_filter = request.GET.get('course', '')
+    branch_filter = request.GET.get('branch', '')
     
     if search_query:
         students = students.filter(
@@ -309,15 +310,15 @@ def manage_student(request):
             models.Q(email__icontains=search_query)
         )
     
-    if course_filter:
-        students = students.filter(student__course__id=course_filter)
+    if branch_filter:
+        students = students.filter(student__branch__id=branch_filter)
     
-    courses = Course.objects.all()
+    branches = Branch.objects.all()
     context = {
         'students': students,
-        'courses': courses,
+        'branches': branches,
         'search_query': search_query,
-        'selected_course': course_filter,
+        'selected_branch': branch_filter,
         'page_title': 'Manage Students',
         'student_count': students.count()
     }
@@ -697,7 +698,7 @@ def get_admin_attendance(request):
         json_data = []
         for report in attendance_reports:
             data = {
-                "status":  str(report.status),
+                "status": report.status,
                 "name": str(report.student)
             }
             json_data.append(data)

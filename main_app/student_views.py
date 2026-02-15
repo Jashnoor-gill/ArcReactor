@@ -19,7 +19,8 @@ def student_home(request):
     if not student.course or not student.session:
         messages.warning(request, "Your profile is not fully assigned yet. Please contact the admin to add your course/session.")
     total_attendance = AttendanceReport.objects.filter(student=student).count()
-    total_present = AttendanceReport.objects.filter(student=student, status=True).count()
+    total_present = AttendanceReport.objects.filter(student=student, status="present").count()
+    total_medical = AttendanceReport.objects.filter(student=student, status="medical").count()
     if total_attendance == 0:  # Don't divide. DivisionByZero
         percent_absent = percent_present = 0
     else:
@@ -31,7 +32,8 @@ def student_home(request):
         'total_present': total_present,
         'percent_present': percent_present,
         'percent_absent': percent_absent,
-        'page_title': 'Student Homepage'
+        'page_title': 'Student Homepage',
+        'total_medical': total_medical
 
     }
     return render(request, 'student_template/erpnext_student_home.html', context)
