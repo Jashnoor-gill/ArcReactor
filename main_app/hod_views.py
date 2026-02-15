@@ -1041,12 +1041,17 @@ def manage_fee_structures(request):
     courses = Course.objects.all()
     sessions = Session.objects.all()
     
+    # Attach a sample roll_number attribute to each structure (if any student_fee exists)
+    for s in structures:
+        sf = StudentFee.objects.filter(fee_structure=s).select_related('student').first()
+        s.roll_number = getattr(sf.student, 'id', '') if sf else ''
+
     context = {
         'structures': structures,
         'courses': courses,
         'sessions': sessions,
         'page_title': 'Manage Fee Structure',
-        'fee_types': FeeStructure.FEE_TYPE_CHOICES
+        'fee_types': FeeStructure.FEE_TYPE_CHOICES,
     }
     return render(request, 'hod_template/manage_fee_structures.html', context)
 

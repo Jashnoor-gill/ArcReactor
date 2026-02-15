@@ -11,9 +11,6 @@
                     <div class="card-header">
                         <h3 class="card-title">{{page_title}}</h3>
                         <div class="card-tools">
-                            <a href="{% url 'fee_defaulters_report' %}" class="btn btn-danger btn-sm">
-                                <i class="fas fa-exclamation-triangle"></i> View Defaulters
-                            </a>
                             <a href="{% url 'fee_payment_history' %}" class="btn btn-info btn-sm">
                                 <i class="fas fa-history"></i> Payment History
                             </a>
@@ -35,14 +32,11 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{student.admin.first_name}} {{student.admin.last_name}}</td>
-                                    <td>{{student.course}}</td>
+                                    <td>{{ student.id }}</td>
                                     <td>{{student.session}}</td>
                                     <td>
                                         <a href="{% url 'student_fee_management' student.id %}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-wallet"></i> Manage Fees
-                                        </a>
-                                        <a href="{% url 'collect_fee_payment' student.id %}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-money-bill"></i> Collect Payment
                                         </a>
                                     </td>
                                 </tr>

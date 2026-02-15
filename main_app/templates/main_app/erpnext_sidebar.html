@@ -191,12 +191,7 @@
                         <span class="nav-text">Payment History</span>
                     </a>
                 </div>
-                <div class="nav-item">
-                    {% url 'fee_defaulters_report' as fee_defaulters_report %}
-                    <a href="{{ fee_defaulters_report }}" class="nav-link {% if 'defaulters' in request.path %}active{% endif %}">
-                        <span class="nav-text">Fee Defaulters</span>
-                    </a>
-                </div>
+                <!-- Fee Defaulters removed per admin request -->
             </div>
         </div>
 
