@@ -40,6 +40,13 @@ def student_home(request):
 @ csrf_exempt
 def student_view_attendance(request):
     student = get_object_or_404(Student, admin=request.user)
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        context = {
+            'course': None,
+            'page_title': 'View Attendance'
+        }
+        return render(request, 'student_template/student_view_attendance.html', context)
     if request.method != 'POST':
         course = get_object_or_404(Course, id=student.course.id)
         context = {
@@ -52,6 +59,8 @@ def student_view_attendance(request):
         start = request.POST.get('start_date')
         end = request.POST.get('end_date')
         try:
+            if not course_id:
+                return JsonResponse(json.dumps([]), safe=False)
             course = get_object_or_404(Course, id=course_id)
             start_date = datetime.strptime(start, "%Y-%m-%d")
             end_date = datetime.strptime(end, "%Y-%m-%d")
@@ -67,8 +76,8 @@ def student_view_attendance(request):
                 }
                 json_data.append(data)
             return JsonResponse(json.dumps(json_data), safe=False)
-        except Exception as e:
-            return None
+        except Exception:
+            return JsonResponse(json.dumps([]), safe=False)
 
 
 def student_apply_leave(request):
