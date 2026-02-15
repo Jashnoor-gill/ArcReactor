@@ -26,14 +26,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for Faculty in allStaff %}
+                                {% for staff in allStaff %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{Faculty.last_name}}, {{Faculty.first_name}}</td>
-                                    <td>{{Faculty.email}}</td>
-                                    <td>{{Faculty.gender}}</td>
-                                    <td>{{Faculty.Faculty.course}}</td>
-                                    <td><button data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary show_notification" value="{{Faculty.id}}">Send Notification</button> 
+                                    <td>{{staff.last_name}}, {{staff.first_name}}</td>
+                                    <td>{{staff.email}}</td>
+                                    <td>{{staff.gender}}</td>
+                                    <td>{{staff.staff.course}}</td>
+                                    <td><button data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary show_notification" value="{{staff.id}}">Send Notification</button> 
                                     </td>
                                 </tr>
                                 {% endfor %}
