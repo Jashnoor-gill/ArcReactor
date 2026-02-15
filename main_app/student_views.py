@@ -386,3 +386,79 @@ def student_course_requests(request):
     return render(request, 'student_template/student_course_requests.html', context)
 
 
+# Company Internship Views
+def student_view_internships(request):
+    """View all active company internships"""
+    internships = CompanyInternship.objects.filter(is_active=True).order_by('-created_at')
+    student = get_object_or_404(Student, admin=request.user)
+    
+    # Filter options
+    company = request.GET.get('company')
+    location = request.GET.get('location')
+    
+    if company:
+        internships = internships.filter(company_name__icontains=company)
+    if location:
+        internships = internships.filter(location__icontains=location)
+    
+    # Get student's applications to mark already applied internships
+    applied_ids = InternshipApplication.objects.filter(student=student).values_list('internship_id', flat=True)
+    
+    context = {
+        'internships': internships,
+        'applied_ids': list(applied_ids),
+        'page_title': 'Company Internships',
+        'filters': {
+            'company': company or '',
+            'location': location or ''
+        }
+    }
+    return render(request, 'student_template/student_view_internships.html', context)
+
+
+def student_apply_internship(request, internship_id):
+    """Apply for a company internship"""
+    internship = get_object_or_404(CompanyInternship, id=internship_id, is_active=True)
+    student = get_object_or_404(Student, admin=request.user)
+    
+    # Check if already applied
+    existing = InternshipApplication.objects.filter(
+        internship=internship,
+        student=student
+    ).first()
+    
+    if existing:
+        messages.info(request, "You have already applied for this internship")
+        return redirect(reverse('student_view_internships'))
+    
+    form = InternshipApplicationForm(request.POST or None, request.FILES or None)
+    context = {
+        'form': form,
+        'internship': internship,
+        'page_title': f'Apply for {internship.position}'
+    }
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.internship = internship
+            application.student = student
+            application.save()
+            messages.success(request, "Application submitted successfully")
+            return redirect(reverse('student_internship_applications'))
+        messages.error(request, "Please correct the errors in the form")
+    
+    return render(request, 'student_template/student_apply_internship.html', context)
+
+
+def student_internship_applications(request):
+    """View all internship applications by student"""
+    student = get_object_or_404(Student, admin=request.user)
+    applications = InternshipApplication.objects.filter(student=student).order_by('-applied_at')
+    
+    context = {
+        'applications': applications,
+        'page_title': 'My Internship Applications'
+    }
+    return render(request, 'student_template/student_internship_applications.html', context)
+

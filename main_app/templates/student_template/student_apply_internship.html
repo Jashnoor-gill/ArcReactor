@@ -1,0 +1,75 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Apply for Internship</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'student_view_internships' %}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <div class="d-flex align-items-center mb-2">
+                                        {% if internship.company_logo %}
+                                        <img src="{{ internship.company_logo.url }}" alt="{{ internship.company_name }}" style="width: 60px; height: 60px; object-fit: contain;" class="mr-3">
+                                        {% endif %}
+                                        <div>
+                                            <h4 class="mb-0">{{ internship.company_name }}</h4>
+                                            <h5 class="text-muted">{{ internship.position }}</h5>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-1"><strong>Location:</strong> {{ internship.location }}</p>
+                                            <p class="mb-1"><strong>Duration:</strong> {{ internship.duration }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1"><strong>Stipend:</strong> {{ internship.stipend|default:"Not disclosed" }}</p>
+                                            <p class="mb-1"><strong>Deadline:</strong> {{ internship.application_deadline|date:"M d, Y" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h5>Description</h5>
+                                <p>{{ internship.description }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h5>Requirements</h5>
+                                <p>{{ internship.requirements }}</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Your Application</h5>
+                                {% include "main_app/form_template.html" with messages=messages form=form button_text="Submit Application"%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

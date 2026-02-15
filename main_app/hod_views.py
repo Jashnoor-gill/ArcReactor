@@ -1373,3 +1373,93 @@ def fee_defaulters_report(request):
     }
     return render(request, 'hod_template/fee_defaulters_report.html', context)
 
+
+# Company Internship Management
+def add_company_internship(request):
+    form = CompanyInternshipForm(request.POST or None, request.FILES or None)
+    context = {
+        'form': form,
+        'page_title': 'Add Company Internship'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            internship = form.save(commit=False)
+            internship.posted_by = request.user
+            internship.save()
+            messages.success(request, "Company internship added successfully")
+            return redirect(reverse('manage_company_internships'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'hod_template/add_company_internship.html', context)
+
+
+def manage_company_internships(request):
+    internships = CompanyInternship.objects.all().order_by('-created_at')
+    context = {
+        'internships': internships,
+        'page_title': 'Manage Company Internships'
+    }
+    return render(request, 'hod_template/manage_company_internships.html', context)
+
+
+def edit_company_internship(request, internship_id):
+    internship = get_object_or_404(CompanyInternship, id=internship_id)
+    form = CompanyInternshipForm(request.POST or None, request.FILES or None, instance=internship)
+    context = {
+        'form': form,
+        'internship': internship,
+        'page_title': 'Edit Company Internship'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Internship updated successfully")
+            return redirect(reverse('manage_company_internships'))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'hod_template/edit_company_internship.html', context)
+
+
+def delete_company_internship(request, internship_id):
+    internship = get_object_or_404(CompanyInternship, id=internship_id)
+    try:
+        internship.delete()
+        messages.success(request, "Internship deleted successfully")
+    except Exception as e:
+        messages.error(request, f"Error deleting internship: {str(e)}")
+    return redirect(reverse('manage_company_internships'))
+
+
+def view_internship_applications(request, internship_id):
+    internship = get_object_or_404(CompanyInternship, id=internship_id)
+    applications = InternshipApplication.objects.filter(internship=internship).order_by('-applied_at')
+    context = {
+        'internship': internship,
+        'applications': applications,
+        'page_title': f'{internship.position} Applications'
+    }
+    return render(request, 'hod_template/view_internship_applications.html', context)
+
+
+def update_internship_application(request, application_id):
+    application = get_object_or_404(InternshipApplication, id=application_id)
+    form = InternshipApplicationStatusForm(request.POST or None, instance=application)
+    context = {
+        'form': form,
+        'application': application,
+        'page_title': 'Update Application Status'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Application status updated successfully")
+            
+            # Send notification to student
+            notification = NotificationStudent(
+                student=application.student,
+                message=f"Your application for {application.internship.position} at {application.internship.company_name} has been updated to: {application.get_status_display()}"
+            )
+            notification.save()
+            
+            return redirect(reverse('view_internship_applications', args=[application.internship.id]))
+        messages.error(request, "Please correct the errors in the form")
+    return render(request, 'hod_template/update_internship_application.html', context)
+

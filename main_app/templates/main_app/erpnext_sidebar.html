@@ -263,6 +263,24 @@
             </a>
         </div>
 
+        <h6 class="nav-section-title">Company Internships</h6>
+
+        <div class="nav-item">
+            {% url 'add_company_internship' as add_company_internship %}
+            <a href="{{ add_company_internship }}" class="nav-link {% if add_company_internship == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-plus-circle"></i>
+                <span class="nav-text">Add Internship</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'manage_company_internships' as manage_company_internships %}
+            <a href="{{ manage_company_internships }}" class="nav-link {% if manage_company_internships == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-building"></i>
+                <span class="nav-text">Manage Internships</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Leave Management</h6>
         
         <div class="nav-item">
@@ -464,6 +482,24 @@
             <a href="{{ student_my_applications }}" class="nav-link {% if student_my_applications == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-clipboard-check"></i>
                 <span class="nav-text">My Applications</span>
+            </a>
+        </div>
+
+        <h6 class="nav-section-title">Company Internships</h6>
+
+        <div class="nav-item">
+            {% url 'student_view_internships' as student_view_internships %}
+            <a href="{{ student_view_internships }}" class="nav-link {% if student_view_internships == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-building"></i>
+                <span class="nav-text">Browse Internships</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            {% url 'student_internship_applications' as student_internship_applications %}
+            <a href="{{ student_internship_applications }}" class="nav-link {% if student_internship_applications == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-file-alt"></i>
+                <span class="nav-text">My Internship Apps</span>
             </a>
         </div>
 

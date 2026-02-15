@@ -1386,3 +1386,52 @@ class PayrollSlip(models.Model):
     class Meta:
         ordering = ['-generated_date']
 
+
+class CompanyInternship(models.Model):
+    """Company-based internships posted by admin"""
+    company_name = models.CharField(max_length=200)
+    company_logo = models.ImageField(upload_to='internships/logos/', null=True, blank=True)
+    position = models.CharField(max_length=200)
+    description = models.TextField()
+    requirements = models.TextField()
+    location = models.CharField(max_length=200)
+    duration = models.CharField(max_length=100)  # e.g., "3 months", "6 months"
+    stipend = models.CharField(max_length=100, blank=True)
+    application_deadline = models.DateField()
+    posted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="posted_internships")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.position} at {self.company_name}"
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+class InternshipApplication(models.Model):
+    """Student applications for company internships"""
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("shortlisted", "Shortlisted"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+    )
+
+    internship = models.ForeignKey(CompanyInternship, on_delete=models.CASCADE, related_name="applications")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="internship_applications")
+    cover_letter = models.TextField()
+    resume = models.FileField(upload_to='internships/resumes/', null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    applied_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    admin_remarks = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.student.admin.get_full_name()} - {self.internship.position}"
+
+    class Meta:
+        unique_together = ['internship', 'student']
+        ordering = ['-applied_at']
+

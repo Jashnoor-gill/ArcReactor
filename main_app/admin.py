@@ -23,6 +23,8 @@ admin.site.register(Grievance)
 admin.site.register(GrievanceUpdate)
 admin.site.register(Opportunity)
 admin.site.register(OpportunityApplication)
+admin.site.register(CompanyInternship)
+admin.site.register(InternshipApplication)
 
 # Admissions & Registration
 admin.site.register(AdmissionSession)

@@ -1,0 +1,80 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Applications for {{ internship.position }} at {{ internship.company_name }}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'manage_company_internships' %}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back to Internships
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <strong>Internship Details:</strong><br>
+                                    <strong>Location:</strong> {{ internship.location }}<br>
+                                    <strong>Duration:</strong> {{ internship.duration }}<br>
+                                    <strong>Stipend:</strong> {{ internship.stipend|default:"Not disclosed" }}<br>
+                                    <strong>Deadline:</strong> {{ internship.application_deadline|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aegis-table-wrap">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Student Name</th>
+                                        <th>Course</th>
+                                        <th>Email</th>
+                                        <th>Applied On</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ application.student.admin.get_full_name }}</td>
+                                        <td>{{ application.student.course.name }}</td>
+                                        <td>{{ application.student.admin.email }}</td>
+                                        <td>{{ application.applied_at|date:"M d, Y h:i A" }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ application.status }}">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'update_internship_application' application.id %}" class="btn btn-primary btn-sm">View/Update</a>
+                                            {% if application.resume %}
+                                            <a href="{{ application.resume.url }}" target="_blank" class="btn btn-info btn-sm">Resume</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No applications received yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

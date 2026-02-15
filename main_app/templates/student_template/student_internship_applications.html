@@ -1,0 +1,95 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'student_view_internships' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search"></i> Browse Internships
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Company</th>
+                                        <th>Position</th>
+                                        <th>Location</th>
+                                        <th>Applied On</th>
+                                        <th>Status</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            {% if application.internship.company_logo %}
+                                            <img src="{{ application.internship.company_logo.url }}" alt="{{ application.internship.company_name }}" style="width: 30px; height: 30px; object-fit: contain;">
+                                            {% endif %}
+                                            {{ application.internship.company_name }}
+                                        </td>
+                                        <td>{{ application.internship.position }}</td>
+                                        <td>{{ application.internship.location }}</td>
+                                        <td>{{ application.applied_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ application.status }}">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if application.admin_remarks %}
+                                            <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#remarksModal{{ application.id }}">
+                                                View Remarks
+                                            </button>
+                                            
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="remarksModal{{ application.id }}" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel{{ application.id }}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="remarksModalLabel{{ application.id }}">Admin Remarks</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            {{ application.admin_remarks }}
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">You haven't applied to any internships yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

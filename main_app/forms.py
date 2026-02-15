@@ -354,3 +354,51 @@ class CourseEnrollmentApprovalForm(forms.ModelForm):
             'faculty_remarks': forms.Textarea(attrs={'placeholder': 'Add remarks (optional)'}),
         }
 
+
+class CompanyInternshipForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(CompanyInternshipForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = CompanyInternship
+        fields = [
+            'company_name',
+            'company_logo',
+            'position',
+            'description',
+            'requirements',
+            'location',
+            'duration',
+            'stipend',
+            'application_deadline',
+            'is_active',
+        ]
+        widgets = {
+            'application_deadline': DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'requirements': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+class InternshipApplicationForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(InternshipApplicationForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = InternshipApplication
+        fields = ['cover_letter', 'resume']
+        widgets = {
+            'cover_letter': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Why are you interested in this internship?'}),
+        }
+
+
+class InternshipApplicationStatusForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(InternshipApplicationStatusForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = InternshipApplication
+        fields = ['status', 'admin_remarks']
+        widgets = {
+            'admin_remarks': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add remarks (optional)'}),
+        }

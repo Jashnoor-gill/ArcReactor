@@ -166,6 +166,19 @@ urlpatterns = [
      path("authority/opportunities/<int:opportunity_id>/applications/", hod_views.authority_opportunity_applications, name='authority_opportunity_applications'),
      path("authority/applications/<int:application_id>/", hod_views.authority_application_update, name='authority_application_update'),
 
+     # Company Internships (Admin)
+     path("internships/add/", hod_views.add_company_internship, name='add_company_internship'),
+     path("internships/manage/", hod_views.manage_company_internships, name='manage_company_internships'),
+     path("internships/edit/<int:internship_id>/", hod_views.edit_company_internship, name='edit_company_internship'),
+     path("internships/delete/<int:internship_id>/", hod_views.delete_company_internship, name='delete_company_internship'),
+     path("internships/<int:internship_id>/applications/", hod_views.view_internship_applications, name='view_internship_applications'),
+     path("internships/application/<int:application_id>/update/", hod_views.update_internship_application, name='update_internship_application'),
+
+     # Student Internships
+     path("student/internships/", student_views.student_view_internships, name='student_view_internships'),
+     path("student/internships/<int:internship_id>/apply/", student_views.student_apply_internship, name='student_apply_internship'),
+     path("student/internships/applications/", student_views.student_internship_applications, name='student_internship_applications'),
+
      # Admissions & Registration
      path("admissions/sessions/", hod_views.manage_admission_sessions, name='manage_admission_sessions'),
      path("admissions/session/add/", hod_views.add_admission_session, name='add_admission_session'),

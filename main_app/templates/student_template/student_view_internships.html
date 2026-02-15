@@ -1,0 +1,93 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Filter Internships</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" class="row g-3 align-items-end">
+                            <div class="col-md-5 form-group">
+                                <label>Company</label>
+                                <input type="text" class="form-control" name="company" value="{{ filters.company }}" placeholder="e.g., Google, Microsoft" />
+                            </div>
+                            <div class="col-md-5 form-group">
+                                <label>Location</label>
+                                <input type="text" class="form-control" name="location" value="{{ filters.location }}" placeholder="e.g., Bangalore, Remote" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'student_internship_applications' %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-list"></i> My Applications
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for internship in internships %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-left-primary">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            {% if internship.company_logo %}
+                                            <img src="{{ internship.company_logo.url }}" alt="{{ internship.company_name }}" style="width: 50px; height: 50px; object-fit: contain;" class="mr-3">
+                                            {% endif %}
+                                            <div>
+                                                <h5 class="card-title mb-0">{{ internship.company_name }}</h5>
+                                                <p class="text-muted mb-0">{{ internship.position }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <p class="mb-1"><i class="fas fa-map-marker-alt text-primary"></i> <strong>Location:</strong> {{ internship.location }}</p>
+                                            <p class="mb-1"><i class="fas fa-clock text-primary"></i> <strong>Duration:</strong> {{ internship.duration }}</p>
+                                            <p class="mb-1"><i class="fas fa-money-bill-wave text-success"></i> <strong>Stipend:</strong> {{ internship.stipend|default:"Not disclosed" }}</p>
+                                            <p class="mb-1"><i class="fas fa-calendar-alt text-danger"></i> <strong>Deadline:</strong> {{ internship.application_deadline|date:"M d, Y" }}</p>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <p class="text-muted small">{{ internship.description|truncatewords:30 }}</p>
+                                        </div>
+                                        
+                                        <div>
+                                            {% if internship.id in applied_ids %}
+                                            <button class="btn btn-secondary btn-sm" disabled>Already Applied</button>
+                                            {% else %}
+                                            <a href="{% url 'student_apply_internship' internship.id %}" class="btn btn-success btn-sm">
+                                                <i class="fas fa-paper-plane"></i> Apply Now
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-md-12">
+                                <div class="alert alert-info text-center">
+                                    <i class="fas fa-info-circle"></i> No internships available at the moment.
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
