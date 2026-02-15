@@ -311,15 +311,6 @@
             </a>
         </div>
 
-        <h6 class="nav-section-title">Opportunities</h6>
-
-        <div class="nav-item">
-            {% url 'authority_opportunity_list' as authority_opportunity_list %}
-            <a href="{{ authority_opportunity_list }}" class="nav-link {% if authority_opportunity_list == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-briefcase"></i>
-                <span class="nav-text">Opportunity Hub</span>
-            </a>
-        </div>
     {% elif user.user_type == '2' %}
         <!-- Faculty Navigation -->
         <h6 class="nav-section-title">Main</h6>
@@ -381,16 +372,6 @@
             <a href="{{ staff_update_attendance }}" class="nav-link {% if staff_update_attendance == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-calendar-edit"></i>
                 <span class="nav-text">Update Attendance</span>
-            </a>
-        </div>
-
-        <h6 class="nav-section-title">Governance</h6>
-
-        <div class="nav-item">
-            {% url 'staff_grievance_list' as staff_grievance_list %}
-            <a href="{{ staff_grievance_list }}" class="nav-link {% if staff_grievance_list == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-balance-scale"></i>
-                <span class="nav-text">Grievance Review</span>
             </a>
         </div>
 

@@ -95,26 +95,6 @@
     const csrftoken = getCookie('csrftoken');
     
     $(document).ready(function () {
-        function moveSelected(fromSelector, toSelector) {
-            var selected = $(fromSelector + " option:selected").toArray()
-            $(selected).prop("selected", false)
-            $(toSelector).append(selected)
-        }
-
-        $(document).on('click', '#move_to_present', function () {
-            moveSelected('#absent_list', '#present_list')
-            moveSelected('#medical_list', '#present_list')
-        })
-
-        $(document).on('click', '#move_to_absent', function () {
-            moveSelected('#present_list', '#absent_list')
-            moveSelected('#medical_list', '#absent_list')
-        })
-
-        $(document).on('click', '#move_to_medical', function () {
-            moveSelected('#present_list', '#medical_list')
-            moveSelected('#absent_list', '#medical_list')
-        })
         $("#fetch_attendance").click(function(){
             var subject = $("#subject").val()
             var session = $("#session").val()
@@ -195,39 +175,25 @@ if (attendance_date.length  == 0){
                 } else {
                     $("#save_attendance").show()
 
-                    var all_ids = []
-                    var present_options = ""
-                    var absent_options = ""
-                    var medical_options = ""
-
+                    var div_data = "<hr/><div class='alert alert-info'>Update each student's status as needed.</div>"
+                    div_data += "<div class='aegis-table-wrap'><table class='table table-bordered table-hover'><thead class='thead-dark'><tr><th>#</th><th>Student</th><th>Status</th></tr></thead><tbody>"
                     for (key in json_data) {
                         var id = json_data[key]['id']
                         var name = json_data[key]['name']
                         var status = json_data[key]['status']
-                        var present_selected = status === "present" ? " selected" : ""
-                        var absent_selected = status === "absent" ? " selected" : ""
-                        var medical_selected = status === "medical" ? " selected" : ""
-                        present_options += "<option value='" + id + "'" + present_selected + ">" + name + "</option>"
-                        absent_options += "<option value='" + id + "'" + absent_selected + ">" + name + "</option>"
-                        medical_options += "<option value='" + id + "'" + medical_selected + ">" + name + "</option>"
-                        all_ids.push(id)
+                        div_data += "<tr>"
+                        div_data += "<td>" + (parseInt(key) + 1) + "</td>"
+                        div_data += "<td>" + name + "</td>"
+                        div_data += "<td><select class='form-control attendance-status' data-student='" + id + "'>"
+                        div_data += "<option value='present'" + (status === "present" ? " selected" : "") + ">Present</option>"
+                        div_data += "<option value='absent'" + (status === "absent" ? " selected" : "") + ">Absent</option>"
+                        div_data += "<option value='medical'" + (status === "medical" ? " selected" : "") + ">Medical Leave</option>"
+                        div_data += "</select></td>"
+                        div_data += "</tr>"
                     }
-
-                    var div_data = "<hr/><div class='alert alert-info'>Select students under Present or Medical Leave. Unselected students are marked Absent by default.</div>"
-                    div_data += "<div class='d-flex flex-wrap gap-2 mb-3'>"
-                    div_data += "<button type='button' id='move_to_present' class='btn btn-outline-success btn-sm'>Move to Present</button>"
-                    div_data += "<button type='button' id='move_to_absent' class='btn btn-outline-danger btn-sm'>Move to Absent</button>"
-                    div_data += "<button type='button' id='move_to_medical' class='btn btn-outline-primary btn-sm'>Move to Medical</button>"
-                    div_data += "<small class='text-muted ms-2'>Select students in a list, then move.</small>"
-                    div_data += "</div>"
-                    div_data += "<div class='row'>"
-                    div_data += "<div class='col-lg-4'><label>Present (Multi-Select)</label><select multiple class='form-control' id='present_list' style='min-height: 200px;'>" + present_options + "</select></div>"
-                    div_data += "<div class='col-lg-4'><label>Absent (Multi-Select)</label><select multiple class='form-control' id='absent_list' style='min-height: 200px;'>" + absent_options + "</select></div>"
-                    div_data += "<div class='col-lg-4'><label>Medical Leave (Multi-Select)</label><select multiple class='form-control' id='medical_list' style='min-height: 200px;'>" + medical_options + "</select></div>"
-                    div_data += "</div>"
+                    div_data += "</tbody></table></div>"
                     div_data += "<div class='form-group mt-3'><button id='save_attendance' class='btn btn-success' type='button'>Save Attendance</button></div>"
                     $("#student_data").html(div_data)
-                    $("#student_data").data("all_ids", all_ids)
                 }
             }).fail(function (response) {
                 alert("Error in fetching students")
@@ -237,28 +203,12 @@ if (attendance_date.length  == 0){
         $(document).on('click', '#save_attendance', function () {
             //$(this).attr("disabled","disabled")
             $(this).text("Updating Attendance Data...")
-            var all_ids = $("#student_data").data("all_ids") || []
-            var present_ids = $("#present_list").val() || []
-            var absent_ids = $("#absent_list").val() || []
-            var medical_ids = $("#medical_list").val() || []
-
-            var status_map = {}
-            all_ids.forEach(function(id) {
-                status_map[id] = "absent"
-            })
-            absent_ids.forEach(function(id) {
-                status_map[id] = "absent"
-            })
-            present_ids.forEach(function(id) {
-                status_map[id] = "present"
-            })
-            medical_ids.forEach(function(id) {
-                status_map[id] = "medical"
-            })
-
-            var student_data = all_ids.map(function(id) {
-                return {'id': id, 'status': status_map[id]}
-            })
+            var student_data = $(".attendance-status").map(function () {
+                return {
+                    id: $(this).data("student"),
+                    status: $(this).val()
+                }
+            }).get()
       
             student_data = JSON.stringify(student_data)
             var attendance_date = $("#attendance_date").val()

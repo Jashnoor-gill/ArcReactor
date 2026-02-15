@@ -101,8 +101,6 @@ urlpatterns = [
     path("staff/issue_book/", staff_views.issue_book, name="issue_book"),
     path("staff/view_issued_book/", staff_views.view_issued_book, name="view_issued_book"),
 
-     path("staff/grievances/", staff_views.staff_grievance_list, name='staff_grievance_list'),
-     path("staff/grievances/<int:grievance_id>/", staff_views.staff_grievance_update, name='staff_grievance_update'),
      path("staff/opportunities/", staff_views.staff_opportunity_list, name='staff_opportunity_list'),
      path("staff/opportunities/add/", staff_views.staff_opportunity_create, name='staff_opportunity_create'),
      path("staff/opportunities/<int:opportunity_id>/applications/", staff_views.staff_opportunity_applications, name='staff_opportunity_applications'),
