@@ -281,7 +281,7 @@
                     {% endfor %}
                     {% endif %}
 
-                    <form method="post" action="{% url 'doLogin' %}">
+                    <form method="post" action="{% url 'user_login' %}">
                         {% csrf_token %}
 
                         <label class="form-label" for="email">Email Address</label>
@@ -306,7 +306,7 @@
                         </button>
 
                         <div class="text-center mt-3">
-                            <a href="{% url 'password_reset' %}" style="color: var(--text-muted); text-decoration: none;">
+                            <a href="/accounts/password_reset/" style="color: var(--text-muted); text-decoration: none;">
                                 <i class="fas fa-key"></i> Forgot password?
                             </a>
                         </div>
