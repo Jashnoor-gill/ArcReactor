@@ -68,13 +68,13 @@
 
     <!-- Charts Section -->
     <div class="row mt-4">
-        <!-- Staff vs Students Chart -->
+        <!-- Faculty vs Students Chart -->
         <div class="col-lg-12 mb-4">
             <div class="dashboard-card">
                 <div class="card-header bg-transparent border-0">
                     <h4 class="mb-0">
                         <i class="fas fa-chart-pie me-2" style="color: #1e3c72;"></i>
-                        Staff & Students Overview
+                        Faculty & Students Overview
                     </h4>
                 </div>
                 <div class="card-body">
@@ -176,7 +176,7 @@
             dark: '#262626'
         };
 
-        // Staff vs Students Pie Chart
+        // Faculty vs Students Pie Chart
         const pieCtx = document.getElementById('pieChart').getContext('2d');
         new Chart(pieCtx, {
             type: 'doughnut',
@@ -300,3 +300,4 @@
     });
 </script>
 {% endblock custom_js %}
+

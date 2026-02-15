@@ -150,7 +150,7 @@
             {% url 'admin_notify_staff' as admin_notify_staff %}
             <a href="{{ admin_notify_staff }}" class="nav-link {% if admin_notify_staff == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-bell"></i>
-                <span class="nav-text">Notify Staff</span>
+                <span class="nav-text">Notify Faculty</span>
             </a>
         </div>
 
@@ -239,7 +239,7 @@
             {% url 'staff_feedback_message' as staff_feedback_message %}
             <a href="{{ staff_feedback_message }}" class="nav-link {% if staff_feedback_message == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-comment-dots"></i>
-                <span class="nav-text">Staff Feedback</span>
+                <span class="nav-text">Faculty Feedback</span>
             </a>
         </div>
 
@@ -269,7 +269,7 @@
             {% url 'view_staff_leave' as view_staff_leave %}
             <a href="{{ view_staff_leave }}" class="nav-link {% if view_staff_leave == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-calendar-check"></i>
-                <span class="nav-text">Staff Leave</span>
+                <span class="nav-text">Faculty Leave</span>
             </a>
         </div>
 
@@ -282,7 +282,7 @@
         </div>
 
     {% elif user.user_type == '2' %}
-        <!-- Staff Navigation -->
+        <!-- Faculty Navigation -->
         <h6 class="nav-section-title">Main</h6>
         
         <div class="nav-item">
@@ -533,3 +533,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+

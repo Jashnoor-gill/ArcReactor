@@ -585,7 +585,7 @@ def staff_feedback_message(request):
         feedbacks = FeedbackStaff.objects.all()
         context = {
             'feedbacks': feedbacks,
-            'page_title': 'Staff Feedback Messages'
+            'page_title': 'Faculty Feedback Messages'
         }
         return render(request, 'hod_template/staff_feedback_template.html', context)
     else:
@@ -606,7 +606,7 @@ def view_staff_leave(request):
         allLeave = LeaveReportStaff.objects.all()
         context = {
             'allLeave': allLeave,
-            'page_title': 'Leave Applications From Staff'
+            'page_title': 'Leave Applications From Faculty'
         }
         return render(request, "hod_template/staff_leave_view.html", context)
     else:
@@ -740,7 +740,7 @@ def admin_view_profile(request):
 def admin_notify_staff(request):
     staff = CustomUser.objects.filter(user_type=2)
     context = {
-        'page_title': "Send Notifications To Staff",
+        'page_title': "Send Notifications To Faculty",
         'allStaff': staff
     }
     return render(request, "hod_template/staff_notification.html", context)
