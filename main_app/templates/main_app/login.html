@@ -105,7 +105,8 @@
         .login-visual {
             flex: 1.2;
             position: relative;
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: pointer;
             display: flex;
             align-items: stretch;
         }
@@ -227,6 +228,17 @@
 
         .login-footer a:hover {
             text-decoration: underline;
+        }
+
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: 0.2s ease;
+        }
+
+        spline-viewer:active {
+            cursor: grabbing;
         }
 
         .alert {
