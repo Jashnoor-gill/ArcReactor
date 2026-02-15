@@ -1,0 +1,218 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="portal-header student-portal mb-4 animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-calendar-day"></i> Exam Schedule</h1>
+                <p>View your upcoming examinations</p>
+            </div>
+        </div>
+    </div>
+
+    {% if exam_dates %}
+    <!-- Upcoming Exams -->
+    <div class="row">
+        {% regroup exam_dates by exam_date|date:"F Y" as monthly_exams %}
+        {% for month in monthly_exams %}
+        <div class="col-12 mb-4">
+            <h4 class="mb-3">
+                <i class="fas fa-calendar"></i> {{ month.grouper }}
+            </h4>
+            
+            <div class="row">
+                {% for exam in month.list %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="exam-card">
+                        <div class="exam-header 
+                            {% if exam.exam_type == 'mid_term' %}bg-primary
+                            {% elif exam.exam_type == 'end_term' %}bg-danger
+                            {% elif exam.exam_type == 'quiz' %}bg-info
+                            {% elif exam.exam_type == 'practical' %}bg-success
+                            {% else %}bg-secondary{% endif %}">
+                            <div class="exam-type-badge">
+                                {{ exam.get_exam_type_display }}
+                            </div>
+                            <h5 class="text-white mb-0">{{ exam.subject.name }}</h5>
+                        </div>
+                        <div class="exam-body">
+                            <div class="exam-detail">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                                <div>
+                                    <strong>Date</strong>
+                                    <p>{{ exam.exam_date|date:"l, F j, Y" }}</p>
+                                </div>
+                            </div>
+                            
+                            {% if exam.exam_time %}
+                            <div class="exam-detail">
+                                <i class="fas fa-clock text-success"></i>
+                                <div>
+                                    <strong>Time</strong>
+                                    <p>{{ exam.exam_time|time:"g:i A" }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if exam.duration_minutes %}
+                            <div class="exam-detail">
+                                <i class="fas fa-hourglass-half text-warning"></i>
+                                <div>
+                                    <strong>Duration</strong>
+                                    <p>{{ exam.duration_minutes }} minutes</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if exam.venue %}
+                            <div class="exam-detail">
+                                <i class="fas fa-map-marker-alt text-danger"></i>
+                                <div>
+                                    <strong>Venue</strong>
+                                    <p>{{ exam.venue }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if exam.syllabus %}
+                            <div class="exam-detail">
+                                <i class="fas fa-book text-info"></i>
+                                <div>
+                                    <strong>Syllabus</strong>
+                                    <button class="btn btn-sm btn-outline-primary mt-1" data-bs-toggle="modal" data-bs-target="#syllabusModal{{ exam.id }}">
+                                        View Topics
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Syllabus Modal -->
+                            <div class="modal fade" id="syllabusModal{{ exam.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ exam.subject.name }} - Syllabus</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="alert alert-info">
+                                                <strong>Exam Date:</strong> {{ exam.exam_date|date:"F j, Y" }}
+                                            </div>
+                                            <div style="white-space: pre-line;">{{ exam.syllabus }}</div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if exam.remarks %}
+                            <div class="exam-detail">
+                                <i class="fas fa-sticky-note text-secondary"></i>
+                                <div>
+                                    <strong>Remarks</strong>
+                                    <p>{{ exam.remarks }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="exam-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-user"></i> By {{ exam.created_by.admin.get_full_name }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <div class="text-center py-5">
+            <i class="fas fa-calendar-times fa-4x mb-3 d-block"></i>
+            <h4>No Exams Scheduled</h4>
+            <p class="text-muted">No exam dates have been announced yet. Check back later!</p>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<style>
+.exam-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    background: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.exam-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+}
+
+.exam-header {
+    padding: 20px;
+    color: white;
+    position: relative;
+}
+
+.exam-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255,255,255,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.exam-body {
+    padding: 20px;
+    flex: 1;
+}
+
+.exam-detail {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.exam-detail i {
+    font-size: 20px;
+    margin-top: 2px;
+    width: 24px;
+}
+
+.exam-detail strong {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.exam-detail p {
+    margin: 0;
+    color: #333;
+}
+
+.exam-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+</style>
+{% endblock content %}

@@ -1,0 +1,174 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="portal-header admin-portal mb-4 animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-calendar-alt"></i> Academic Calendar</h1>
+                <p>View all upcoming academic events and important dates</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Filter by Session</label>
+                    <select name="session" class="form-select">
+                        <option value="">All Sessions</option>
+                        {% for session in sessions %}
+                        <option value="{{ session.id }}" {% if request.GET.session == session.id|stringformat:"s" %}selected{% endif %}>
+                            {{ session }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Calendar Timeline View -->
+    <div class="row">
+        {% regroup events by start_date.month as monthly_events %}
+        {% for month in monthly_events %}
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar"></i>
+                        {{ month.list.0.start_date|date:"F Y" }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for event in month.list %}
+                        <div class="timeline-item mb-4">
+                            <div class="timeline-marker 
+                                {% if event.event_type == 'holiday' %}bg-danger
+                                {% elif event.event_type == 'exam' %}bg-warning
+                                {% elif event.event_type == 'semester_start' or event.event_type == 'semester_end' %}bg-success
+                                {% elif event.event_type == 'event' %}bg-info
+                                {% elif event.event_type == 'deadline' %}bg-dark
+                                {% else %}bg-secondary{% endif %}">
+                                <i class="fas 
+                                    {% if event.event_type == 'holiday' %}fa-umbrella-beach
+                                    {% elif event.event_type == 'exam' %}fa-file-alt
+                                    {% elif event.event_type == 'semester_start' %}fa-play-circle
+                                    {% elif event.event_type == 'semester_end' %}fa-stop-circle
+                                    {% elif event.event_type == 'event' %}fa-star
+                                    {% elif event.event_type == 'deadline' %}fa-exclamation-triangle
+                                    {% elif event.event_type == 'registration' %}fa-user-plus
+                                    {% else %}fa-calendar-day{% endif %}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">{{ event.title }}</h5>
+                                        <p class="text-muted mb-2">
+                                            <i class="fas fa-calendar-day"></i>
+                                            {{ event.start_date|date:"l, F j, Y" }}
+                                            {% if event.end_date %}
+                                                <i class="fas fa-arrow-right mx-2"></i>
+                                                {{ event.end_date|date:"l, F j, Y" }}
+                                            {% endif %}
+                                        </p>
+                                        {% if event.venue %}
+                                        <p class="text-muted mb-2">
+                                            <i class="fas fa-map-marker-alt"></i> {{ event.venue }}
+                                        </p>
+                                        {% endif %}
+                                        {% if event.description %}
+                                        <p class="mb-0">{{ event.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <span class="badge 
+                                        {% if event.event_type == 'holiday' %}bg-danger
+                                        {% elif event.event_type == 'exam' %}bg-warning text-dark
+                                        {% elif event.event_type == 'semester_start' or event.event_type == 'semester_end' %}bg-success
+                                        {% elif event.event_type == 'event' %}bg-info
+                                        {% elif event.event_type == 'deadline' %}bg-dark
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ event.get_event_type_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No events found for the selected criteria.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 50px;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #8e2de2 0%, #4a00e0 100%);
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.timeline-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+</style>
+{% endblock content %}
