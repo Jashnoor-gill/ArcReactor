@@ -59,7 +59,11 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return  self.first_name + " " + self.last_name
+        return self.first_name + " " + self.last_name
+
+    def get_full_name(self):
+        """Return first_name last_name format without comma"""
+        return f"{self.first_name} {self.last_name}".strip()
 
 
 class Admin(models.Model):
