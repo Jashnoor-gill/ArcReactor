@@ -193,6 +193,22 @@
             display: block;
         }
 
+        .demo-credentials {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        .demo-credentials strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
         .form-header {
             text-align: center;
             margin-bottom: 30px;
@@ -369,81 +385,28 @@
         {% endfor %}
         {% endif %}
 
-        <!-- Portal Selection -->
-        <div class="portal-selection" id="portalSelection">
-            <div class="portal-cards">
-                <!-- Admin Portal -->
-                <div class="portal-card admin" onclick="selectPortal('admin', event)">
-                    <div class="portal-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="portal-title">Admin Portal</div>
-                    <div class="portal-desc">System administration and management</div>
-                </div>
-
-                <!-- Staff Portal -->
-                <div class="portal-card staff" onclick="selectPortal('staff', event)">
-                    <div class="portal-icon">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <div class="portal-title">Faculty Portal</div>
-                    <div class="portal-desc">Manage courses, attendance, and grades</div>
-                </div>
-
-                <!-- Student Portal -->
-                <div class="portal-card student" onclick="selectPortal('student', event)">
-                    <div class="portal-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <div class="portal-title">Student Portal</div>
-                    <div class="portal-desc">Access courses, grades, and resources</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Login Forms -->
-        {% if demo_login_enabled %}
-        <!-- Demo Login Form -->
-        <div class="login-form-container" id="demoLoginForm">
+        <!-- Unified Login Form -->
+        <div class="login-form-container show" id="loginForm">
             <div class="form-header">
-                <h3>Demo Access</h3>
+                <h3>Sign In</h3>
+                <p>Use your campus credentials to continue</p>
             </div>
             <form action="{% url 'user_login' %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="demo" value="1">
-                <div class="form-group">
-                    <button type="submit" class="btn-login admin">
-                        <i class="fas fa-sign-in-alt"></i> Enter Demo
-                    </button>
-                </div>
-            </form>
-        </div>
-        {% else %}
-        <!-- Admin Login Form -->
-        <div class="login-form-container" id="adminLoginForm">
-            <div class="form-header">
-                <span class="portal-badge admin">
-                    <i class="fas fa-user-shield"></i> Administrator
-                </span>
-                <h3>Admin Portal Login</h3>
-            </div>
-            <form action="{% url 'user_login' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="portal_type" value="admin">
 
                 <div class="form-group">
-                    <label for="admin_email" class="form-label">
+                    <label for="login_email" class="form-label">
                         <i class="fas fa-envelope"></i> Email Address
                     </label>
-                    <input type="email" id="admin_email" name="email" class="form-control"
-                        placeholder="Enter your admin email" required>
+                    <input type="email" id="login_email" name="email" class="form-control"
+                        placeholder="Enter your email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="admin_password" class="form-label">
+                    <label for="login_password" class="form-label">
                         <i class="fas fa-lock"></i> Password
                     </label>
-                    <input type="password" id="admin_password" name="password" class="form-control"
+                    <input type="password" id="login_password" name="password" class="form-control"
                         placeholder="Enter your password" required>
                 </div>
 
@@ -455,8 +418,8 @@
 
                 <div class="form-group">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="admin_remember" name="remember" value="1">
-                        <label class="form-check-label" for="admin_remember">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
+                        <label class="form-check-label" for="remember">
                             Remember me for 30 days
                         </label>
                     </div>
@@ -464,7 +427,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn-login admin">
-                        <i class="fas fa-sign-in-alt"></i> Sign In as Admin
+                        <i class="fas fa-sign-in-alt"></i> Sign In
                     </button>
                 </div>
 
@@ -474,140 +437,14 @@
                     </a>
                 </div>
 
-                <div class="text-center">
-                    <button type="button" class="btn-back" onclick="backToSelection()">
-                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
-                    </button>
+                <div class="demo-credentials">
+                    <strong>Demo logins</strong>
+                    adminx@aegis.local, studentx@aegis.local, faculty@aegis.local
+                    <br />
+                    Password for all is xyz
                 </div>
             </form>
         </div>
-
-        <!-- Staff Login Form -->
-        <div class="login-form-container" id="staffLoginForm">
-            <div class="form-header">
-                <span class="portal-badge staff">
-                    <i class="fas fa-chalkboard-teacher"></i> Faculty
-                </span>
-                <h3>Faculty Portal Login</h3>
-            </div>
-            <form action="{% url 'user_login' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="portal_type" value="staff">
-
-                <div class="form-group">
-                    <label for="staff_email" class="form-label">
-                        <i class="fas fa-envelope"></i> Email Address
-                    </label>
-                    <input type="email" id="staff_email" name="email" class="form-control"
-                        placeholder="Enter your faculty email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="staff_password" class="form-label">
-                        <i class="fas fa-lock"></i> Password
-                    </label>
-                    <input type="password" id="staff_password" name="password" class="form-control"
-                        placeholder="Enter your password" required>
-                </div>
-
-                {% if recaptcha_site_key %}
-                <div class="form-group text-center">
-                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
-                </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="staff_remember" name="remember" value="1">
-                        <label class="form-check-label" for="staff_remember">
-                            Remember me for 30 days
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn-login staff">
-                        <i class="fas fa-sign-in-alt"></i> Sign In as Faculty
-                    </button>
-                </div>
-
-                <div class="text-center">
-                    <a href="{% url 'password_reset' %}" style="color: #11998e; text-decoration: none;">
-                        <i class="fas fa-key"></i> Forgot password?
-                    </a>
-                </div>
-
-                <div class="text-center">
-                    <button type="button" class="btn-back" onclick="backToSelection()">
-                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Student Login Form -->
-        <div class="login-form-container" id="studentLoginForm">
-            <div class="form-header">
-                <span class="portal-badge student">
-                    <i class="fas fa-user-graduate"></i> Student
-                </span>
-                <h3>Student Portal Login</h3>
-            </div>
-            <form action="{% url 'user_login' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="portal_type" value="student">
-
-                <div class="form-group">
-                    <label for="student_email" class="form-label">
-                        <i class="fas fa-envelope"></i> Email Address
-                    </label>
-                    <input type="email" id="student_email" name="email" class="form-control"
-                        placeholder="Enter your student email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="student_password" class="form-label">
-                        <i class="fas fa-lock"></i> Password
-                    </label>
-                    <input type="password" id="student_password" name="password" class="form-control"
-                        placeholder="Enter your password" required>
-                </div>
-
-                {% if recaptcha_site_key %}
-                <div class="form-group text-center">
-                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
-                </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="student_remember" name="remember" value="1">
-                        <label class="form-check-label" for="student_remember">
-                            Remember me for 30 days
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn-login student">
-                        <i class="fas fa-sign-in-alt"></i> Sign In as Student
-                    </button>
-                </div>
-
-                <div class="text-center">
-                    <a href="{% url 'password_reset' %}" style="color: #8e2de2; text-decoration: none;">
-                        <i class="fas fa-key"></i> Forgot password?
-                    </a>
-                </div>
-
-                <div class="text-center">
-                    <button type="button" class="btn-back" onclick="backToSelection()">
-                        <i class="fas fa-arrow-left"></i> Back to Portal Selection
-                    </button>
-                </div>
-            </form>
-        </div>
-        {% endif %}
 
         <!-- Footer -->
         <div class="login-footer">
@@ -622,78 +459,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 
-    <script>
-        const demoLoginEnabled = {{ demo_login_enabled|default:'false'|lower }};
-
-        function selectPortal(portalType, evt) {
-            // Hide portal selection
-            document.getElementById('portalSelection').style.display = 'none';
-
-            // Show corresponding login form
-            const formId = demoLoginEnabled ? 'demoLoginForm' : (portalType + 'LoginForm');
-            const form = document.getElementById(formId);
-            if (form) {
-                form.classList.add('show');
-            }
-
-            // Store selection in localStorage
-            localStorage.setItem('selectedPortal', portalType);
-
-            // Add active class to selected card
-            document.querySelectorAll('.portal-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            if (evt && evt.target) {
-                const card = evt.target.closest('.portal-card');
-                if (card) {
-                    card.classList.add('active');
-                }
-            }
-        }
-
-        function backToSelection() {
-            // Show portal selection
-            document.getElementById('portalSelection').style.display = 'block';
-
-            // Hide all login forms
-            document.querySelectorAll('.login-form-container').forEach(form => {
-                form.classList.remove('show');
-            });
-
-            // Remove active class from all cards
-            document.querySelectorAll('.portal-card').forEach(card => {
-                card.classList.remove('active');
-            });
-
-            // Clear localStorage
-            localStorage.removeItem('selectedPortal');
-        }
-
-        // On page load, check if there's a saved portal selection
-        document.addEventListener('DOMContentLoaded', function () {
-            const savedPortal = localStorage.getItem('selectedPortal');
-            if (savedPortal && !demoLoginEnabled) {
-                // Auto-select the previously selected portal
-                const portalCard = document.querySelector('.portal-card.' + savedPortal);
-                if (portalCard) {
-                    portalCard.click();
-                }
-            }
-
-            // Add hover effects
-            document.querySelectorAll('.portal-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-10px)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('active')) {
-                        this.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>
