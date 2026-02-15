@@ -250,7 +250,7 @@ class GrievanceUpdateForm(FormSettings):
 
 class GrievanceAssignForm(FormSettings):
     assigned_to = forms.ModelChoiceField(
-        queryset=CustomUser.objects.filter(user_type='2'),
+        queryset=CustomUser.objects.filter(user_type='4'),
         required=False
     )
 
