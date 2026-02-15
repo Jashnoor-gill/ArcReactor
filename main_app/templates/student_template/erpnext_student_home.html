@@ -1,3 +1,4 @@
+<!-- vscode-ignore-file -->
 {% extends 'main_app/base.html' %}
 {% load static %}
 {% block page_title %}Student Dashboard{% endblock page_title %}
@@ -96,6 +97,7 @@
 
 {% block custom_js %}
 <script>
+// @ts-nocheck - Django template variables used in JavaScript
 $(document).ready(function(){
     // Chart.js Configuration
     Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif';
@@ -114,8 +116,8 @@ $(document).ready(function(){
 
     // Dataset
     var subjects = {{data_name|safe}};
-    var data_present = {{data_present}};
-    var data_absent = {{data_absent}};
+    var data_present = {{data_present|safe}};
+    var data_absent = {{data_absent|safe}};
 
     // Attendance Overview - Donut Chart
     var attendanceDataCanvas = $('#attendanceData').get(0).getContext('2d');

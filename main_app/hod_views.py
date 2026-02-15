@@ -1532,3 +1532,129 @@ def update_internship_application(request, application_id):
         messages.error(request, "Please correct the errors in the form")
     return render(request, 'hod_template/update_internship_application.html', context)
 
+
+# Academic Calendar Management (Admin only)
+def manage_academic_calendar(request):
+    """List all academic events"""
+    session_id = request.GET.get('session')
+    events = AcademicEvent.objects.all().select_related('session')
+    
+    if session_id:
+        events = events.filter(session_id=session_id)
+    
+    sessions = Session.objects.all()
+    context = {
+        'events': events,
+        'sessions': sessions,
+        'page_title': 'Academic Calendar'
+    }
+    return render(request, 'hod_template/manage_academic_calendar.html', context)
+
+
+def add_academic_event(request):
+    """Add new academic event"""
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        event_type = request.POST.get('event_type')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        description = request.POST.get('description')
+        venue = request.POST.get('venue')
+        session_id = request.POST.get('session')
+        
+        try:
+            session = None
+            if session_id:
+                session = get_object_or_404(Session, id=session_id)
+            
+            AcademicEvent.objects.create(
+                title=title,
+                event_type=event_type,
+                start_date=start_date,
+                end_date=end_date if end_date else None,
+                description=description,
+                venue=venue,
+                session=session
+            )
+            messages.success(request, "Academic event added successfully!")
+            return redirect('manage_academic_calendar')
+        except Exception as e:
+            messages.error(request, f"Error adding event: {str(e)}")
+    
+    sessions = Session.objects.all()
+    context = {
+        'sessions': sessions,
+        'page_title': 'Add Academic Event'
+    }
+    return render(request, 'hod_template/add_academic_event.html', context)
+
+
+def edit_academic_event(request, event_id):
+    """Edit existing academic event"""
+    event = get_object_or_404(AcademicEvent, id=event_id)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        event_type = request.POST.get('event_type')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        description = request.POST.get('description')
+        venue = request.POST.get('venue')
+        session_id = request.POST.get('session')
+        
+        try:
+            session = None
+            if session_id:
+                session = get_object_or_404(Session, id=session_id)
+            
+            event.title = title
+            event.event_type = event_type
+            event.start_date = start_date
+            event.end_date = end_date if end_date else None
+            event.description = description
+            event.venue = venue
+            event.session = session
+            event.save()
+            messages.success(request, "Academic event updated successfully!")
+            return redirect('manage_academic_calendar')
+        except Exception as e:
+            messages.error(request, f"Error updating event: {str(e)}")
+    
+    sessions = Session.objects.all()
+    context = {
+        'event': event,
+        'sessions': sessions,
+        'page_title': 'Edit Academic Event'
+    }
+    return render(request, 'hod_template/edit_academic_event.html', context)
+
+
+def delete_academic_event(request, event_id):
+    """Delete academic event"""
+    event = get_object_or_404(AcademicEvent, id=event_id)
+    
+    try:
+        event.delete()
+        messages.success(request, "Academic event deleted successfully!")
+    except Exception as e:
+        messages.error(request, f"Error deleting event: {str(e)}")
+    
+    return redirect('manage_academic_calendar')
+
+
+# View Calendar (Faculty and Students)
+def view_academic_calendar(request):
+    """View academic calendar (accessible by faculty and students)"""
+    session_id = request.GET.get('session')
+    events = AcademicEvent.objects.all().select_related('session').order_by('start_date')
+    
+    if session_id:
+        events = events.filter(session_id=session_id)
+    
+    sessions = Session.objects.all()
+    context = {
+        'events': events,
+        'sessions': sessions,
+        'page_title': 'Academic Calendar'
+    }
+    return render(request, 'shared/view_academic_calendar.html', context)

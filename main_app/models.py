@@ -1525,3 +1525,62 @@ class InternshipApplication(models.Model):
         unique_together = ['internship', 'student']
         ordering = ['-applied_at']
 
+
+class ExamDate(models.Model):
+    """Exam schedule managed by faculty, viewable by students"""
+    EXAM_TYPE_CHOICES = (
+        ("mid_term", "Mid Term"),
+        ("end_term", "End Term"),
+        ("quiz", "Quiz"),
+        ("assignment", "Assignment"),
+        ("practical", "Practical"),
+        ("viva", "Viva"),
+    )
+    
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="exam_dates")
+    exam_type = models.CharField(max_length=20, choices=EXAM_TYPE_CHOICES)
+    exam_date = models.DateField()
+    exam_time = models.TimeField(null=True, blank=True)
+    duration_minutes = models.IntegerField(null=True, blank=True, help_text="Duration in minutes")
+    venue = models.CharField(max_length=200, blank=True)
+    syllabus = models.TextField(blank=True, help_text="Topics/chapters to be covered")
+    remarks = models.TextField(blank=True)
+    created_by = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name="created_exams")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.subject.name} - {self.get_exam_type_display()} on {self.exam_date}"
+
+    class Meta:
+        ordering = ['exam_date', 'exam_time']
+
+
+class AcademicEvent(models.Model):
+    """Academic calendar events managed by admin, viewable by faculty and students"""
+    EVENT_TYPE_CHOICES = (
+        ("holiday", "Holiday"),
+        ("exam", "Exam Period"),
+        ("registration", "Registration"),
+        ("semester_start", "Semester Start"),
+        ("semester_end", "Semester End"),
+        ("event", "Campus Event"),
+        ("deadline", "Important Deadline"),
+        ("other", "Other"),
+    )
+    
+    title = models.CharField(max_length=200)
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    venue = models.CharField(max_length=200, blank=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="academic_events", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.start_date}"
+
+    class Meta:
+        ordering = ['start_date']

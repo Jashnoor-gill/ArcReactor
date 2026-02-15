@@ -678,3 +678,119 @@ def staff_approve_course_request(request, request_id):
         'page_title': 'Review Course Request'
     }
     return render(request, 'staff_template/staff_approve_course_request.html', context)
+
+
+# Exam Date Management (Faculty)
+def staff_exam_dates(request):
+    """List all exam dates for faculty's subjects"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect('staff_home')
+    
+    subjects = Subject.objects.filter(course=staff.course)
+    exam_dates = ExamDate.objects.filter(subject__in=subjects).select_related('subject', 'created_by')
+    
+    context = {
+        'exam_dates': exam_dates,
+        'page_title': 'Exam Schedule'
+    }
+    return render(request, 'staff_template/staff_exam_dates.html', context)
+
+
+def staff_add_exam_date(request):
+    """Add new exam date"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect('staff_home')
+    
+    subjects = Subject.objects.filter(course=staff.course)
+    
+    if request.method == 'POST':
+        subject_id = request.POST.get('subject')
+        exam_type = request.POST.get('exam_type')
+        exam_date = request.POST.get('exam_date')
+        exam_time = request.POST.get('exam_time')
+        duration_minutes = request.POST.get('duration_minutes')
+        venue = request.POST.get('venue')
+        syllabus = request.POST.get('syllabus')
+        remarks = request.POST.get('remarks')
+        
+        try:
+            subject = get_object_or_404(Subject, id=subject_id, course=staff.course)
+            ExamDate.objects.create(
+                subject=subject,
+                exam_type=exam_type,
+                exam_date=exam_date,
+                exam_time=exam_time if exam_time else None,
+                duration_minutes=duration_minutes if duration_minutes else None,
+                venue=venue,
+                syllabus=syllabus,
+                remarks=remarks,
+                created_by=staff
+            )
+            messages.success(request, "Exam date added successfully!")
+            return redirect('staff_exam_dates')
+        except Exception as e:
+            messages.error(request, f"Error adding exam date: {str(e)}")
+    
+    context = {
+        'subjects': subjects,
+        'page_title': 'Add Exam Date'
+    }
+    return render(request, 'staff_template/staff_add_exam_date.html', context)
+
+
+def staff_edit_exam_date(request, exam_id):
+    """Edit existing exam date"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    exam_date = get_object_or_404(ExamDate, id=exam_id, created_by=staff)
+    subjects = Subject.objects.filter(course=staff.course)
+    
+    if request.method == 'POST':
+        subject_id = request.POST.get('subject')
+        exam_type = request.POST.get('exam_type')
+        exam_date_val = request.POST.get('exam_date')
+        exam_time = request.POST.get('exam_time')
+        duration_minutes = request.POST.get('duration_minutes')
+        venue = request.POST.get('venue')
+        syllabus = request.POST.get('syllabus')
+        remarks = request.POST.get('remarks')
+        
+        try:
+            subject = get_object_or_404(Subject, id=subject_id, course=staff.course)
+            exam_date.subject = subject
+            exam_date.exam_type = exam_type
+            exam_date.exam_date = exam_date_val
+            exam_date.exam_time = exam_time if exam_time else None
+            exam_date.duration_minutes = duration_minutes if duration_minutes else None
+            exam_date.venue = venue
+            exam_date.syllabus = syllabus
+            exam_date.remarks = remarks
+            exam_date.save()
+            messages.success(request, "Exam date updated successfully!")
+            return redirect('staff_exam_dates')
+        except Exception as e:
+            messages.error(request, f"Error updating exam date: {str(e)}")
+    
+    context = {
+        'exam_date': exam_date,
+        'subjects': subjects,
+        'page_title': 'Edit Exam Date'
+    }
+    return render(request, 'staff_template/staff_edit_exam_date.html', context)
+
+
+def staff_delete_exam_date(request, exam_id):
+    """Delete exam date"""
+    staff = get_object_or_404(Staff, admin=request.user)
+    exam_date = get_object_or_404(ExamDate, id=exam_id, created_by=staff)
+    
+    try:
+        exam_date.delete()
+        messages.success(request, "Exam date deleted successfully!")
+    except Exception as e:
+        messages.error(request, f"Error deleting exam date: {str(e)}")
+    
+    return redirect('staff_exam_dates')

@@ -110,6 +110,12 @@ urlpatterns = [
      path("staff/course/requests/", staff_views.staff_course_requests, name='staff_course_requests'),
      path("staff/course/requests/<int:request_id>/", staff_views.staff_approve_course_request, name='staff_approve_course_request'),
 
+     # Exam Dates (Faculty)
+     path("staff/exam-dates/", staff_views.staff_exam_dates, name='staff_exam_dates'),
+     path("staff/exam-dates/add/", staff_views.staff_add_exam_date, name='staff_add_exam_date'),
+     path("staff/exam-dates/edit/<int:exam_id>/", staff_views.staff_edit_exam_date, name='staff_edit_exam_date'),
+     path("staff/exam-dates/delete/<int:exam_id>/", staff_views.staff_delete_exam_date, name='staff_delete_exam_date'),
+
 
 
     path("staff/attendance/fetch/", staff_views.get_student_attendance,
@@ -165,6 +171,12 @@ urlpatterns = [
      path("student/course/request/", student_views.student_request_course, name='student_request_course'),
      path("student/course/requests/", student_views.student_course_requests, name='student_course_requests'),
 
+     # Exam Schedule (Student)
+     path("student/exam-schedule/", student_views.student_exam_schedule, name='student_exam_schedule'),
+
+     # Academic Calendar (View only for Faculty and Students)
+     path("calendar/academic/", hod_views.view_academic_calendar, name='view_academic_calendar'),
+
      path("authority/grievances/", hod_views.authority_grievance_list, name='authority_grievance_list'),
      path("authority/grievances/<int:grievance_id>/", hod_views.authority_grievance_update, name='authority_grievance_update'),
 
@@ -180,6 +192,12 @@ urlpatterns = [
      path("student/internships/", student_views.student_view_internships, name='student_view_internships'),
      path("student/internships/<int:internship_id>/apply/", student_views.student_apply_internship, name='student_apply_internship'),
      path("student/internships/applications/", student_views.student_internship_applications, name='student_internship_applications'),
+
+     # Academic Calendar (Admin)
+     path("admin/calendar/", hod_views.manage_academic_calendar, name='manage_academic_calendar'),
+     path("admin/calendar/event/add/", hod_views.add_academic_event, name='add_academic_event'),
+     path("admin/calendar/event/edit/<int:event_id>/", hod_views.edit_academic_event, name='edit_academic_event'),
+     path("admin/calendar/event/delete/<int:event_id>/", hod_views.delete_academic_event, name='delete_academic_event'),
 
      # Admissions & Registration
      path("admissions/sessions/", hod_views.manage_admission_sessions, name='manage_admission_sessions'),

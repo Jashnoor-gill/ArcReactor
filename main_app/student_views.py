@@ -28,14 +28,34 @@ def student_home(request):
         percent_present = math.floor((total_present/total_attendance) * 100)
         percent_absent = math.ceil(100 - percent_present)
     
+    # Subject-wise attendance data
+    subject_list = []
+    data_present = []
+    data_absent = []
+    if student.course:
+        subjects = Subject.objects.filter(course=student.course)
+        for subject in subjects:
+            attendance_reports = AttendanceReport.objects.filter(
+                student=student,
+                attendance__subject=subject
+            )
+            present_count = attendance_reports.filter(status="present").count()
+            absent_count = attendance_reports.filter(status="absent").count()
+            subject_list.append(subject.name)
+            data_present.append(present_count)
+            data_absent.append(absent_count)
+    
     context = {
         'total_attendance': total_attendance,
         'total_present': total_present,
         'percent_present': percent_present,
         'percent_absent': percent_absent,
         'page_title': 'Student Homepage',
-        'total_medical': total_medical
-
+        'total_medical': total_medical,
+        'total_subject': len(subject_list),
+        'data_name': json.dumps(subject_list),
+        'data_present': json.dumps(data_present),
+        'data_absent': json.dumps(data_absent)
     }
     return render(request, 'student_template/erpnext_student_home.html', context)
 
@@ -597,3 +617,24 @@ def student_internship_applications(request):
     }
     return render(request, 'student_template/student_internship_applications.html', context)
 
+
+def student_exam_schedule(request):
+    """View exam schedule for student's course"""
+    student = get_object_or_404(Student, admin=request.user)
+    
+    if not student.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        context = {
+            'exam_dates': [],
+            'page_title': 'Exam Schedule'
+        }
+        return render(request, 'student_template/student_exam_schedule.html', context)
+    
+    subjects = Subject.objects.filter(course=student.course)
+    exam_dates = ExamDate.objects.filter(subject__in=subjects).select_related('subject', 'created_by').order_by('exam_date', 'exam_time')
+    
+    context = {
+        'exam_dates': exam_dates,
+        'page_title': 'Exam Schedule'
+    }
+    return render(request, 'student_template/student_exam_schedule.html', context)
