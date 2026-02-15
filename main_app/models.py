@@ -159,6 +159,20 @@ class Subject(models.Model):
         return self.name
 
 
+class CourseNote(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    reference_url = models.URLField(blank=True)
+    attachment = models.FileField(upload_to='course_notes/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.course})"
+
+
 class Attendance(models.Model):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=True, blank=True)

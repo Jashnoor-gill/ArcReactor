@@ -121,6 +121,15 @@ class BranchForm(FormSettings):
         model = Branch
 
 
+class CourseNoteForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(CourseNoteForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = CourseNote
+        fields = ['title', 'description', 'reference_url', 'attachment']
+
+
 class SubjectForm(FormSettings):
 
     def __init__(self, *args, **kwargs):

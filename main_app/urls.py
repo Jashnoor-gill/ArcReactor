@@ -95,6 +95,7 @@ urlpatterns = [
          name='staff_take_attendance'),
     path("staff/attendance/update/", staff_views.staff_update_attendance,
          name='staff_update_attendance'),
+     path("staff/course/notes/", staff_views.staff_course_notes, name='staff_course_notes'),
     path("staff/get_students/", staff_views.get_students, name='get_students'),
      path("staff/addbook/", staff_views.add_book, name="add_book"),
     path("staff/issue_book/", staff_views.issue_book, name="issue_book"),

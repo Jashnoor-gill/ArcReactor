@@ -1,0 +1,76 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content aegis-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Note / Reference</h3>
+                    </div>
+                    <div class="card-body">
+                        {% include "main_app/form_template.html" with messages=messages form=form button_text="Add Note" %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Notes for {{ request.user.staff.course }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Reference</th>
+                                        <th>Attachment</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for note in notes %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <strong>{{ note.title }}</strong>
+                                            {% if note.description %}
+                                            <div class="text-muted small">{{ note.description|truncatewords:20 }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if note.reference_url %}
+                                            <a href="{{ note.reference_url }}" target="_blank">Open Link</a>
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if note.attachment %}
+                                            <a href="{{ note.attachment.url }}" target="_blank">Download</a>
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ note.created_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No notes added yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -430,6 +430,33 @@ def staff_opportunity_create(request):
     return render(request, "staff_template/opportunity_create.html", context)
 
 
+def staff_course_notes(request):
+    staff = get_object_or_404(Staff, admin=request.user)
+    if not staff.course:
+        messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
+        return redirect(reverse('staff_home'))
+
+    notes = CourseNote.objects.filter(course=staff.course).order_by('-created_at')
+    form = CourseNoteForm(request.POST or None, request.FILES or None)
+    context = {
+        'notes': notes,
+        'form': form,
+        'page_title': f'Course Notes - {staff.course}'
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.course = staff.course
+            note.staff = staff
+            note.save()
+            messages.success(request, "Note added successfully")
+            return redirect(reverse('staff_course_notes'))
+        messages.error(request, "Please correct the errors in the form")
+
+    return render(request, 'staff_template/staff_course_notes.html', context)
+
+
 def staff_opportunity_applications(request, opportunity_id):
     opportunity = get_object_or_404(Opportunity, id=opportunity_id)
     applications = OpportunityApplication.objects.filter(opportunity=opportunity).order_by('-applied_at')

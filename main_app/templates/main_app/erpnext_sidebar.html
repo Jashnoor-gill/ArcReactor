@@ -359,6 +359,14 @@
             </a>
         </div>
 
+        <div class="nav-item">
+            {% url 'staff_course_notes' as staff_course_notes %}
+            <a href="{{ staff_course_notes }}" class="nav-link {% if staff_course_notes == request.path %}active{% endif %}">
+                <i class="nav-icon fas fa-book"></i>
+                <span class="nav-text">Course Notes</span>
+            </a>
+        </div>
+
         <h6 class="nav-section-title">Attendance</h6>
         
         <div class="nav-item">
