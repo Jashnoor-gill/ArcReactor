@@ -91,7 +91,7 @@ def admin_home(request):
 
 def add_staff(request):
     form = StaffForm(request.POST or None, request.FILES or None)
-    context = {'form': form, 'page_title': 'Add Staff'}
+    context = {'form': form, 'page_title': 'Add Faculty'}
     if request.method == 'POST':
         if form.is_valid():
             first_name = form.cleaned_data.get('first_name')
@@ -124,7 +124,7 @@ def add_staff(request):
 
 
 def add_student(request):
-    student_form = StudentForm(request.POST or None, request.FILES or None)
+    student_form = StudentAddForm(request.POST or None, request.FILES or None)
     context = {'form': student_form, 'page_title': 'Add Student'}
     if request.method == 'POST':
         if student_form.is_valid():
@@ -134,7 +134,6 @@ def add_student(request):
             email = student_form.cleaned_data.get('email')
             gender = student_form.cleaned_data.get('gender')
             password = student_form.cleaned_data.get('password')
-            course = student_form.cleaned_data.get('course')
             session = student_form.cleaned_data.get('session')
             passport = request.FILES['profile_pic']
             fs = FileSystemStorage()
@@ -146,7 +145,6 @@ def add_student(request):
                 user.gender = gender
                 user.address = address
                 user.student.session = session
-                user.student.course = course
                 user.save()
                 messages.success(request, "Successfully Added")
                 return redirect(reverse('add_student'))
@@ -223,6 +221,25 @@ def add_course(request):
     return render(request, 'hod_template/add_course_template.html', context)
 
 
+def add_branch(request):
+    form = BranchForm(request.POST or None)
+    context = {
+        'form': form,
+        'page_title': 'Add Branch'
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, "Successfully Added")
+                return redirect(reverse('add_branch'))
+            except Exception as e:
+                messages.error(request, "Could Not Add " + str(e))
+        else:
+            messages.error(request, "Could Not Add")
+    return render(request, 'hod_template/add_branch_template.html', context)
+
+
 def add_subject(request):
     form = SubjectForm(request.POST or None)
     context = {
@@ -272,7 +289,7 @@ def manage_staff(request):
         'courses': courses,
         'search_query': search_query,
         'selected_course': course_filter,
-        'page_title': 'Manage Staff',
+        'page_title': 'Manage Faculty',
         'staff_count': allStaff.count()
     }
     return render(request, "hod_template/manage_staff.html", context)
@@ -314,6 +331,15 @@ def manage_course(request):
     return render(request, "hod_template/manage_course.html", context)
 
 
+def manage_branch(request):
+    branches = Branch.objects.all().order_by('name')
+    context = {
+        'branches': branches,
+        'page_title': 'Manage Branches'
+    }
+    return render(request, "hod_template/manage_branch.html", context)
+
+
 def manage_subject(request):
     subjects = Subject.objects.all()
     context = {
@@ -329,7 +355,7 @@ def edit_staff(request, staff_id):
     context = {
         'form': form,
         'staff_id': staff_id,
-        'page_title': 'Edit Staff'
+        'page_title': 'Edit Faculty'
     }
     if request.method == 'POST':
         if form.is_valid():

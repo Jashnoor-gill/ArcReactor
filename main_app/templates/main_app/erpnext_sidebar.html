@@ -66,6 +66,28 @@
             </div>
         </div>
 
+        <div class="nav-item has-submenu {% if 'branch' in request.path %}open{% endif %}">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-code-branch"></i>
+                <span class="nav-text">Branches</span>
+                <i class="nav-arrow fas fa-chevron-right"></i>
+            </a>
+            <div class="nav-submenu">
+                <div class="nav-item">
+                    {% url 'add_branch' as add_branch %}
+                    <a href="{{ add_branch }}" class="nav-link {% if add_branch == request.path %}active{% endif %}">
+                        <span class="nav-text">Add Branch</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    {% url 'manage_branch' as manage_branch %}
+                    <a href="{{ manage_branch }}" class="nav-link {% if manage_branch == request.path %}active{% endif %}">
+                        <span class="nav-text">Manage Branches</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="nav-item has-submenu {% if 'session' in request.path %}open{% endif %}">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-calendar-alt"></i>
@@ -94,7 +116,7 @@
             {% url 'add_staff' as add_staff %}
             <a href="{{ add_staff }}" class="nav-link {% if add_staff == request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-user-plus"></i>
-                <span class="nav-text">Add Staff</span>
+                <span class="nav-text">Add Faculty</span>
             </a>
         </div>
 
@@ -102,7 +124,7 @@
             {% url 'manage_staff' as manage_staff %}
             <a href="{{ manage_staff }}" class="nav-link {% if manage_staff == request.path or 'edit_staff' in request.path %}active{% endif %}">
                 <i class="nav-icon fas fa-users-cog"></i>
-                <span class="nav-text">Manage Staff</span>
+                <span class="nav-text">Manage Faculty</span>
             </a>
         </div>
 

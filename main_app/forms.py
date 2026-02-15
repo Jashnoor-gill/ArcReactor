@@ -66,6 +66,15 @@ class StudentForm(CustomUserForm):
             ['course', 'session']
 
 
+class StudentAddForm(CustomUserForm):
+    def __init__(self, *args, **kwargs):
+        super(StudentAddForm, self).__init__(*args, **kwargs)
+
+    class Meta(CustomUserForm.Meta):
+        model = Student
+        fields = CustomUserForm.Meta.fields + ['session']
+
+
 class AdminForm(CustomUserForm):
     def __init__(self, *args, **kwargs):
         super(AdminForm, self).__init__(*args, **kwargs)
@@ -92,6 +101,15 @@ class CourseForm(FormSettings):
     class Meta:
         fields = ['name', 'course_code']
         model = Course
+
+
+class BranchForm(FormSettings):
+    def __init__(self, *args, **kwargs):
+        super(BranchForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        fields = ['name', 'department']
+        model = Branch
 
 
 class SubjectForm(FormSettings):

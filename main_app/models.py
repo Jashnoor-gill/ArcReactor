@@ -78,6 +78,25 @@ class Course(models.Model):
             return f"{self.name} ({self.course_code})"
         return self.name
 
+
+class Branch(models.Model):
+    DEPARTMENT_CHOICES = [
+        ("SCEE", "SCEE"),
+        ("SMME", "SMME"),
+        ("SMMS", "SMMS"),
+        ("SCENE", "SCENE"),
+        ("SOM", "SOM"),
+        ("SPS", "SPS"),
+    ]
+
+    name = models.CharField(max_length=120)
+    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.department})"
+
 class Book(models.Model):
     name = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
