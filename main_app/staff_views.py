@@ -61,8 +61,11 @@ def get_students(request):
     session_id = request.POST.get('session')
     try:
         course = get_object_or_404(Course, id=course_id)
-        session = get_object_or_404(Session, id=session_id)
-        students = Student.objects.filter(course_id=course.id, session=session)
+        students = Student.objects.filter(course_id=course.id)
+        if session_id:
+            students = students.filter(session_id=session_id)
+            if not students.exists():
+                students = Student.objects.filter(course_id=course.id)
         student_data = []
         for student in students:
             data = {
@@ -72,7 +75,7 @@ def get_students(request):
             student_data.append(data)
         return JsonResponse(json.dumps(student_data), content_type='application/json', safe=False)
     except Exception as e:
-        return e
+        return JsonResponse(json.dumps([]), content_type='application/json', safe=False)
 
 
 @csrf_exempt

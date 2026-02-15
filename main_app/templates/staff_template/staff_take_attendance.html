@@ -67,7 +67,7 @@
 <script>
     $(document).ready(function () {
         $("#fetch_student").click(function () {
-            var course = "{% if course %}{{ course.id }}{% endif %}"
+            var course = $("#course_hidden").val() || $("#course").val() || ""
             var session = $("#session").val()
             var attendance_date = $('#attendance_date').val()
             $("#student_data").html(null)

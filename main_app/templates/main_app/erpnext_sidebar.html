@@ -444,32 +444,6 @@
             </a>
         </div>
 
-        <h6 class="nav-section-title">Course Community</h6>
-
-        <div class="nav-item">
-            {% url 'staff_ride_share_moderation' as staff_ride_share_moderation %}
-            <a href="{{ staff_ride_share_moderation }}" class="nav-link {% if staff_ride_share_moderation == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-car"></i>
-                <span class="nav-text">Ride Sharing (Moderate)</span>
-            </a>
-        </div>
-
-        <div class="nav-item">
-            {% url 'staff_lost_found_moderation' as staff_lost_found_moderation %}
-            <a href="{{ staff_lost_found_moderation }}" class="nav-link {% if staff_lost_found_moderation == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-search"></i>
-                <span class="nav-text">Lost & Found (Moderate)</span>
-            </a>
-        </div>
-
-        <div class="nav-item">
-            {% url 'staff_forum_moderation' as staff_forum_moderation %}
-            <a href="{{ staff_forum_moderation }}" class="nav-link {% if staff_forum_moderation == request.path %}active{% endif %}">
-                <i class="nav-icon fas fa-comments"></i>
-                <span class="nav-text">Forum (Moderate)</span>
-            </a>
-        </div>
-
     {% else %}
         <!-- Student Navigation -->
         <h6 class="nav-section-title">Main</h6>

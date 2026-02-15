@@ -127,18 +127,6 @@ urlpatterns = [
     path('staff/result/fetch/', staff_views.fetch_student_result,
          name='fetch_student_result'),
 
-     # Faculty Course Community Moderation
-     path('staff/community/ride-sharing/', staff_views.staff_ride_share_moderation, name='staff_ride_share_moderation'),
-     path('staff/community/lost-found/', staff_views.staff_lost_found_moderation, name='staff_lost_found_moderation'),
-     path('staff/community/forum/', staff_views.staff_forum_moderation, name='staff_forum_moderation'),
-     path('staff/community/forum/<int:post_id>/', staff_views.staff_forum_post_moderation, name='staff_forum_post_moderation'),
-     path('staff/community/ride-sharing/<int:post_id>/delete/', staff_views.staff_delete_ride_share, name='staff_delete_ride_share'),
-     path('staff/community/lost-found/<int:post_id>/delete/', staff_views.staff_delete_lost_found, name='staff_delete_lost_found'),
-     path('staff/community/forum/<int:post_id>/delete/', staff_views.staff_delete_forum_post, name='staff_delete_forum_post'),
-     path('staff/community/forum/reply/<int:reply_id>/delete/', staff_views.staff_delete_forum_reply, name='staff_delete_forum_reply'),
-
-
-
     # Student
     path("student/home/", student_views.student_home, name='student_home'),
     path("student/view/attendance/", student_views.student_view_attendance,
