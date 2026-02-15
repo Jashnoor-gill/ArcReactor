@@ -18,6 +18,11 @@
 
 
 
+                        {% if not course %}
+                        <div class="alert alert-warning">
+                            Your course is not assigned yet. Please contact the admin.
+                        </div>
+                        {% endif %}
                         <div class="form-group">
                             <label>Course</label>
                             <select  id="course" class="form-control" disabled>
@@ -31,26 +36,34 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="date" class="form-control" placeholder="Start Date" name="start_date" required id="start_date">
+                                    <input type="date" class="form-control" placeholder="Start Date" name="start_date" required id="start_date" {% if not course %}disabled{% endif %}>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="date" class="form-control" placeholder="End Date" name="end_date"  id="end_date">
+                                    <input type="date" class="form-control" placeholder="End Date" name="end_date"  id="end_date" {% if not course %}disabled{% endif %}>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <button type="button" id="fetch_attendance" class="btn btn-success w-100">Fetch Attendance Data</button>
+                                <button type="button" id="fetch_attendance" class="btn btn-success w-100" {% if not course %}disabled{% endif %}>Fetch Attendance Data</button>
                             </div>
                         </div>
 
                     </div>
                     <!-- /.card-body -->
 
+                    {% if course %}
                     <div class="card-footer" style="overflow: auto; max-height: 400px;">
                         <div class="row g-2" id="attendance_data"></div>
                     </div>
+                    {% else %}
+                    <div class="card-footer">
+                        <div class="alert alert-info mb-0">
+                            Attendance data will appear here once your course is assigned.
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <!-- /.card -->
 
