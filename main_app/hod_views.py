@@ -677,7 +677,7 @@ def get_admin_attendance(request):
 
 
 def admin_view_profile(request):
-    admin = get_object_or_404(Admin, admin=request.user)
+    admin, _created = Admin.objects.get_or_create(admin=request.user)
     form = AdminForm(request.POST or None, request.FILES or None,
                      instance=admin)
     context = {'form': form,
