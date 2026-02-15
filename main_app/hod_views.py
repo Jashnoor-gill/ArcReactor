@@ -2,6 +2,7 @@ import json
 import requests
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
+from django.db import models
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import (HttpResponse, HttpResponseRedirect,
                               get_object_or_404, redirect, render)
@@ -208,18 +209,54 @@ def add_subject(request):
 
 def manage_staff(request):
     allStaff = CustomUser.objects.filter(user_type=2)
+    search_query = request.GET.get('search', '')
+    course_filter = request.GET.get('course', '')
+    
+    if search_query:
+        allStaff = allStaff.filter(
+            models.Q(first_name__icontains=search_query) |
+            models.Q(last_name__icontains=search_query) |
+            models.Q(email__icontains=search_query)
+        )
+    
+    if course_filter:
+        allStaff = allStaff.filter(staff__course__id=course_filter)
+    
+    courses = Course.objects.all()
     context = {
         'allStaff': allStaff,
-        'page_title': 'Manage Staff'
+        'courses': courses,
+        'search_query': search_query,
+        'selected_course': course_filter,
+        'page_title': 'Manage Staff',
+        'staff_count': allStaff.count()
     }
     return render(request, "hod_template/manage_staff.html", context)
 
 
 def manage_student(request):
     students = CustomUser.objects.filter(user_type=3)
+    search_query = request.GET.get('search', '')
+    course_filter = request.GET.get('course', '')
+    
+    if search_query:
+        students = students.filter(
+            models.Q(first_name__icontains=search_query) |
+            models.Q(last_name__icontains=search_query) |
+            models.Q(email__icontains=search_query)
+        )
+    
+    if course_filter:
+        students = students.filter(student__course__id=course_filter)
+    
+    courses = Course.objects.all()
     context = {
         'students': students,
-        'page_title': 'Manage Students'
+        'courses': courses,
+        'search_query': search_query,
+        'selected_course': course_filter,
+        'page_title': 'Manage Students',
+        'student_count': students.count()
     }
     return render(request, "hod_template/manage_student.html", context)
 
@@ -522,9 +559,25 @@ def view_staff_leave(request):
 def view_student_leave(request):
     if request.method != 'POST':
         allLeave = LeaveReportStudent.objects.all()
+        status_filter = request.GET.get('status', '')
+        
+        if status_filter:
+            allLeave = allLeave.filter(status=int(status_filter))
+        
+        # Calculate statistics
+        total_leaves = allLeave.count()
+        approved_leaves = allLeave.filter(status=1).count()
+        rejected_leaves = allLeave.filter(status=-1).count()
+        pending_leaves = allLeave.filter(status=0).count()
+        
         context = {
             'allLeave': allLeave,
-            'page_title': 'Leave Applications From Students'
+            'page_title': 'Leave Applications From Students',
+            'total_leaves': total_leaves,
+            'approved_leaves': approved_leaves,
+            'rejected_leaves': rejected_leaves,
+            'pending_leaves': pending_leaves,
+            'status_filter': status_filter
         }
         return render(request, "hod_template/student_leave_view.html", context)
     else:

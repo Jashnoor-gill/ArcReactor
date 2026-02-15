@@ -202,9 +202,30 @@ def student_view_notification(request):
 def student_view_result(request):
     student = get_object_or_404(Student, admin=request.user)
     results = StudentResult.objects.filter(student=student)
+    
+    # Calculate analytics
+    total_subjects = results.count()
+    if total_subjects > 0:
+        avg_marks = sum([r.exam + r.test for r in results]) / (total_subjects * 2) if total_subjects > 0 else 0
+        total_marks = sum([r.exam + r.test for r in results])
+        max_marks = total_subjects * 200  # Assuming each subject has max 200 (100 exam + 100 test)
+        percentage = (total_marks / max_marks * 100) if max_marks > 0 else 0
+    else:
+        avg_marks = 0
+        percentage = 0
+    
+    # By status (pass/fail) count
+    passed = sum(1 for r in results if (r.exam + r.test) >= 100)
+    failed = total_subjects - passed
+    
     context = {
         'results': results,
-        'page_title': "View Results"
+        'page_title': "View Results",
+        'total_subjects': total_subjects,
+        'avg_marks': round(avg_marks, 2),
+        'percentage': round(percentage, 2),
+        'passed': passed,
+        'failed': failed
     }
     return render(request, "student_template/student_view_result.html", context)
 
