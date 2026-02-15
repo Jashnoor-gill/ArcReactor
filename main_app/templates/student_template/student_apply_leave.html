@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<section class="content">
+<section class="content aegis-section">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -17,40 +17,43 @@
                     {% include "main_app/form_template.html" with messages=messages  form=form button_text="Apply For Leave"%}
                 </div>
                 <!-- /.card -->
-<div class="card card-dark">
-    <div class="card-header"><h3 class="card-title">Leave History</h3></div>
-   <div class="table" style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
-
-       <table class="table table-bordered" style="min-width: 600px;">
-           <tr>
-               <th>ID</th>
-               <th>Date</th>
-               <th>Message</th>
-                <th>Status</th>
-        </tr>
-        {% for leave in leave_history %}
-        <tr>
-            <td>{{forloop.counter}}</td>
-            <td>{{leave.date}}</td>
-              <td style="word-wrap: break-word; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{leave.message}}</td>
-              <td>
-                  
-                  {% if leave.status == 0 %}
-                  <span class="badge badge-warning">Pending</span>
-                  {% elif leave.status == 1 %}
-                  <span class="badge badge-success">Accepted</span>
-                  
-                    {% else %}
-                    <span class="badge badge-danger">Rejected</span>
-                    
-                    {% endif %}
-                    
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-    </div>
+                <div class="card card-dark mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Leave History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap" style="max-height: 500px;">
+                            <table class="table table-bordered table-hover" style="min-width: 600px;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for leave in leave_history %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{leave.date}}</td>
+                                        <td style="word-wrap: break-word; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{leave.message}}</td>
+                                        <td>
+                                            {% if leave.status == 0 %}
+                                            <span class="badge badge-warning">Pending</span>
+                                            {% elif leave.status == 1 %}
+                                            <span class="badge badge-success">Accepted</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

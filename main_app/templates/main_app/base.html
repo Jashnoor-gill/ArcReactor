@@ -13,6 +13,9 @@
     
     <!-- Portal Themes CSS -->
     <link rel="stylesheet" href="{% static 'dist/css/portal-themes.css' %}">
+
+    <!-- AEGIS Protocol UI Layer -->
+    <link rel="stylesheet" href="{% static 'dist/css/aegis-protocol.css' %}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
@@ -96,7 +99,7 @@
         {% endif %}
 
         <!-- Main Content Area -->
-        <div class="content-area fade-in">
+        <div class="content-area fade-in aegis-skin">
             {% block content %}{% endblock content %}
         </div>
     </main>

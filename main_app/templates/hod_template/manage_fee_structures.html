@@ -3,7 +3,7 @@
 {% block page_title %}{{page_title}}{% endblock page_title %}
 
 {% block content %}
-<section class="content">
+<section class="content aegis-section">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -20,39 +20,41 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table id="example2" class="table table-bordered table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Session</th>
-                                    <th>Fee Type</th>
-                                    <th>Amount (₹)</th>
-                                    <th>Mandatory</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for structure in structures %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{structure.session}}</td>
-                                    <td>{{structure.get_fee_type_display}}</td>
-                                    <td>₹{{structure.amount}}</td>
-                                    <td>
-                                        {% if structure.is_mandatory %}
-                                        <span class="badge badge-danger">Yes</span>
-                                        {% else %}
-                                        <span class="badge badge-secondary">No</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                        <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <div class="aegis-table-wrap" style="max-height: 600px;">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Session</th>
+                                        <th>Fee Type</th>
+                                        <th>Amount (₹)</th>
+                                        <th>Mandatory</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for structure in structures %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{structure.session}}</td>
+                                        <td>{{structure.get_fee_type_display}}</td>
+                                        <td>₹{{structure.amount}}</td>
+                                        <td>
+                                            {% if structure.is_mandatory %}
+                                            <span class="badge badge-danger">Yes</span>
+                                            {% else %}
+                                            <span class="badge badge-secondary">No</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,3 +62,4 @@
     </div>
 </section>
 {% endblock content %}
+

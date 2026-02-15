@@ -3,7 +3,7 @@
 {% block page_title %}{{page_title}}{% endblock page_title %}
 
 {% block content %}
-<section class="content">
+<section class="content aegis-section">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -11,47 +11,49 @@
                     <div class="card-header">
                         <h3 class="card-title">{{page_title}}</h3>
                     </div>
-                    <div class="card-body" style="overflow-x: auto; max-height: 600px;">
-                        <table class="table table-bordered" style="min-width: 900px;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Tracking</th>
-                                    <th>Title</th>
-                                    <th>Category</th>
-                                    <th>Subcategory</th>
-                                    <th>Type</th>
-                                    <th>Level</th>
-                                    <th>Department</th>
-                                    <th>Status</th>
-                                    <th>Assigned To</th>
-                                    <th>Resolution Notes</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for grievance in grievances %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ grievance.tracking_code }}</td>
-                                    <td>{{ grievance.title }}</td>
-                                    <td>{{ grievance.get_category_display }}</td>
-                                    <td>{% if grievance.subcategory %}{{ grievance.subcategory }}{% else %}-{% endif %}</td>
-                                    <td>{{ grievance.get_complaint_type_display }}</td>
-                                    <td>{{ grievance.get_level_display }}</td>
-                                    <td>{% if grievance.department %}{{ grievance.department }}{% else %}-{% endif %}</td>
-                                    <td>{{ grievance.get_status_display }}</td>
-                                    <td>{% if grievance.assigned_to %}{{ grievance.assigned_to.get_full_name }}{% else %}Unassigned{% endif %}</td>
-                                    <td>{% if grievance.resolution_notes %}{{ grievance.resolution_notes }}{% else %}-{% endif %}</td>
-                                    <td>{{ grievance.created_at }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="11">No grievances submitted yet.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap" style="max-height: 600px;">
+                            <table class="table table-bordered table-hover" style="min-width: 900px;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tracking</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Subcategory</th>
+                                        <th>Type</th>
+                                        <th>Level</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                        <th>Assigned To</th>
+                                        <th>Resolution Notes</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for grievance in grievances %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ grievance.tracking_code }}</td>
+                                        <td>{{ grievance.title }}</td>
+                                        <td>{{ grievance.get_category_display }}</td>
+                                        <td>{% if grievance.subcategory %}{{ grievance.subcategory }}{% else %}-{% endif %}</td>
+                                        <td>{{ grievance.get_complaint_type_display }}</td>
+                                        <td>{{ grievance.get_level_display }}</td>
+                                        <td>{% if grievance.department %}{{ grievance.department }}{% else %}-{% endif %}</td>
+                                        <td>{{ grievance.get_status_display }}</td>
+                                        <td>{% if grievance.assigned_to %}{{ grievance.assigned_to.get_full_name }}{% else %}Unassigned{% endif %}</td>
+                                        <td>{% if grievance.resolution_notes %}{{ grievance.resolution_notes }}{% else %}-{% endif %}</td>
+                                        <td>{{ grievance.created_at }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="12">No grievances submitted yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,3 +61,4 @@
     </div>
 </section>
 {% endblock content %}
+

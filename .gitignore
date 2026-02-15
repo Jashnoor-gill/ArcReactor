@@ -15,6 +15,7 @@ db.sqlite3
 
 # Local backup repo folder
 ArcReactor.git/
+AEGIS-Protocol/
 
 # Environments
 .vscode

@@ -3,7 +3,7 @@
 {% block page_title %}{{page_title}}{% endblock page_title %}
 
 {% block content %}
-<section class="content">
+<section class="content aegis-section">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -12,7 +12,7 @@
                         <h3 class="card-title">Filter Opportunities</h3>
                     </div>
                     <div class="card-body">
-                        <form method="GET" class="row">
+                        <form method="GET" class="row g-3 align-items-end">
                             <div class="col-md-4 form-group">
                                 <label>Domain</label>
                                 <input type="text" class="form-control" name="domain" value="{{ filters.domain }}" />
@@ -30,7 +30,7 @@
                                 <input type="text" class="form-control" name="organization" value="{{ filters.organization }}" />
                             </div>
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
                             </div>
                         </form>
                     </div>
@@ -40,39 +40,41 @@
                     <div class="card-header">
                         <h3 class="card-title">{{page_title}}</h3>
                     </div>
-                    <div class="card-body" style="overflow-x: auto; max-height: 600px;">
-                        <table class="table table-bordered" style="min-width: 900px;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>Organization</th>
-                                    <th>Type</th>
-                                    <th>Domain</th>
-                                    <th>Deadline</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for opportunity in opportunities %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ opportunity.title }}</td>
-                                    <td>{{ opportunity.organization }}</td>
-                                    <td>{{ opportunity.get_type_display }}</td>
-                                    <td>{{ opportunity.domain }}</td>
-                                    <td>{% if opportunity.deadline %}{{ opportunity.deadline }}{% else %}-{% endif %}</td>
-                                    <td>
-                                        <a href="{% url 'student_apply_opportunity' opportunity.id %}" class="btn btn-success btn-sm">Apply</a>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7">No opportunities available.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="card-body">
+                        <div class="aegis-table-wrap" style="max-height: 600px;">
+                            <table class="table table-bordered table-hover" style="min-width: 900px;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Organization</th>
+                                        <th>Type</th>
+                                        <th>Domain</th>
+                                        <th>Deadline</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for opportunity in opportunities %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ opportunity.title }}</td>
+                                        <td>{{ opportunity.organization }}</td>
+                                        <td>{{ opportunity.get_type_display }}</td>
+                                        <td>{{ opportunity.domain }}</td>
+                                        <td>{% if opportunity.deadline %}{{ opportunity.deadline }}{% else %}-{% endif %}</td>
+                                        <td>
+                                            <a href="{% url 'student_apply_opportunity' opportunity.id %}" class="btn btn-success btn-sm">Apply</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7">No opportunities available.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,3 +82,4 @@
     </div>
 </section>
 {% endblock content %}
+

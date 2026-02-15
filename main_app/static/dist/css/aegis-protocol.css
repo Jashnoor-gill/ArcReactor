@@ -1,0 +1,377 @@
+/* AEGIS Protocol-inspired UI layer for ArcReactor */
+
+:root {
+    --aegis-primary: var(--primary-color, #4f46e5);
+    --aegis-primary-hover: #4338ca;
+    --aegis-surface: #ffffff;
+    --aegis-border: #e5e7eb;
+    --aegis-text: #111827;
+    --aegis-text-muted: #6b7280;
+    --aegis-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --aegis-shadow-md: 0 6px 14px -6px rgba(0, 0, 0, 0.18);
+    --aegis-radius: 12px;
+}
+
+.aegis-skin {
+    background: radial-gradient(circle at 92% 12%, rgba(79, 70, 229, 0.08), transparent 38%),
+        radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08), transparent 35%);
+    border-radius: 16px;
+    padding: 24px;
+    min-height: 100%;
+}
+
+.aegis-section {
+    padding: 8px 0 16px;
+}
+
+.aegis-skin .card {
+    border-radius: var(--aegis-radius);
+    border: 1px solid var(--aegis-border);
+    box-shadow: var(--aegis-shadow-sm);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+}
+
+.aegis-skin .card:hover {
+    box-shadow: var(--aegis-shadow-md);
+    transform: translateY(-1px);
+}
+
+.aegis-skin .card-header {
+    background: var(--aegis-surface);
+    border-bottom: 1px solid var(--aegis-border);
+    padding: 16px 20px;
+}
+
+.aegis-skin .card.card-dark .card-header {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.12));
+    color: var(--aegis-text);
+}
+
+.aegis-skin .card .card-tools {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.aegis-skin .card-title {
+    font-weight: 700;
+    color: var(--aegis-text);
+}
+
+.aegis-skin .card-body {
+    padding: 20px;
+}
+
+.aegis-skin .card-footer {
+    background: var(--aegis-surface);
+    border-top: 1px solid var(--aegis-border);
+    padding: 16px 20px;
+}
+
+.aegis-skin .alert {
+    border-radius: 12px;
+    padding: 16px 18px;
+    border: 1px solid transparent;
+}
+
+.aegis-skin .alert-info {
+    background: #e0f2fe;
+    color: #0c4a6e;
+    border-color: #bae6fd;
+}
+
+.aegis-skin .alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.aegis-skin .alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.aegis-skin .form-group label {
+    font-weight: 600;
+    color: var(--aegis-text);
+    margin-bottom: 6px;
+}
+
+.aegis-skin input[type="text"],
+.aegis-skin input[type="email"],
+.aegis-skin input[type="password"],
+.aegis-skin input[type="number"],
+.aegis-skin input[type="file"],
+.aegis-skin select,
+.aegis-skin textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--aegis-border);
+    border-radius: 10px;
+    background: var(--aegis-surface);
+    color: var(--aegis-text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.aegis-skin input:focus,
+.aegis-skin select:focus,
+.aegis-skin textarea:focus {
+    outline: none;
+    border-color: var(--aegis-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.aegis-skin .btn {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 10px;
+}
+
+.aegis-skin .btn-success {
+    background: var(--aegis-primary);
+    border-color: var(--aegis-primary);
+    box-shadow: 0 8px 14px -8px rgba(79, 70, 229, 0.6);
+}
+
+.aegis-skin .btn-success:hover {
+    background: var(--aegis-primary-hover);
+    border-color: var(--aegis-primary-hover);
+}
+
+.aegis-skin .btn-info {
+    background: #0ea5e9;
+    border-color: #0ea5e9;
+    color: #ffffff;
+}
+
+.aegis-skin .btn-info:hover {
+    background: #0284c7;
+    border-color: #0284c7;
+}
+
+.aegis-skin .btn-danger {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.aegis-skin .btn-danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.aegis-skin .btn-warning {
+    background: #f59e0b;
+    border-color: #f59e0b;
+    color: #1f2937;
+}
+
+.aegis-skin .btn-warning:hover {
+    background: #d97706;
+    border-color: #d97706;
+    color: #1f2937;
+}
+
+.aegis-skin .table {
+    border-radius: var(--aegis-radius);
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--aegis-surface);
+}
+
+.aegis-skin .table thead th,
+.aegis-skin .table thead td {
+    background: #f3f4f6;
+    color: var(--aegis-text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--aegis-border);
+}
+
+.aegis-skin .table .thead-dark th {
+    background: #eef2ff;
+    color: #3730a3;
+}
+
+.aegis-skin .table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.aegis-skin .table-bordered > :not(caption) > * {
+    border-color: var(--aegis-border);
+}
+
+.aegis-skin .badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.aegis-skin .bg-light {
+    background: #f8fafc !important;
+}
+
+.aegis-skin .portal-header {
+    border-radius: 16px;
+    padding: 20px 24px;
+    color: #ffffff;
+    background: var(--gradient, linear-gradient(135deg, #4f46e5, #0ea5e9));
+    box-shadow: var(--aegis-shadow-md);
+}
+
+.aegis-skin .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.aegis-skin .stat-box {
+    background: var(--aegis-surface);
+    border: 1px solid var(--aegis-border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--aegis-shadow-sm);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.aegis-skin .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--aegis-primary);
+    background: rgba(79, 70, 229, 0.12);
+    font-size: 20px;
+}
+
+.aegis-skin .stat-content h3 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--aegis-text);
+}
+
+.aegis-skin .stat-content p {
+    margin: 4px 0 0;
+    color: var(--aegis-text-muted);
+    font-size: 13px;
+}
+
+.aegis-skin .dashboard-card {
+    background: var(--aegis-surface);
+    border: 1px solid var(--aegis-border);
+    border-radius: 16px;
+    box-shadow: var(--aegis-shadow-sm);
+    overflow: hidden;
+}
+
+.aegis-skin .dashboard-card .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--aegis-border);
+}
+
+.aegis-skin .info-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid var(--aegis-border);
+}
+
+.aegis-skin .info-box-text {
+    color: var(--aegis-text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.aegis-skin .info-box-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--aegis-text);
+}
+
+.aegis-skin .aegis-table-wrap {
+    background: var(--aegis-surface);
+    border: 1px solid var(--aegis-border);
+    border-radius: 14px;
+    padding: 8px;
+    overflow: auto;
+}
+
+.aegis-skin .badge.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.aegis-skin .badge.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.aegis-skin .badge.badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.aegis-skin .attendance-pill {
+    padding: 12px 14px;
+    border-radius: 999px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid var(--aegis-border);
+    box-shadow: var(--aegis-shadow-sm);
+}
+
+.aegis-skin .attendance-pill--present {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.aegis-skin .attendance-pill--absent {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.aegis-skin .aegis-callout {
+    border-radius: var(--aegis-radius);
+    padding: 18px 20px;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    color: #312e81;
+    margin-bottom: 20px;
+}
+
+.aegis-skin .aegis-callout h5 {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.aegis-skin .aegis-callout ol {
+    padding-left: 18px;
+    margin-bottom: 12px;
+}
+
+.aegis-skin .aegis-callout li {
+    margin-bottom: 6px;
+}
+
+@media (max-width: 768px) {
+    .aegis-skin {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .aegis-skin .card-body {
+        padding: 16px;
+    }
+
+    .aegis-skin .card-footer {
+        padding: 14px 16px;
+    }
+}
