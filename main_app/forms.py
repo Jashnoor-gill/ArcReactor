@@ -63,7 +63,7 @@ class StudentForm(CustomUserForm):
     class Meta(CustomUserForm.Meta):
         model = Student
         fields = CustomUserForm.Meta.fields + \
-            ['course', 'session']
+            ['course', 'session', 'branch']
 
 
 class StudentAddForm(CustomUserForm):
@@ -72,7 +72,7 @@ class StudentAddForm(CustomUserForm):
 
     class Meta(CustomUserForm.Meta):
         model = Student
-        fields = CustomUserForm.Meta.fields + ['session']
+        fields = CustomUserForm.Meta.fields + ['session', 'branch']
 
 
 class AdminForm(CustomUserForm):
@@ -180,6 +180,7 @@ class FeedbackStudentForm(FormSettings):
 
 
 class StudentEditForm(CustomUserForm):
+    """Form for students to edit their own profile - excludes course, session, and branch"""
     def __init__(self, *args, **kwargs):
         super(StudentEditForm, self).__init__(*args, **kwargs)
 

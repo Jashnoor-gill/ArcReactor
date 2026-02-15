@@ -135,6 +135,7 @@ def add_student(request):
             gender = student_form.cleaned_data.get('gender')
             password = student_form.cleaned_data.get('password')
             session = student_form.cleaned_data.get('session')
+            branch = student_form.cleaned_data.get('branch')
             passport = request.FILES['profile_pic']
             fs = FileSystemStorage()
             filename = fs.save(passport.name, passport)
@@ -145,6 +146,7 @@ def add_student(request):
                 user.gender = gender
                 user.address = address
                 user.student.session = session
+                user.student.branch = branch
                 user.save()
                 messages.success(request, "Successfully Added")
                 return redirect(reverse('add_student'))
@@ -417,6 +419,7 @@ def edit_student(request, student_id):
             password = form.cleaned_data.get('password') or None
             course = form.cleaned_data.get('course')
             session = form.cleaned_data.get('session')
+            branch = form.cleaned_data.get('branch')
             passport = request.FILES.get('profile_pic') or None
             try:
                 user = CustomUser.objects.get(id=student.admin.id)
@@ -435,6 +438,7 @@ def edit_student(request, student_id):
                 user.gender = gender
                 user.address = address
                 student.course = course
+                student.branch = branch
                 user.save()
                 student.save()
                 messages.success(request, "Successfully Updated")

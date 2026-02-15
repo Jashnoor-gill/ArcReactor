@@ -8,7 +8,28 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <!-- general form elements -->
+                <!-- Academic Information (Read-Only) -->
+                <div class="card card-info mb-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Academic Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Course:</strong> {{ form.instance.course.name|default:"Not Assigned" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Session:</strong> {{ form.instance.session|default:"Not Assigned" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Branch:</strong> {{ form.instance.branch|default:"Not Assigned" }}</p>
+                            </div>
+                        </div>
+                        <small class="text-muted">Note: Academic information can only be modified by administration.</small>
+                    </div>
+                </div>
+
+                <!-- Editable Profile Form -->
                 <div class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title">{{page_title}}</h3>
