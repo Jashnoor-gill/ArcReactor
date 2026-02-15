@@ -13,6 +13,7 @@ from django.views.generic import UpdateView
 
 from .forms import *
 from .models import *
+from .import_utils import import_students_from_excel
 
 
 def admin_home(request):
@@ -153,6 +154,48 @@ def add_student(request):
         else:
             messages.error(request, "Could Not Add: ")
     return render(request, 'hod_template/add_student_template.html', context)
+
+
+def bulk_import_students(request):
+    """Import students from Excel file"""
+    form = BulkStudentImportForm(request.POST or None, request.FILES or None)
+    context = {
+        'form': form,
+        'page_title': 'Bulk Import Students'
+    }
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            excel_file = request.FILES['excel_file']
+            # Save file temporarily
+            fs = FileSystemStorage()
+            filename = fs.save(excel_file.name, excel_file)
+            file_path = fs.path(filename)
+            
+            try:
+                # Import students
+                results = import_students_from_excel(file_path)
+                
+                if results['errors']:
+                    for error in results['errors']:
+                        messages.warning(request, error)
+                
+                messages.success(
+                    request, 
+                    f"Import completed: {results['success']} successful, {results['failed']} failed"
+                )
+                return redirect(reverse('manage_student'))
+            except Exception as e:
+                messages.error(request, f"Import failed: {str(e)}")
+            finally:
+                # Delete temp file
+                import os
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+        else:
+            messages.error(request, "Invalid form data")
+    
+    return render(request, 'hod_template/bulk_import_students.html', context)
 
 
 def add_course(request):

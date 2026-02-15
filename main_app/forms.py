@@ -288,3 +288,23 @@ class IssueBookForm(forms.Form):
     
     isbn2.widget.attrs.update({'class': 'form-control'})
     name2.widget.attrs.update({'class':'form-control'})
+
+
+class BulkStudentImportForm(forms.Form):
+    """Form for bulk student import from Excel"""
+    excel_file = forms.FileField(
+        label='Upload Excel File',
+        help_text='Expected columns: Email, First Name, Last Name, Gender (M/F), Course Code, Password',
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+            'accept': '.xlsx,.xls'
+        })
+    )
+    
+    def clean_excel_file(self):
+        file = self.cleaned_data.get('excel_file')
+        if file:
+            if not file.name.endswith(('.xlsx', '.xls')):
+                raise forms.ValidationError('Only Excel files (.xlsx, .xls) are allowed')
+        return file
+
