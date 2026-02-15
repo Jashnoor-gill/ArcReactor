@@ -1041,11 +1041,6 @@ def manage_fee_structures(request):
     structures = FeeStructure.objects.all().select_related('course', 'session').order_by('-created_at')
     courses = Course.objects.all()
     sessions = Session.objects.all()
-    
-    # Attach a sample roll_number attribute to each structure (if any student_fee exists)
-    for s in structures:
-        sf = StudentFee.objects.filter(fee_structure=s).select_related('student').first()
-        s.roll_number = getattr(sf.student, 'id', '') if sf else ''
 
     context = {
         'structures': structures,
