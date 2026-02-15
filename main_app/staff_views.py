@@ -683,7 +683,7 @@ def staff_approve_course_request(request, request_id):
 # Exam Date Management (Faculty)
 def staff_exam_dates(request):
     """List all exam dates for faculty's subjects"""
-    staff = get_object_or_404(Staff, admin=request.user)
+    staff, _ = Staff.objects.get_or_create(admin=request.user)
     if not staff.course:
         messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
         return redirect('staff_home')
@@ -700,7 +700,7 @@ def staff_exam_dates(request):
 
 def staff_add_exam_date(request):
     """Add new exam date"""
-    staff = get_object_or_404(Staff, admin=request.user)
+    staff, _ = Staff.objects.get_or_create(admin=request.user)
     if not staff.course:
         messages.warning(request, "Your course is not assigned yet. Please contact the admin.")
         return redirect('staff_home')
@@ -744,7 +744,7 @@ def staff_add_exam_date(request):
 
 def staff_edit_exam_date(request, exam_id):
     """Edit existing exam date"""
-    staff = get_object_or_404(Staff, admin=request.user)
+    staff, _ = Staff.objects.get_or_create(admin=request.user)
     exam_date = get_object_or_404(ExamDate, id=exam_id, created_by=staff)
     subjects = Subject.objects.filter(course=staff.course)
     
@@ -784,7 +784,7 @@ def staff_edit_exam_date(request, exam_id):
 
 def staff_delete_exam_date(request, exam_id):
     """Delete exam date"""
-    staff = get_object_or_404(Staff, admin=request.user)
+    staff, _ = Staff.objects.get_or_create(admin=request.user)
     exam_date = get_object_or_404(ExamDate, id=exam_id, created_by=staff)
     
     try:
