@@ -46,7 +46,7 @@
 {% block custom_js %}
 <script>
     $(document).ready(function () {
-        $("#id_subject").change(function () {
+        $("#id_course").change(function () {
             fetchStudents();
             });
             $("#id_session_year").change(function () {
@@ -56,22 +56,28 @@
     fetch_student_result();
                 });
                 $("#id_exam").hide()
-                $("#id_test").hide()
+                $("#id_test_1").hide()
+                $("#id_test_2").hide()
+                $("#id_test_3").hide()
+                $("#id_mid_sem").hide()
                 $("#update_result").hide()
-                $('label[for="id_test"]').hide();
+                $('label[for="id_test_1"]').hide();
+                $('label[for="id_test_2"]').hide();
+                $('label[for="id_test_3"]').hide();
+                $('label[for="id_mid_sem"]').hide();
                 $('label[for="id_exam"]').hide();
         function fetchStudents(){
-            var subject = $("#id_subject").val()
+            var course = $("#id_course").val()
             var session = $("#id_session_year").val()
             $("#id_student").html(null)
-            if (session.length  == 0 || subject.length == 0 || session < 1 || subject < 1){
+            if (session.length  == 0 || course.length == 0 || session < 1 || course < 1){
                 return false;
             }
             $.ajax({
                 url: "{% url 'get_students' %}",
                 type: 'POST',
                 data: {
-                    subject: subject,
+                    course: course,
                     session:session
                 }
             }).done(function (response) {
@@ -94,22 +100,31 @@
 
                function fetch_student_result(){
                 var student = $("#id_student").val()
-                var subject = $("#id_subject").val()
-                $("#id_test").val(null)
+                var course = $("#id_course").val()
+                $("#id_test_1").val(null)
+                $("#id_test_2").val(null)
+                $("#id_test_3").val(null)
+                $("#id_mid_sem").val(null)
                 $("#id_exam").val(null)
                 $("#id_exam").hide()
                 $("#update_result").hide()
-                $("#id_test").hide()
-                $('label[for="id_test"]').hide();
+                $("#id_test_1").hide()
+                $("#id_test_2").hide()
+                $("#id_test_3").hide()
+                $("#id_mid_sem").hide()
+                $('label[for="id_test_1"]').hide();
+                $('label[for="id_test_2"]').hide();
+                $('label[for="id_test_3"]').hide();
+                $('label[for="id_mid_sem"]').hide();
                 $('label[for="id_exam"]').hide();
-                if (student.length  == 0 || subject.length == 0 || student < 1 || subject < 1){
+                if (student.length  == 0 || course.length == 0 || student < 1 || course < 1){
                     return false;
                 }
                 $.ajax({
                     url: "{% url 'fetch_student_result' %}",
                     type: 'POST',
                     data: {
-                        subject: subject,
+                        course: course,
                         student:student
                     }
                 }).done(function (response) {
@@ -118,12 +133,21 @@
                     } else {
                         var json_data = JSON.parse(response)
                         
-                            $("#id_test").val(json_data['test'])
+                            $("#id_test_1").val(json_data['test_1'])
+                            $("#id_test_2").val(json_data['test_2'])
+                            $("#id_test_3").val(json_data['test_3'])
+                            $("#id_mid_sem").val(json_data['mid_sem'])
                             $("#id_exam").val(json_data['exam'])
                             $("#id_exam").show()
-                            $("#id_test").show()
+                            $("#id_test_1").show()
+                            $("#id_test_2").show()
+                            $("#id_test_3").show()
+                            $("#id_mid_sem").show()
                             $("#update_result").show()
-                            $('label[for="id_test"]').show();
+                            $('label[for="id_test_1"]').show();
+                            $('label[for="id_test_2"]').show();
+                            $('label[for="id_test_3"]').show();
+                            $('label[for="id_mid_sem"]').show();
                             $('label[for="id_exam"]').show();
 
                     }

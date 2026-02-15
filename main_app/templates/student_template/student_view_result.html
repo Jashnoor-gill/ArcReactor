@@ -14,23 +14,60 @@
 <div class="card card-dark">
     <div class="card-header"><h3 class="card-title">{{page_title}}</h3>
     </div>
+    
+    <!-- Analytics Summary -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="info-box bg-light">
+                    <span class="info-box-text">Total Courses</span>
+                    <span class="info-box-number">{{ total_subjects }}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="info-box bg-light">
+                    <span class="info-box-text">Average Marks</span>
+                    <span class="info-box-number">{{ avg_marks }}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="info-box bg-light">
+                    <span class="info-box-text">Percentage</span>
+                    <span class="info-box-number">{{ percentage }}%</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="info-box bg-light">
+                    <span class="info-box-text">Passed/Failed</span>
+                    <span class="info-box-number">{{ passed }}/{{ failed }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
    <div class="table p-2" style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
 
-       <table class="table table-bordered" style="min-width: 600px;">
+       <table class="table table-bordered" style="min-width: 800px;">
            <tr>
                <th>ID</th>
-               <th>Subject</th>
-               <th>Test</th>
+               <th>Course</th>
+               <th>Test 1</th>
+               <th>Test 2</th>
+               <th>Test 3</th>
+               <th>Mid-Sem</th>
                <th>Exam</th>
                <th>Total</th>
         </tr>
         {% for result in results %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{{ result.subject }}</td>
-            <td>{{ result.test }}</td>
+            <td>{{ result.course }}</td>
+            <td>{{ result.test_1 }}</td>
+            <td>{{ result.test_2 }}</td>
+            <td>{{ result.test_3 }}</td>
+            <td>{{ result.mid_sem }}</td>
             <td>{{ result.exam }}</td>
-            <td>{{ result.test|add:result.exam }}</td>
+            <td>{{ result.test_1|add:result.test_2|add:result.test_3|add:result.mid_sem|add:result.exam }}</td>
             </tr>
             {% endfor %}
         </table>

@@ -44,13 +44,13 @@
 
 
                         <div class="form-group">
-                            <label>Select Subject</label>
-                            <select  id="subject" class="form-control">
-                                <option value="">----</option>
-                                {% for subject in subjects  %}
-                                <option value="{{subject.id}}">{{subject.name}} </option>
-                                {% endfor %}
+                            <label>Course</label>
+                            <select  id="course" class="form-control" disabled>
+                                <option value="{% if course %}{{ course.id }}{% endif %}">{% if course %}{{ course }}{% else %}----{% endif %}</option>
                             </select>
+                            {% if course %}
+                            <input type="hidden" id="course_hidden" value="{{ course.id }}">
+                            {% endif %}
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
@@ -91,11 +91,11 @@
 
        
         $("#fetch_attendance").click(function () {
-            var subject = $("#subject").val()
+            var course = "{% if course %}{{ course.id }}{% endif %}"
             var start_date = $("#start_date").val()
             var end_date = $("#end_date").val()
-            if (subject.length  == 0 || end_date.length ==0 ||start_date.length == 0){
-                alert("Please Select Subject and Date Range");
+            if (course.length  == 0 || end_date.length ==0 ||start_date.length == 0){
+                alert("Please Select Course and Date Range");
                 return false;
             }
             $("#attendance_data").html(null)
@@ -103,7 +103,7 @@
                 url: "{% url 'student_view_attendance' %}",
                 type: 'POST',
                 data: {
-                    subject: subject,
+                    course: course,
                     start_date: start_date,
                     end_date:end_date
                 }
