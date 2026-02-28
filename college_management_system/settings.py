@@ -39,6 +39,32 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost',
+    'http://127.0.0.1',
+]
+
+# Add any production domains if deploying
+if not DEBUG:
+    # Uncomment and add your production domain:
+    # CSRF_TRUSTED_ORIGINS.append('https://yourdomain.com')
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = False  # Must be False so JS can read it if needed
+else:
+    # Development settings
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_HTTPONLY = False
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_NAME = 'csrftoken'
+
 
 # Application definition
 
