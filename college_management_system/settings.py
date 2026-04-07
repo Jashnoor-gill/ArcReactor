@@ -31,7 +31,7 @@ DEMO_LOGIN_ENABLED = os.environ.get('DEMO_LOGIN_ENABLED', 'False') == 'True'
 DEMO_LOGIN_EMAIL = os.environ.get('DEMO_LOGIN_EMAIL', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
 ]
+CSRF_TRUSTED_ORIGINS.append('https://aegis-campusos.onrender.com')
 
 # Add any production domains if deploying
 if not DEBUG:
